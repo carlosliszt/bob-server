@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -101,7 +101,7 @@ public class ServerListener implements Listener {
         final ServerPing ping = event.getResponse();
         final ServerPing.Players players = ping.getPlayers();
 
-        ping.setDescriptionComponent(new TextComponent(MessageUtil.makeCenteredMotd("§c§m-§6§m-§e§m-§a§m-§b§m-§r §b§lYOLO §b§m-§a§m-§e§m-§6§m-§c§m-§r") + "\n" + MessageUtil.makeCenteredMotd(ChatColor.translateAlternateColorCodes('&', ProxyGame.getInstance().getConfiguration().getString("motd")))));
+        ping.setDescriptionComponent(new TextComponent(MessageUtil.makeCenteredMotd("§c§m-§6§m-§e§m-§a§m-§b§m-§r §b§lBOBMC §b§m-§a§m-§e§m-§6§m-§c§m-§r") + "\n" + MessageUtil.makeCenteredMotd(ChatColor.translateAlternateColorCodes('&', ProxyGame.getInstance().getConfiguration().getString("motd")))));
         players.setMax(ProxyGame.getInstance().getProxy().getConfig().getPlayerLimit());
 
         event.setResponse(ping);

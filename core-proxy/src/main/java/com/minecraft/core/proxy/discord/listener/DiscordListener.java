@@ -1,9 +1,3 @@
-/*
- * Copyright (C) YoloMC, All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential.
- */
-
 package com.minecraft.core.proxy.discord.listener;
 
 import club.minnced.discord.webhook.WebhookClient;
@@ -91,7 +85,7 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
     public void hook(Account account, String message) {
         async(() -> {
             try {
-                WebhookClient webhookClient = getWebhook(discord.getJDA().getTextChannelById("850798936712544266"), account);
+                WebhookClient webhookClient = getWebhook(discord.getJDA().getTextChannelById("1261563759806382082"), account);
 
                 if (webhookClient == null)
                     return;
@@ -117,18 +111,18 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
         if (event.getMessage().getContentRaw().isEmpty())
             return;
 
-        String ID = "850798936712544266";
+        String ID = "1261563759806382082";
         if (event.getChannel().getId().equals(ID)) {
 
             String msg = fixMessage(event);
-            Constants.getAccountStorage().getAccounts().stream().filter(account -> account.hasPermission(Rank.STREAMER_PLUS) && account.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
+            Constants.getAccountStorage().getAccounts().stream().filter(account -> account.hasPermission(Rank.YOUTUBER_PLUS) && account.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
 
                 ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(acc.getUniqueId());
 
                 if (proxiedPlayer == null)
                     return;
 
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§e[STAFF] §7" + event.getAuthor().getName() + "§8#" + event.getAuthor().getDiscriminator() + "§f: " + msg));
+                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§e[STAFF] §7@" + event.getAuthor().getName()  + "§f: " + msg));
             });
         }
 
@@ -160,11 +154,11 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
         List<TextChannel> channels = event.getMessage().getMentionedChannels();
         List<Role> roles = event.getMessage().getMentionedRoles();
 
-        if (event.getMessage().getReferencedMessage() != null) {
-            Message message1 = event.getMessage().getReferencedMessage();
-            User member = message1.getAuthor();
-            message = "§9> " + member.getName() + "#" + member.getDiscriminator() + "§r " + message;
-        }
+//        if (event.getMessage().getReferenced != null) {
+//            Message message1 = event.getMessage();
+//            User member = message1.getAuthor();
+//            message = "§9> " + member.getName() + "#" + member.getDiscriminator() + "§r " + message;
+//        }
 
         String[] args = message.split(" ");
 

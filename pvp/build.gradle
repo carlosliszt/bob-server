@@ -34,7 +34,7 @@ bukkit {
     name = 'PvP'
     main = 'com.minecraft.pvp.PvP'
     version = '1.0.0-' + gitVersion()
-    website = 'www.yolomc.com'
+    website = 'www.bobmc.com'
     description = 'PvP bukkit plugin based on core and core-bukkit.'
 }
 

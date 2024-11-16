@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -19,9 +19,12 @@ public class MySQL {
 
     public MySQL connect() {
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection("jdbc:mysql://" + properties.getHost() + ":" + properties.getPort() + "/" + properties.getDatabase() + "?user=" + properties.getUsername() + "&password=" + properties.getPassword() + "&autoReconnect=true&characterEncoding=utf8&useConfigs=maxPerformance&callableStmtCacheSize=400&useSSL=false");
         } catch (SQLException exception) {
             exception.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return this;
     }

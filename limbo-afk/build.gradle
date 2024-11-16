@@ -34,7 +34,7 @@ bukkit {
     name = 'Limbo'
     main = 'com.minecraft.limbo.Limbo'
     version = '1.0.0-' + gitVersion()
-    website = 'www.yolomc.com'
+    website = 'www.bobmc.com'
     description = 'Limbo bukkit plugin based on core, core-bukkit and third based on core-proxy.'
 }
 

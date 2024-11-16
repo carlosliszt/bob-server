@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -16,7 +16,7 @@ import java.util.Arrays;
 public enum ServerType {
 
     UNKNOWN("local", false, ServerCategory.UNKNOWN),
-    PROXY("YOLO", false, ServerCategory.UNKNOWN),
+    PROXY("BOB", false, ServerCategory.UNKNOWN),
     LIMBO_AFK("AFK", false, ServerCategory.LOBBY),
     HGMIX("hgmix", true, ServerCategory.HG),
     DOUBLEKIT("doublekit", true, ServerCategory.HG),

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -15,6 +15,7 @@ import java.util.Arrays;
 @Getter
 public enum Rank {
 
+    CARLOS(100, "Carlos", "Carlos", "carlos", Category.HEADSHIP, Tag.ROSA),
     DEVELOPER_ADMIN(20, "Developer Admin", "Developer", "6qx2d", Category.HEADSHIP, Tag.ADMINISTRATOR),
     OWNER_ADMIN(19, "Owner Admin", "Owner", "dms0l", Category.HEADSHIP, Tag.ADMINISTRATOR),
     ADMINISTRATOR(18, "Administrator", "Admin", "erv58", Category.ADMINISTRATION, Tag.ADMINISTRATOR),

@@ -15,7 +15,7 @@ public class Gladiator extends Lobby {
         Constants.setServerType(ServerType.GLADIATOR_LOBBY);
         Constants.setLobbyType(ServerType.DUELS_LOBBY);
 
-        setBossbar("§b§lGLADIATOR NO YOLOMC.COM");
+        setBossbar("§b§lGLADIATOR NO BOBMC.COM");
     }
 
     @Override

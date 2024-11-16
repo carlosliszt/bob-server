@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -21,7 +21,7 @@ public class Discord {
     private JDA JDA;
 
     public Discord start(String token) {
-        try {
+         try {
             JDA = JDABuilder.createDefault(token).setAutoReconnect(true).build();
             JDA.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
             JDA.getPresence().setPresence(Activity.playing(Constants.SERVER_STORE), true);

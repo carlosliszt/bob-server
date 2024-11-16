@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -16,7 +16,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 @Deprecated
 public class ScrimCommand implements ProxyInterface {
 
-    @Command(name = "scrim", aliases = {"yolinho", "miolo"}, platform = Platform.PLAYER)
+    @Command(name = "scrim", aliases = {"bobinho"}, platform = Platform.PLAYER)
     public void handleCommand(Context<ProxiedPlayer> context) {
         BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "play scrim");
     }

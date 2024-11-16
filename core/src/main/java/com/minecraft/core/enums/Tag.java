@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -13,6 +13,7 @@ import java.util.Arrays;
 @Getter
 public enum Tag {
 
+    ROSA(30, "0", "§d", false, "r0s4", "Rosa", "Pink"),
     ADMINISTRATOR(25, "A", "§4", false, "IzPLp", "Admin", "administrator"),
     PRIMARY_MOD(24, "B", "§5", false, "CYrov", "Mod+", "moderator+"),
     SECONDARY_MOD(23, "C", "§5", false, "dyOYO", "Mod", "moderator"),
@@ -29,7 +30,7 @@ public enum Tag {
     CHAMPION(12, "N", "§6", true, "c7x3b", "Champion", "Vencedor"),
     ELITE(11, "O", "§c", false, "m8AnE", "Elite"),
     BETA(10, "P", "§1", false, "DxmFd", "Beta"),
-    YOLO(9, "Q", "§2", true, "jSBMB", "Yolo"),
+    BOB(9, "Q", "§d", true, "jSBMB", "Bob"),
     CXC(8, "R", "§6", true, "3b28a", "CxC"),
     YEAR_2021(7, "S", "§b", true, "21g47", "2021"),
     NATAL(6, "T", "§c", true, "xma21", "Natal", "Christmas"),
@@ -64,7 +65,11 @@ public enum Tag {
     }
 
     public Rank getDefaultRank() {
-        return Rank.valueOf(this.name());
+        if(this == ROSA) {
+            return Rank.CARLOS;
+        } else {
+            return Rank.valueOf(this.name());
+        }
     }
 
     public boolean isBetween(Tag tag1, Tag tag2) {
@@ -98,7 +103,7 @@ public enum Tag {
     }
 
     public String getFormattedColor() {
-        if (this == STREAMER_PLUS || this == PRIMARY_MOD)
+        if (this == STREAMER_PLUS || this == PRIMARY_MOD || this == ROSA)
             return color + "§o";
         return color;
     }

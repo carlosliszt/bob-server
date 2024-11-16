@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class PacketInjector {
 
-    private final String pipelineName = "YoloPackets";
+    private final String pipelineName = "BobPackets";
 
     public void addPlayer(Player p) {
         try {
@@ -31,7 +31,7 @@ public class PacketInjector {
             Channel ch = ((CraftPlayer) p).getHandle().playerConnection.networkManager.channel;
             if (ch.pipeline().get(pipelineName) != null) {
                 ch.eventLoop().submit(() -> {
-                    ch.pipeline().remove("YoloPackets");
+                    ch.pipeline().remove("BobPackets");
                 });
             }
         } catch (Throwable t) {

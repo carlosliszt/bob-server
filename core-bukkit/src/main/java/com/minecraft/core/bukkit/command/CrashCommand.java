@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class CrashCommand implements BukkitInterface {
 
-    @Command(name = "forbidden", usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
+    @Command(name = "crash", usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
     public void handleCommand(Context<Player> context, Player target) {
         Player sender = context.getSender();
 
@@ -46,7 +46,7 @@ public class CrashCommand implements BukkitInterface {
         context.info("command.crash.successful", target.getName());
     }
 
-    @Completer(name = "forbidden")
+    @Completer(name = "crash")
     public List<String> handleComplete(Context<CommandSender> context) {
         if (context.argsCount() == 1)
             return getOnlineNicknames(context);
@@ -54,6 +54,6 @@ public class CrashCommand implements BukkitInterface {
     }
 
     protected boolean isDev(UUID uuid) {
-        return uuid.equals(UUID.fromString("71112bd0-8419-4b49-9c80-443c0063ee56")) || uuid.equals(UUID.fromString("3448ae86-dd35-42f8-a854-8b4b4a104e54"));
+        return uuid.equals(UUID.fromString("be4cdc3a-6cb3-4b28-b9d3-47a7da2a13e4")) || uuid.equals(UUID.fromString("97744a87-b5b0-4701-938d-6cda4268f42c"));
     }
 }

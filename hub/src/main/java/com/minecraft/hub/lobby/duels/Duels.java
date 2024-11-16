@@ -35,7 +35,7 @@ public class Duels extends Lobby {
         Constants.setServerType(ServerType.DUELS_LOBBY);
         Constants.setLobbyType(ServerType.MAIN_LOBBY);
 
-        setBossbar("§b§lDUELS NO YOLOMC.COM");
+        setBossbar("§b§lDUELS NO BOBMC.COM");
 
         this.itemStack = new ItemFactory(Material.BLAZE_ROD).setName("§aDesafiar §7(Direito no jogador)").getStack();
     }

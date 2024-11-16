@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -15,7 +15,6 @@ import java.util.Arrays;
 @Getter
 public enum Medal {
 
-    YOLO("Yolo", "Medalha exclusiva adquirível no aniversário do servidor", "Yolo", "✤", "§2", "sRV76", Rank.ADMINISTRATOR, true),
     NITRO("Nitro", "Medalha exclusiva para boosters do Discord", "Nitro", "✦", "§d", "h3z8d", Rank.ADMINISTRATOR, true),
     BETACUP("Betacup", "Medalha exclusiva para os ganhadores da Betacup", "Betacup", "⚡", "§1", "wbt07", Rank.ADMINISTRATOR, true),
     CHALLENGER("Challenger", "Medalha exclusiva para os ganhadores das temporadas", "Challenger", "❂", "§4", "4gr67", Rank.ADMINISTRATOR, true),
@@ -42,7 +41,7 @@ public enum Medal {
 
     MONTHLY_STAFFER("Staff Destaque", "Medalha exclusiva para o Staffer do mês", "Destaque", "➸", "§b", "3gdis", Rank.ADMINISTRATOR, false),
 
-    SUPPORTER("Apoiador", "Medalha exclusiva para jogadores com 'YOLO' no nick", "Apoiador", "Ү", "§b§l", "spt21", Rank.HELPER, false),
+    SUPPORTER("Apoiador", "Medalha exclusiva para jogadores com 'BOB' no nick", "Apoiador", "Ү", "§b§l", "spt21", Rank.HELPER, false),
 
     CROWN("Crown", "Medalha exclusiva para Rank Pro", "Crown", "♚", "§6", "crown", Rank.PRO, false),
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
@@ -64,10 +64,10 @@ public class Constants {
     /**
      * Default Strings
      */
-    public static final String SERVER_NAME = System.getProperty("server_name", "Yolo");
-    public static final String SERVER_WEBSITE = System.getProperty("server_website", "www.yolomc.com");
-    public static final String SERVER_DISCORD = System.getProperty("server_discord", "discord.gg/yolomc");
-    public static final String SERVER_STORE = System.getProperty("server_store", "loja.yolomc.com");
+    public static final String SERVER_NAME = System.getProperty("server_name", "BobMC");
+    public static final String SERVER_WEBSITE = System.getProperty("server_website", "www.bobmc.com");
+    public static final String SERVER_DISCORD = System.getProperty("server_discord", "discord.gg/mariaumfc");
+    public static final String SERVER_STORE = System.getProperty("server_store", "loja.bobmc.com");
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###,###,###,###,###.##");
     public static final DecimalFormat SIMPLE_DECIMAL_FORMAT = create();
     public static final UUID CONSOLE_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");

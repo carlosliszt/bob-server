@@ -34,7 +34,7 @@ bukkit {
     name = 'Arcade'
     main = 'com.minecraft.bedwars.Bedwars'
     version = '1.0.0-' + gitVersion()
-    website = 'www.yolomc.com'
+    website = 'www.bobmc.com'
     description = 'Arcade bukkit plugin based on core and core-bukkit.'
 }
 

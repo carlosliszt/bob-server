@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -308,7 +308,7 @@ public class AccountLoader implements Listener {
                     account.setDisplayName(customName);
                 } else account.getData(Columns.NICK).setData("...");
 
-                if (pendingConnection.isOnlineMode() && name.contains("YOLO")) {
+                if (pendingConnection.isOnlineMode() && name.contains("BOB")) {
                     account.giveMedal(Medal.SUPPORTER, -1, "[SERVER]");
                 } else account.removeMedal(Medal.SUPPORTER);
 

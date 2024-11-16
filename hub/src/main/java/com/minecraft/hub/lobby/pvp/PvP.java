@@ -22,7 +22,7 @@ public class PvP extends Lobby {
         Constants.setServerType(ServerType.PVP_LOBBY);
         Constants.setLobbyType(ServerType.MAIN_LOBBY);
 
-        setBossbar("§b§lPVP NO YOLOMC.COM");
+        setBossbar("§b§lPVP NO BOBMC.COM");
     }
 
     @Override

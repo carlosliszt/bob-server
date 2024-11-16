@@ -34,7 +34,7 @@ bukkit {
     name = 'Lobby'
     main = 'com.minecraft.lobby.Lobby'
     version = '1.0.0-' + gitVersion()
-    website = 'www.yolomc.com'
+    website = 'www.bobmc.com'
     description = 'Lobby bukkit plugin based on core and core-bukkit.'
 }
 

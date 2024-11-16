@@ -19,7 +19,7 @@ dependencies {
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
+    implementation 'mysql:mysql-connector-java:8.0.33'
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0' // Redis
     compileOnly group: 'com.mojang', name: 'authlib', version: '1.5.21'
 

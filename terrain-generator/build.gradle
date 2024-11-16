@@ -33,7 +33,7 @@ bukkit {
     name = 'Generator'
     main = 'com.minecraft.generator.Generator'
     version = '1.0.0-' + gitVersion()
-    website = 'www.yolomc.com'
+    website = 'www.bobmc.com'
     author = 'fress'
     depend = ['TerrainControl']
     load = 'STARTUP'

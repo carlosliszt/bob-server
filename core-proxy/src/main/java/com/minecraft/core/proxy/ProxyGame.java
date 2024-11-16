@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -94,7 +94,7 @@ public class ProxyGame extends Plugin {
 
             translationExecutor = new ProxyTranslationExecutor(new PropertiesStorageDataTranslation());
 
-            discord = new Discord().start("ODQ5MDYyNDMwMDc1NTE4OTg2.YLVtAg.dpktW90MVUZ6skXpiMZlWNplJ5A");
+            discord = new Discord().start("MTMwNTE5NDYwMzU0ODI0NjA1Nw.G-BIU4.PBP_RcRXT1SbzMvD2iiye9Ep8ZDZtqPaEs5cnY");
 
             proxyFrame = new ProxyFrame(this);
 
@@ -225,7 +225,7 @@ public class ProxyGame extends Plugin {
 
     public void enableBroadcast() {
         broadcasts.add("§eAltere seu idioma principal usando §b/language");
-        broadcasts.add("§eAcompanhe novidades em nosso Twitter §6@YoloMC_");
+        broadcasts.add("§eAcompanhe novidades em nosso Twitter §6@BobGames");
         broadcasts.add("§eAcompanhe suas estatísticas usando §b/stats");
         broadcasts.add("§eVenha fazer parte de nossa comunidade! Acesse nosso discord: §b" + Constants.SERVER_DISCORD);
         broadcasts.add("§eAltere sua experiência de jogo usando §b/prefs");

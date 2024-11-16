@@ -1,5 +1,5 @@
 /*
- * Copyright (C) YoloMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -84,7 +84,7 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
         this.world = Bukkit.getWorlds().get(0);
         this.world.setAutoSave(false);
 
-        this.spawn = new Location(this.world, 0.5, 70.8, 0.5, 0, 0);
+        this.spawn = new Location(this.world, 0, 62, -17, 0, 0);
 
         this.findSlimeBlocks();
 

@@ -29,7 +29,7 @@ public class Gladiator extends Game {
         stringList.add("");
         stringList.add("§fPing: §e" + user.getPlayer().spigot().getPing() + "ms");
         stringList.add("");
-        stringList.add("§eyolomc.com");
+        stringList.add("§ebobmc.com");
 
         scoreboard.updateLines(stringList);
     }

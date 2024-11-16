@@ -35,7 +35,7 @@ bukkit {
     name = 'Auth'
     main = 'com.minecraft.auth.Auth'
     version = '1.0.0-' + gitVersion()
-    website = 'www.yolomc.com'
+    website = 'www.bobmc.com'
     description = 'Auth bukkit plugin based on core, core-bukkit and third based on core-proxy.'
 }
 
