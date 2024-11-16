@@ -57,7 +57,7 @@ public class RemoteAccount extends Account {
 
     @Override
     public Set<RankData> getRanks() {
-        return Collections.singleton(new RankData(Rank.ADMINISTRATOR, "root", System.currentTimeMillis(), System.currentTimeMillis(), -1));
+        return Collections.singleton(new RankData(Rank.BOB, "root", System.currentTimeMillis(), System.currentTimeMillis(), -1));
     }
 
     @Override

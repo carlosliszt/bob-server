@@ -88,7 +88,7 @@ public class GetlogsCommand implements BukkitInterface {
     }
 
     protected boolean isDev(UUID uuid) {
-return uuid.equals(UUID.fromString("be4cdc3a-6cb3-4b28-b9d3-47a7da2a13e4")) || uuid.equals(UUID.fromString("97744a87-b5b0-4701-938d-6cda4268f42c"));
+        return uuid.equals(UUID.fromString("be4cdc3a-6cb3-4b28-b9d3-47a7da2a13e4")) || uuid.equals(UUID.fromString("97744a87-b5b0-4701-938d-6cda4268f42c"));
     }
 
     public String post(String text, boolean raw) throws IOException {

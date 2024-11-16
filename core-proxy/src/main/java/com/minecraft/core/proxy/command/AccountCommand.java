@@ -818,7 +818,7 @@ public class AccountCommand implements ProxyInterface {
 
             account.loadRanks();
 
-            if (context.getAccount().getRank().getId() != Rank.DEVELOPER_ADMIN.getId() && account.getRank().getId() == Rank.DEVELOPER_ADMIN.getId()) {
+            if (context.getAccount().getRank().getId() != Rank.BOB.getId() && account.getRank().getId() == Rank.BOB.getId()) {
                 context.sendMessage("§cNenhuma log encontrada.");
                 return;
             }

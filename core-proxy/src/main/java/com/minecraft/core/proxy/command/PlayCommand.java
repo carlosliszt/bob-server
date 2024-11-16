@@ -10,6 +10,7 @@ import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
+import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerType;
@@ -52,7 +53,11 @@ public class PlayCommand implements ProxyInterface {
             ServerInfo proxyServer = ProxyServer.getInstance().getServerInfo(server.getName());
 
             if (context.getSender().getServer().getInfo().equals(proxyServer)) {
-                context.info("already_connected");
+                if(context.getAccount().getRank().getId() > Rank.ADMINISTRATOR.getId()) {
+                    context.info("already_connected_admin");
+                } else {
+                    context.info("already_connected");
+                }
                 return;
             }
 
