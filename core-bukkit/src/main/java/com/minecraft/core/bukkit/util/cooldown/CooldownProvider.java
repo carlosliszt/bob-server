@@ -14,6 +14,7 @@ import com.minecraft.core.bukkit.event.cooldown.CooldownFinishEvent;
 import com.minecraft.core.bukkit.event.cooldown.CooldownStartEvent;
 import com.minecraft.core.bukkit.event.cooldown.CooldownStopEvent;
 import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
+import com.minecraft.core.bukkit.util.actionbar.ActionBar;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
 import com.minecraft.core.bukkit.util.listener.DynamicListener;
 import com.minecraft.core.translation.Language;
@@ -233,7 +234,7 @@ public class CooldownProvider implements Listener {
             if (found != null) {
                 display(player, found);
             } else if (list.isEmpty()) {
-                player.sendActionBar(" ");
+                ActionBar.sendActionBar(player, " ");
             }
             sortedList.clear();
         }
@@ -258,7 +259,7 @@ public class CooldownProvider implements Listener {
 
             String seconds = Account.fetch(player.getUniqueId()).getLanguage() == Language.PORTUGUESE ? "segundos" : "seconds";
 
-            player.sendActionBar("§f" + cooldown.getDisplayName() + " " + bar + " §f" + decimalFormat.format(cooldown.getRemaining()) + " " + seconds);
+            ActionBar.sendActionBar(player, "§f" + cooldown.getDisplayName() + " " + bar + " §f" + decimalFormat.format(cooldown.getRemaining()) + " " + seconds);
         }
     }
 }

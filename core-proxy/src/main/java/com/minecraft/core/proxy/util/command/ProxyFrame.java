@@ -26,7 +26,6 @@ import com.minecraft.core.proxy.util.command.executor.ProxyCommandExecutor;
 import com.minecraft.core.proxy.util.command.executor.ProxyCompleterExecutor;
 import com.minecraft.core.punish.PunishCategory;
 import com.minecraft.core.punish.PunishType;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;

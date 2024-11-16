@@ -10,7 +10,6 @@ import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.ProxyGame;
-import com.yolo.dev.Firewall;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -30,7 +29,6 @@ public class ProxyTicksPerSecondCommand {
         context.sendMessage(ChatColor.GREEN + "Online: " + ChatColor.WHITE + ProxyServer.getInstance().getOnlineCount() + "/" + ProxyServer.getInstance().getConfig().getPlayerLimit());
         context.sendMessage(ChatColor.GREEN + "Memory: " + ChatColor.WHITE + usedMemory + "/" + allocatedMemory + " MB");
         context.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.WHITE + formatDiff(ProxyGame.getInstance().getStartTime()));
-        context.sendMessage(ChatColor.GREEN + "Blacklisted addresses: " + ChatColor.WHITE + Firewall.getInstance().getFirewall().size());
         context.sendMessage("" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + "----------------------------------------------");
     }
 

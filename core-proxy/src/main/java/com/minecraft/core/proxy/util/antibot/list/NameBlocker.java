@@ -1,7 +1,6 @@
 package com.minecraft.core.proxy.util.antibot.list;
 
 import com.minecraft.core.proxy.util.antibot.AntiBotModule;
-import com.yolo.dev.Firewall;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -40,14 +39,12 @@ public class NameBlocker extends AntiBotModule {
         cachedConnection.setExpireAt(System.currentTimeMillis() + 1200);
 
         if (MCSPAM_PATTERN.matcher(connectionName).find()) {
-            Firewall.getInstance().addFirewall(connection.getSocketAddress());
             return true;
         }
 
 
         for (String filter : filter) {
             if (connectionName.toLowerCase().contains(filter)) {
-                Firewall.getInstance().addFirewall(connection.getSocketAddress());
                 return true;
             }
         }

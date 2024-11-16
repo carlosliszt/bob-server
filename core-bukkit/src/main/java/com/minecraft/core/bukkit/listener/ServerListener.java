@@ -55,7 +55,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import org.imanity.imanityspigot.knockback.Knockback;
+import dev.imanity.knockback.api.Knockback;
 
 import java.util.Arrays;
 import java.util.List;

@@ -24,7 +24,7 @@ public class Auth extends BukkitGame {
     public void onLoad() {
         unsafe(this);
         Constants.setRedis(new Redis());
-        setVisible(true);
+        //setVisible(true);
     }
 
     @Override

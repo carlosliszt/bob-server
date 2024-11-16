@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.connection.LoginResult;
+import net.md_5.bungee.protocol.Property;
 
 import java.lang.reflect.Field;
 
@@ -27,11 +28,11 @@ public class SkinChanger {
             loginProfile = initialHandler.getLoginProfile();
         }
 
-        LoginResult.Property property = new LoginResult.Property("textures", value, signature);
-        loginProfile.setProperties(new LoginResult.Property[]{property});
+        Property property = new Property("textures", value, signature);
+        loginProfile.setProperties(new Property[]{property});
     }
 
-    public LoginResult.Property getSkin(PendingConnection pendingConnection) {
+    public Property getSkin(PendingConnection pendingConnection) {
         InitialHandler initialHandler = (InitialHandler) pendingConnection;
         return initialHandler.getLoginProfile().getProperties()[0];
     }
@@ -40,7 +41,7 @@ public class SkinChanger {
         try {
             Field field = initialHandler.getClass().getDeclaredField("loginProfile");
             field.setAccessible(true);
-            field.set(initialHandler, new LoginResult(pendingConnection.getUUID(), pendingConnection.getName(), new LoginResult.Property[0]));
+            field.set(initialHandler, new LoginResult(pendingConnection.getUUID(), pendingConnection.getName(), new Property[0]));
         } catch (Exception e) {
             e.printStackTrace();
         }

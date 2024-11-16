@@ -49,11 +49,11 @@ public class ReconnectBridge extends DownstreamBridge {
     }
 
     public void handle(Kick kick) {
-        String kickMessage = ChatColor.stripColor(BaseComponent.toLegacyText(ComponentSerializer.parse(kick.getMessage())));
+        String kickMessage = ChatColor.stripColor(BaseComponent.toLegacyText(kick.getMessage()));
         if (kickMessage.equals("O servidor em que você estava não está mais disponível.") || kickMessage.equals("O servidor foi fechado") || kickMessage.equals("Server closed")) {
             reconnect();
         } else {
-            this.user.disconnect0(ComponentSerializer.parse(kick.getMessage()));
+            this.user.disconnect0(kick.getMessage());
         }
         this.server.setObsolete(true);
         throw CancelSendSignal.INSTANCE;

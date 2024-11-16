@@ -47,9 +47,3 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-shadowJar {
-    dependencies {
-        include(project(':core'))
-    }
-    archiveClassifier = null
-}

@@ -4,6 +4,7 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.actionbar.ActionBar;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.database.enums.Columns;
@@ -199,7 +200,7 @@ public class UserListeners implements Listener, BukkitInterface {
         cageTask.run();
 
         cooldownProvider.removeCooldown(user.getPlayer(), user.getPlayer().getWorld().getUID().toString());
-        user.getPlayer().sendActionBar(" ");
+        ActionBar.sendActionBar(user.getPlayer(), " ");
 
         if (game.isCountStats())
             user.getAccount().addInt(1, game.getType().getPoints());
@@ -250,7 +251,7 @@ public class UserListeners implements Listener, BukkitInterface {
         player.getOpenInventory().getTopInventory().clear();
 
         cooldownProvider.removeCooldown(player, player.getWorld().getUID().toString());
-        player.sendActionBar(" ");
+        ActionBar.sendActionBar(player, " ");
 
         killed.giveItems(team);
         player.playSound(player.getLocation(), Sound.HURT_FLESH, 3.0F, 3.0F);

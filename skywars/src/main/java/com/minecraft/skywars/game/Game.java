@@ -4,6 +4,7 @@ import com.minecraft.core.bukkit.server.skywars.GameMode;
 import com.minecraft.core.bukkit.server.skywars.GameStage;
 import com.minecraft.core.bukkit.server.skywars.GameType;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.actionbar.ActionBar;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public abstract class Game implements BukkitInterface {
     }
 
     public void sendActionBar(final String actionBar) {
-        this.world.getPlayers().forEach(player -> player.sendActionBar(actionBar));
+        this.world.getPlayers().forEach(player -> ActionBar.sendActionBar(player, actionBar));
     }
 
     public void sendTitle(final Title title) {

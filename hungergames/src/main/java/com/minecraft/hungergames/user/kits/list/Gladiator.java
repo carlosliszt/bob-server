@@ -35,7 +35,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.LiquidTransformEvent;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -151,12 +151,12 @@ public class Gladiator extends Kit {
     private boolean disableObsidian = false;
 
     @EventHandler
-    public void onGladiatorObsidian(LiquidTransformEvent event) {
-
-        if (!disableObsidian)
+    public void onGladiatorObsidian(BlockFormEvent event) {
+        if (!disableObsidian) {
             return;
+        }
 
-        if (event.getBlock().getY() > 128 && event.isObsidian()) {
+        if (event.getBlock().getY() > 128 && event.getNewState().getType() == Material.OBSIDIAN) {
             event.setCancelled(true);
             event.getBlock().setType(Material.COBBLESTONE);
         }

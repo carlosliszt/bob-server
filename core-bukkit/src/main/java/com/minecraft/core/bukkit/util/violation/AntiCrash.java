@@ -23,7 +23,10 @@ import org.bukkit.event.inventory.InventoryType;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class AntiCrash implements BukkitInterface {
@@ -32,6 +35,10 @@ public class AntiCrash implements BukkitInterface {
     @Setter
     private long lastOpen;
     private long lastTabComplete;
+
+    private static final Map<UUID, Long> lastTeleportTime = new HashMap<>();
+    private static final long TELEPORT_COOLDOWN = 2000; // 2 seconds
+
 
     public AntiCrash(Player player) {
         this.player = player;
@@ -149,9 +156,14 @@ public class AntiCrash implements BukkitInterface {
                 return new ViolationFeedback(packetName, "Client is trying to send NaN position packet", false, true);
             }
 
-            if(!((CraftPlayer) player).getHandle().playerConnection.isJustTeleported()) {
+            if (!lastTeleportTime.containsKey(player.getUniqueId()) ||
+                    System.currentTimeMillis() - lastTeleportTime.get(player.getUniqueId()) > TELEPORT_COOLDOWN) {
+
                 if (location.distance(new Location(location.getWorld(), x, y, z)) > 50) {
-                    sync(() -> player.teleport(location));
+                    sync(() -> {
+                        player.teleport(location);
+                        lastTeleportTime.put(player.getUniqueId(), System.currentTimeMillis());
+                    });
                     return new ViolationFeedback(packetName, "Client is trying to move between far locations", true, false);
                 }
             }
@@ -186,9 +198,14 @@ public class AntiCrash implements BukkitInterface {
                 return new ViolationFeedback(packetName, "Too high position", false, true);
             }
 
-            if(!((CraftPlayer) player).getHandle().playerConnection.isJustTeleported()) {
+            if (!lastTeleportTime.containsKey(player.getUniqueId()) ||
+                    System.currentTimeMillis() - lastTeleportTime.get(player.getUniqueId()) > TELEPORT_COOLDOWN) {
+
                 if (location.distance(new Location(location.getWorld(), x, y, z)) > 50) {
-                    sync(() -> player.teleport(location));
+                    sync(() -> {
+                        player.teleport(location);
+                        lastTeleportTime.put(player.getUniqueId(), System.currentTimeMillis()); // Update last teleport time
+                    });
                     return new ViolationFeedback(packetName, "Client is trying to move between far locations", true, false);
                 }
             }

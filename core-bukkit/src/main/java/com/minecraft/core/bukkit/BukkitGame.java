@@ -38,14 +38,13 @@ import com.minecraft.core.translation.PropertiesStorageDataTranslation;
 import com.minecraft.core.translation.TranslationExecutor;
 import com.minecraft.core.util.ranking.RankingFactory;
 import com.minecraft.core.util.updater.PluginUpdater;
+import dev.imanity.knockback.api.KnockbackService;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.github.paperspigot.PaperSpigotConfig;
-import org.imanity.imanityspigot.ImanitySpigot;
-import org.imanity.imanityspigot.knockback.KnockbackService;
 
 import java.io.File;
 
@@ -84,7 +83,7 @@ public class BukkitGame extends JavaPlugin {
         Constants.setMySQL(new MySQL(MySQLProperties.load(new File(getSQLDirectory(), "mysql.json"))).connect());
         Constants.setRedis(new Redis());
 
-        setVisible(true);
+        //setVisible(true);
     }
 
     @Override

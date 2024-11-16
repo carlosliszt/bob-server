@@ -33,7 +33,6 @@ import com.minecraft.core.util.DateUtils;
 import com.minecraft.core.util.geodata.AddressData;
 import com.minecraft.core.util.geodata.DataResolver;
 import com.minecraft.core.util.skin.Skin;
-import com.yolo.dev.Firewall;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -45,6 +44,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
+import net.md_5.bungee.protocol.Property;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +128,6 @@ public class AccountLoader implements Listener {
                 event.setCancelled(true);
                 event.setCancelReason(TextComponent.fromLegacyText("§cVocê está tentando conectar através de um país não permitido."));
                 event.completeIntent(ProxyGame.getInstance());
-                Firewall.getInstance().addFirewall(pendingConnection.getSocketAddress());
                 return;
             }
 
@@ -237,7 +236,7 @@ public class AccountLoader implements Listener {
 
                     if (skinData.getSource() == SkinData.Source.UNDEFINED) {
 
-                        LoginResult.Property property = SkinChanger.getInstance().getSkin(pendingConnection);
+                        Property property = SkinChanger.getInstance().getSkin(pendingConnection);
 
                         if (property != null) {
                             skinData.setSource(SkinData.Source.ACCOUNT);
@@ -252,7 +251,7 @@ public class AccountLoader implements Listener {
                         }
                     } else if (skinData.getSource() == SkinData.Source.ACCOUNT) {
 
-                        LoginResult.Property property = SkinChanger.getInstance().getSkin(pendingConnection);
+                        Property property = SkinChanger.getInstance().getSkin(pendingConnection);
 
                         if (!property.getValue().equals(skinData.getValue())) {
 
