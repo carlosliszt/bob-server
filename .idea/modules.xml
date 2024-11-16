@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/arcade-duels/server-backend.arcade-duels.main.iml" filepath="$PROJECT_DIR$/.idea/modules/arcade-duels/server-backend.arcade-duels.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/arcade-pvp/server-backend.arcade-pvp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/arcade-pvp/server-backend.arcade-pvp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/auth/server-backend.auth.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auth/server-backend.auth.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bedwars/server-backend.bedwars.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bedwars/server-backend.bedwars.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-bukkit/server-backend.core-bukkit.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core-bukkit/server-backend.core-bukkit.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-proxy/server-backend.core-proxy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core-proxy/server-backend.core-proxy.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/server-backend.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/server-backend.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/duels/server-backend.duels.main.iml" filepath="$PROJECT_DIR$/.idea/modules/duels/server-backend.duels.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hub/server-backend.hub.main.iml" filepath="$PROJECT_DIR$/.idea/modules/hub/server-backend.hub.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hungergames/server-backend.hungergames.main.iml" filepath="$PROJECT_DIR$/.idea/modules/hungergames/server-backend.hungergames.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/limbo-afk/server-backend.limbo-afk.main.iml" filepath="$PROJECT_DIR$/.idea/modules/limbo-afk/server-backend.limbo-afk.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lobby/server-backend.lobby.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lobby/server-backend.lobby.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pvp/server-backend.pvp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/pvp/server-backend.pvp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/skywars/server-backend.skywars.main.iml" filepath="$PROJECT_DIR$/.idea/modules/skywars/server-backend.skywars.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/terrain-generator/server-backend.terrain-generator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/terrain-generator/server-backend.terrain-generator.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/thebridge/server-backend.thebridge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/thebridge/server-backend.thebridge.main.iml" />
+    </modules>
+  </component>
+</project>

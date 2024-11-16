@@ -15,7 +15,7 @@ import java.util.Arrays;
 @Getter
 public enum Rank {
 
-    CARLOS(100, "Carlos", "Carlos", "carlos", Category.HEADSHIP, Tag.ROSA),
+    BOB(100, "Bob", "Bob", "bob", Category.HEADSHIP, Tag.ROSA),
     DEVELOPER_ADMIN(20, "Developer Admin", "Developer", "6qx2d", Category.HEADSHIP, Tag.ADMINISTRATOR),
     OWNER_ADMIN(19, "Owner Admin", "Owner", "dms0l", Category.HEADSHIP, Tag.ADMINISTRATOR),
     ADMINISTRATOR(18, "Administrator", "Admin", "erv58", Category.ADMINISTRATION, Tag.ADMINISTRATOR),

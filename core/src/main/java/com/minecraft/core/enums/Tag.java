@@ -66,7 +66,7 @@ public enum Tag {
 
     public Rank getDefaultRank() {
         if(this == ROSA) {
-            return Rank.CARLOS;
+            return Rank.BOB;
         } else {
             return Rank.valueOf(this.name());
         }

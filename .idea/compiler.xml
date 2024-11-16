@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.22/9c08ea24c6eb714e2d6170e8122c069a0ba9aacf/lombok-1.18.22.jar" />
+        </processorPath>
+        <module name="server-backend.arcade-duels.main" />
+        <module name="server-backend.core-proxy.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.8/448003bc1b234aac04b58e27d7755c12c3ec4236/lombok-1.18.8.jar" />
+        </processorPath>
+        <module name="server-backend.skywars.main" />
+        <module name="server-backend.hungergames.main" />
+        <module name="server-backend.pvp.main" />
+        <module name="server-backend.arcade-pvp.main" />
+        <module name="server-backend.limbo-afk.main" />
+        <module name="server-backend.hub.main" />
+        <module name="server-backend.duels.main" />
+        <module name="server-backend.lobby.main" />
+        <module name="server-backend.auth.main" />
+        <module name="server-backend.bedwars.main" />
+        <module name="server-backend.thebridge.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.20/18bcea7d5df4d49227b4a0743a536208ce4825bb/lombok-1.18.20.jar" />
+        </processorPath>
+        <module name="server-backend.core.main" />
+        <module name="server-backend.core-bukkit.main" />
+        <module name="server-backend.terrain-generator.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="11" />
+  </component>
+</project>
