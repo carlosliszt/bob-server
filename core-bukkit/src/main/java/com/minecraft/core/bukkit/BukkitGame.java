@@ -28,6 +28,7 @@ import com.minecraft.core.bukkit.util.selector.InventoryService;
 import com.minecraft.core.bukkit.util.variable.loader.VariableLoader;
 import com.minecraft.core.bukkit.util.whitelist.Whitelist;
 import com.minecraft.core.bukkit.util.worldedit.WorldEditProvider;
+import com.minecraft.core.database.data.DataStorage;
 import com.minecraft.core.database.mysql.MySQL;
 import com.minecraft.core.database.mysql.MySQLProperties;
 import com.minecraft.core.database.redis.Redis;
@@ -92,7 +93,7 @@ public class BukkitGame extends JavaPlugin {
         if (pluginUpdater.isUpdated())
             return;
 
-        /* DataStorage.createTables(); */
+         DataStorage.createTables();
         // Remove the comment when this is necessary, we will avoid unnecessary SQL queries
 
         Constants.setServerStorage(new BukkitServerStorage(ServerType.MAIN_LOBBY));
@@ -117,7 +118,7 @@ public class BukkitGame extends JavaPlugin {
                         "arrombado", "macaco", "gorila", "carniça", "flame", "mush", "hylex", "doente", "vsfd", "vadia", "vagabundo", "vagabunda",
                         "vsf", "fodase", "nerdola", "nerd", "retardado", "viado", "bixa", "corno", "chifrudo", "doente", "mongol", "nazismo", "ku klux klan", "kukluxklan");
 
-        bukkitFrame.registerCommands(new StatisticsCommand(), new TpsCommand(), new ForceskinCommand(), new ReportsCommand(), new ArcadeDevCommand(), new ExportInventoryCommand(), new ParticleCommand(), new PckgstatCommand(), new GetlogsCommand(), new PacketFilterCommand(), new AlertCommand(), new PreferencesCommand(), new CensorCheckCommand(), new TeleportallCommand(), new ClanTagCommand(), new MedalCommand(), new LobbyCommand(), new VariableCommand(), new ChatCommand(), new StafflogCommand(), new GetlocationCommand(), new VanishCommand(), new WhitelistCommand(), new SpeedCommand(), new LanguageCommand(), new ProfileCommand(), new CrashCommand(), new SudoCommand(), new SmiteCommand(), new WhisperCommand(), new FollowCommand(), new EffectsCommand(), new InventoryCommand(), new LoopCommand(), new NickCommand(), new TagCommand(), new PrefixtypeCommand(), new WorldEditCommand(), new TeleportCommand(), new GamemodeCommand(), new MydragonCommand());
+        bukkitFrame.registerCommands(new StatisticsCommand(), new NickBookCommand(), new TpsCommand(), new ForceskinCommand(), new ReportsCommand(), new ArcadeDevCommand(), new ExportInventoryCommand(), new ParticleCommand(), new PckgstatCommand(), new GetlogsCommand(), new PacketFilterCommand(), new AlertCommand(), new PreferencesCommand(), new CensorCheckCommand(), new TeleportallCommand(), new ClanTagCommand(), new MedalCommand(), new LobbyCommand(), new VariableCommand(), new ChatCommand(), new StafflogCommand(), new GetlocationCommand(), new VanishCommand(), new WhitelistCommand(), new SpeedCommand(), new LanguageCommand(), new ProfileCommand(), new CrashCommand(), new SudoCommand(), new SmiteCommand(), new WhisperCommand(), new FollowCommand(), new EffectsCommand(), new InventoryCommand(), new LoopCommand(), new NickCommand(), new TagCommand(), new PrefixtypeCommand(), new WorldEditCommand(), new TeleportCommand(), new GamemodeCommand(), new MydragonCommand());
 
         PluginManager pluginManager = getServer().getPluginManager();
 
@@ -133,7 +134,7 @@ public class BukkitGame extends JavaPlugin {
         messenger.registerOutgoingPluginChannel(this, "AntiCheat");
         messenger.registerOutgoingPluginChannel(this, "Redirection");
 
-        getServer().getScheduler().runTaskAsynchronously(this, redisPubSub = new RedisPubSub(new BukkitRedisPubSub(), Redis.CLAN_INTEGRATION_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
+        getServer().getScheduler().runTaskAsynchronously(this, redisPubSub = new RedisPubSub(new BukkitRedisPubSub(), Redis.CLAN_INTEGRATION_CHANNEL, Redis.NICK_ADD_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.NICK_ADD_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
 
         new BukkitServerTicker().start(this);
 

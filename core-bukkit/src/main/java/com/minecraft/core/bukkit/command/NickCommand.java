@@ -13,6 +13,7 @@ import com.minecraft.core.account.fields.Flag;
 import com.minecraft.core.bukkit.BukkitGame;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.book.Book;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
 import com.minecraft.core.bukkit.util.disguise.PlayerDisguise;
@@ -22,11 +23,14 @@ import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.message.MessageType;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Ranking;
 import com.minecraft.core.enums.Tag;
+import com.minecraft.core.util.StringTimeUtils;
+import com.minecraft.core.util.communication.NicknameUpdateData;
 import com.minecraft.core.util.ranking.RankingFactory;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -39,15 +43,18 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class NickCommand implements BukkitInterface {
 
-    private static void accept(Context<Player> context, String nickname, boolean randomizeSkin, boolean checkMojang) {
+    private static final String[] prefix = {"", "y", "_", "u", "i", "__", "e", "z", "x", "Iam", "chorapro"};
+    private static final String[] suffix = {"uwu", "", "owo", "__", "_", "2012", "BR", "34", "bw", "1337", "XD"};
+    private static final String[] middle = {"Mariaum", "mariaum", "maria1", "coelhoh", "coelho",
+            "neymar", "alessia", "drone", "aleeessia", "alexa", "fest", "festinha", "alan", "faasty", "Neymar", "lucas", "naruto", "Naruto", "Sasuke", "Matheuszinho", "matheuszinho", "matheus", "bizarro", "ricardinho", "biajoaninha", "bob", "wal"};
+
+    private static void accept(String subcommand, Context<Player> context, String nickname, boolean randomizeSkin, boolean checkMojang) {
         Player sender = context.getSender();
         Account account = context.getAccount();
 
@@ -106,6 +113,8 @@ public class NickCommand implements BukkitInterface {
                 account.getData(Columns.SKIN).setData(skinData.toJson());
             }
 
+
+
             PlayerDisguise.disguise(sender, nickname, property, true);
             PlayerUpdateTablistEvent event = new PlayerUpdateTablistEvent(account, Tag.MEMBER, account.getProperty("account_prefix_type").getAs(PrefixType.class));
             Bukkit.getPluginManager().callEvent(event);
@@ -113,14 +122,49 @@ public class NickCommand implements BukkitInterface {
             CooldownProvider.getGenericInstance().addCooldown(sender.getUniqueId(), "command.nick", 15, false);
             account.getData(Columns.NICK).setData(nickname);
             account.getData(Columns.TAG).setData(Tag.MEMBER.getUniqueCode());
+            account.getData(Columns.LAST_NICK).setData(nickname);
+
             Executor.async(() -> {
+                if (!subcommand.equalsIgnoreCase("last")) {
+                    try {
+                        account.loadNicks();
+                        long currentTime = System.currentTimeMillis();
+                        long expiryTime = StringTimeUtils.parseDateDiff("1d", true);
+                        account.addNick(nickname, currentTime, expiryTime);
+
+                        account.getData(Columns.NICK_OBJECTS).setChanged(true);
+                        account.getDataStorage().saveColumn(Columns.NICK_OBJECTS);
+
+                        account.getDataStorage().saveTable(Tables.ACCOUNT, Tables.OTHER);
+
+                        NicknameUpdateData data = new NicknameUpdateData(account.getUniqueId(), nickname, System.currentTimeMillis(), StringTimeUtils.parseDateDiff("1d", true));
+                        try (Jedis redis = Constants.getRedis().getResource()) {
+                            redis.publish(Redis.NICK_ADD_CHANNEL, Constants.GSON.toJson(data));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 try (Jedis redis = Constants.getRedis().getResource()) {
                     redis.publish(Redis.NICK_DISGUISE_CHANNEL, account.getUniqueId() + ":" + nickname);
-                    if (property != null)
+                    if (property != null) {
                         redis.publish(Redis.SKIN_CHANGE_CHANNEL, account.getUniqueId() + ":" + property.getValue() + ":" + property.getSignature());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                account.getDataStorage().saveColumnsFromSameTable(Columns.NICK, Columns.TAG, Columns.SKIN);
+
+                try {
+                    account.getDataStorage().saveColumnsFromSameTable(Columns.NICK, Columns.LAST_NICK, Columns.TAG, Columns.SKIN);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
+
         });
     }
 
@@ -138,12 +182,24 @@ public class NickCommand implements BukkitInterface {
         Player sender = context.getSender();
         Account account = context.getAccount();
 
+        boolean hasReachedLimited = account.getRank() == Rank.ELITE && account.getUnexpiredNicks().size() >= 3;
+
         if (args.length == 0) {
-            sender.sendMessage("§cUso do /nick:");
-            sender.sendMessage("§c* /nick <nickname>");
-            sender.sendMessage("§c* /nick random");
-            sender.sendMessage("§c* /nick reset");
-            sender.sendMessage("§c* /nick skin <skin>");
+            Book book = new Book("Nick", "hateinblue");
+            Book.PageBuilder p1 = new Book.PageBuilder(book);
+            p1.add("            §l§nNICK").build();
+            p1.add("\n\n").build();
+            p1.add("Escolha um disfarce para usar no servidor.").build();
+            p1.add("\n\n").build();
+            p1.add("§lATUAL§r: " + (context.getAccount().getData(Columns.NICK).getAsString().equals("...") ? "(Nenhum)" : context.getAccount().getData(Columns.NICK).getAsString())).build();
+            p1.add("\n§lLIMITE: §r" + (context.getAccount().getRank().ordinal() <= Rank.PARTNER.ordinal() ? "§oIlimitado" : (hasReachedLimited ? "§7§m(3/3)" : "(" + account.getUnexpiredNicks().size() + "/3)"))).build();
+            p1.add("\n\n").build();
+            p1.add("        §2§lESCOLHER").hoverEvent(Book.HoverAction.Show_Text, "§aClique para escolher um disfarce.").clickEvent(Book.ClickAction.Run_Command, "/nickbook start").build();
+
+            if (context.getAccount().getData(Columns.NICK).getAsString() != "...")
+                p1.add("\n        §4§lREMOVER").hoverEvent(Book.HoverAction.Show_Text, "§cClique para remover o disfarce.").clickEvent(Book.ClickAction.Run_Command, "/nick reset").build();
+            p1.build();
+            Book.open(context.getSender(), book.build(), false);
             return;
         }
 
@@ -168,6 +224,10 @@ public class NickCommand implements BukkitInterface {
     @AllArgsConstructor
     enum Argument {
 
+        LAST("last", Rank.ELITE, (account, context) -> {
+            accept("last", context, account.getData(Columns.LAST_NICK).getAsString(), true, false);
+        }),
+
         RANDOM("random", Rank.ELITE, (account, context) -> {
 
             if (account.getFlag(Flag.NICK)) {
@@ -175,28 +235,17 @@ public class NickCommand implements BukkitInterface {
                 return;
             }
 
-            final int maxLength = 13;
-            final String sql = "SELECT `username` FROM `accounts` WHERE `premium`='true' AND`banned`='true' AND `username` IS NOT NULL AND LENGTH(`username`) >= 3 AND LENGTH(`username`) <= " + maxLength + " AND (username != \"...\") ORDER BY RAND() LIMIT 1";
+            boolean hasReachedLimited = account.getRank() == Rank.ELITE && account.getUnexpiredNicks().size() >= 3;
+
+            if(hasReachedLimited) {
+                context.sendMessage("§cVocê já usou todos os seus disfarces hoje.");
+                return;
+            }
+
             Executor.async(() -> {
-                try {
-                    PreparedStatement preparedStatement = Constants.getMySQL().getConnection().prepareStatement(sql);
-                    ResultSet resultSet = preparedStatement.executeQuery();
+                String nickname = generateNick();
+                Executor.async(() -> accept("random", context, nickname, true, false));
 
-                    if (!resultSet.next()) {
-                        context.info("unexpected_error");
-                        preparedStatement.close();
-                        resultSet.close();
-                        return;
-                    }
-
-                    String nickname = resultSet.getString(1);
-                    Executor.async(() -> accept(context, nickname, true, false));
-                    preparedStatement.close();
-                    resultSet.close();
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                    context.info("unexpected_error");
-                }
             });
         }),
 
@@ -326,14 +375,14 @@ public class NickCommand implements BukkitInterface {
             });
         }),
 
-        DEFAULT(null, Rank.ELITE, (account, context) -> {
+        DEFAULT(null, Rank.PARTNER, (account, context) -> {
 
             if (account.getFlag(Flag.NICK) || account.getFlag(Flag.NICK_CHOOSE)) {
                 context.info("flag.locked");
                 return;
             }
 
-            Executor.async(() -> accept(context, context.getArg(0), false, true));
+            Executor.async(() -> accept("none", context, context.getArg(0), false, true));
         });
 
         private final String arg;
@@ -356,5 +405,18 @@ public class NickCommand implements BukkitInterface {
 
         void execute(Account account, Context<Player> context);
 
+    }
+
+    public static String generateNick() {
+        StringBuilder s = new StringBuilder();
+        Random r = new Random();
+
+        String p = prefix[r.nextInt(prefix.length)];
+        String m = middle[r.nextInt(middle.length)];
+        String ss = suffix[r.nextInt(suffix.length)];
+
+        s.append(p).append(m).append(ss);
+
+        return s.substring(0, Math.min(s.length(), 16));
     }
 }

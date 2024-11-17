@@ -58,6 +58,9 @@ public class AddressData {
     }
 
     public static AddressData resolve(String address, JsonObject jsonObject) {
+        if ("127.0.0.1".equals(address) || "localhost".equalsIgnoreCase(address)) {
+            return new AddressData(address, true, false, "localhost", "...", "...", "...", 0);
+        }
 
         String organization = jsonObject.has("asn") ? jsonObject.get("asn").getAsString() : "...";
         String city = jsonObject.has("city") ? jsonObject.get("city").getAsString() : "...";

@@ -33,11 +33,11 @@ bukkit {
     name = 'Generator'
     main = 'com.minecraft.generator.Generator'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    author = 'fress'
+    
+    author = 'hateinblue'
     depend = ['TerrainControl']
     load = 'STARTUP'
-    description = 'Terrain Generator bukkit plugin based on Open Terrain Generator'
+    description = 'Terrain Generator Bukkit Plugin [Open Terrain Control]'
 }
 
 static String gitVersion() {

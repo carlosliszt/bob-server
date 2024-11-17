@@ -34,6 +34,8 @@ public enum Columns {
     REGISTERED_AT(0L, "Long", "registeredAt", "BIGINT"),
 
     NICK("...", "String", "nick", "VARCHAR(16)"),
+    NICK_OBJECTS("[]", "JsonArray", "nick_objects", "longtext"),
+    LAST_NICK("...", "String", "last_nick", "VARCHAR(16)"),
     TAG("EalNl", "String", "tag", "VARCHAR(6)"),
     CLANTAG("yQFBm", "String", "clantag", "VARCHAR(6)"),
     PREFIXTYPE("dMjgl", "String", "prefixtype", "VARCHAR(6)"),

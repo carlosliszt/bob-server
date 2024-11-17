@@ -34,8 +34,9 @@ bukkit {
     name = 'Arcade'
     main = 'com.minecraft.arcade.pvp.PvP'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    description = 'Arcade bukkit plugin based on core and core-bukkit.'
+    
+    author = 'hateinblue'
+    description = 'Arcade Bukkit Plugin [core, core-bukkit, core-*, game-engine, game-*]'
 }
 
 static String gitVersion() {

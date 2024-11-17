@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 public enum Language {
 
+    MEOW("meow_meow.properties", "Miau:3", "M3w02", new SimpleDateFormat("MM/dd/yyyy HH:mm"), new SimpleDateFormat("MM/dd/yyyy")),
     PORTUGUESE("pt_br.properties", "Português", "VIxPa", new SimpleDateFormat("dd/MM/yyyy HH:mm"), new SimpleDateFormat("dd/MM/yyyy")),
     ENGLISH("en_us.properties", "English", "WaAYu", new SimpleDateFormat("MM/dd/yy',' hh:mm aa"), new SimpleDateFormat("MM/dd/yy"));
 

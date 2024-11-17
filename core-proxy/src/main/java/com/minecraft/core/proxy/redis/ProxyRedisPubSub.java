@@ -9,6 +9,7 @@ package com.minecraft.core.proxy.redis;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.datas.SkinData;
+import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.event.RedisPubSubEvent;
@@ -19,6 +20,8 @@ import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
 import com.minecraft.core.server.packet.ServerPayload;
 import com.minecraft.core.translation.Language;
+import com.minecraft.core.util.communication.AccountRankUpdateData;
+import com.minecraft.core.util.communication.NicknameUpdateData;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -62,8 +65,11 @@ public class ProxyRedisPubSub extends JedisPubSub {
 
             if (name.equals(account.getUsername()))
                 account.removeProperty("nickname");
-            else
+            else {
                 account.setDisplayName(name);
+                account.getData(Columns.LAST_NICK).setData(name);
+            }
+
         } else if (channel.equals(Redis.LANGUAGE_UPDATE_CHANNEL)) {
             String[] parsed = message.split(":");
             UUID uuid = UUID.fromString(parsed[0]);
@@ -71,6 +77,12 @@ public class ProxyRedisPubSub extends JedisPubSub {
 
             Account account = Account.fetch(uuid);
             account.setLanguage(language);
+        } else if(channel.equals(Redis.NICK_ADD_CHANNEL)) {
+            NicknameUpdateData data = Constants.GSON.fromJson(message, NicknameUpdateData.class);
+
+            Account account = Account.fetch(data.getUniqueId());
+            account.addNick(data.getNickname(), data.getChangedAt(), data.getExpiry());
+
         } else if (channel.equals(Redis.SKIN_CHANGE_CHANNEL)) {
             String[] split = message.split(":");
             UUID uuid = UUID.fromString(split[0]);

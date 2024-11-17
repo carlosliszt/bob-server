@@ -327,6 +327,61 @@ public class AccountCommand implements ProxyInterface {
             }
         }),
 
+        RESETNICK("resetnick", Rank.ADMINISTRATOR, (account, context) -> {
+            account.getData(Columns.NICK).setData("...");
+            Constants.getRedis().publish(Redis.NICK_DISGUISE_CHANNEL, account.getUniqueId() + ":" + account.getUsername());
+            account.getDataStorage().saveColumnsFromSameTable(Columns.NICK);
+            context.sendMessage("§aNickname de " + account.getUsername() + " foi resetado.");
+        }),
+
+        NICKS("nicks", Rank.ADMINISTRATOR, (account, context) -> {
+            account.loadNicks();
+
+            context.sendMessage("§aVerificando nicks de " + account.getUsername() + "...");
+
+            if (account.getNicks().isEmpty()) {
+                context.sendMessage("§cNenhum nick encontrado.");
+                return;
+            }
+
+            Account localAccount = context.getAccount();
+
+            account.getNicks().stream().sorted((a, b) -> Long.compare(b.getDateChanged(), a.getDateChanged())).forEach(rankData -> {
+                TextComponent t2 = createTextComponent(" §aNick: §f" + rankData.getNickname(), null, null, null, null);
+                context.getSender().sendMessage(t2);
+                context.sendMessage("  §7Escolhido em: " + localAccount.getLanguage().getDateFormat().format(rankData.getDateChanged()));
+                context.sendMessage("  §7Expira em: " + localAccount.getLanguage().getDateFormat().format(rankData.getExpiry()));
+            });
+
+        }),
+
+        SETNICK("setnick", Rank.DEVELOPER_ADMIN, (account, context) -> {
+            String[] args = context.getArgs();
+            String author = (context.isPlayer() ? context.getSender().getName() : "[SERVER]");
+
+            if (args.length >= 3) {
+                String nickname = args[2];
+
+                if (nickname.length() > 16) {
+                    context.sendMessage(" §cNick muito longo.");
+                    return;
+                }
+
+                account.getData(Columns.NICK).setData(nickname);
+                Constants.getRedis().publish(Redis.NICK_DISGUISE_CHANNEL, account.getUniqueId() + ":" + nickname);
+                account.getDataStorage().saveColumnsFromSameTable(Columns.NICK);
+
+                account.getDataStorage().saveTable(Tables.ACCOUNT, Tables.OTHER);
+
+                context.sendMessage("§aNickname de " + account.getUsername() + " foi alterado para " + nickname + ".");
+            } else {
+                context.sendMessage("§cUso do /account:");
+                context.sendMessage("§c* /account <user> setnick <nickname>");
+                context.sendMessage("§c§lCUIDADO!§c Esse nick pode ser qualquer coisa -w-");
+            }
+
+        }),
+
         CLANTAG("clantag", Rank.ADMINISTRATOR, (account, context) -> {
 
             String[] args = context.getArgs();

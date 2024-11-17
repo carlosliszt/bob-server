@@ -10,6 +10,7 @@ import com.google.common.io.ByteStreams;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.datas.LogData;
+import com.minecraft.core.database.data.DataStorage;
 import com.minecraft.core.database.mysql.MySQL;
 import com.minecraft.core.database.mysql.MySQLProperties;
 import com.minecraft.core.database.redis.Redis;
@@ -89,7 +90,7 @@ public class ProxyGame extends Plugin {
                 ps.executeUpdate();
             }
 
-//            DataStorage.createTables();
+            DataStorage.createTables();
             // Remove the comment when this is necessary, we will avoid unnecessary SQL queries
 
             translationExecutor = new ProxyTranslationExecutor(new PropertiesStorageDataTranslation());
@@ -100,7 +101,7 @@ public class ProxyGame extends Plugin {
 
             countWatchScheduler = new CountWatchScheduler();
 
-            getProxyFrame().registerCommands(new ClanCommand(), new AuthLogCommand(), new RewardCommand(), new SetplayerlimitCommand(), new StreamCommand(), new DataServiceCommand(), new GobuildCommand(), new TournamentCommand(), new LatencyCommand(), new ProxyTicksPerSecondCommand(), new PlayCommand(), new BroadcastCommand(), new PasteCommand(), new ClanxClanCommand(), new EventCommand(), new ScrimCommand(), new CacheuuidCommand(), new SetmotdCommand(), new StafflistCommand(), new CreatorlistCommand(), new PlayerlistCommand(), new ChangepasswordCommand(), new LoginCommand(), new RegisterCommand(), new PlayerFinderCommand(), new StaffchatCommand(), new PunishCommand(), new AccountCommand(), new KickCommand(), new ReportCommand(), new ServerCommand(), new MotherboardCommand(), new GoCommand());
+            getProxyFrame().registerCommands(new ClanCommand(), new BungeeVersionCommand(), new AuthLogCommand(), new RewardCommand(), new SetplayerlimitCommand(), new StreamCommand(), new DataServiceCommand(), new GobuildCommand(), new TournamentCommand(), new LatencyCommand(), new ProxyTicksPerSecondCommand(), new PlayCommand(), new BroadcastCommand(), new PasteCommand(), new ClanxClanCommand(), new EventCommand(), new ScrimCommand(), new CacheuuidCommand(), new SetmotdCommand(), new StafflistCommand(), new CreatorlistCommand(), new PlayerlistCommand(), new ChangepasswordCommand(), new LoginCommand(), new RegisterCommand(), new PlayerFinderCommand(), new StaffchatCommand(), new PunishCommand(), new AccountCommand(), new KickCommand(), new ReportCommand(), new ServerCommand(), new MotherboardCommand(), new GoCommand());
 
             getProxy().getPluginManager().registerListener(this, new AccountLoader());
             getProxy().getPluginManager().registerListener(this, new ServerListener());
@@ -114,7 +115,7 @@ public class ProxyGame extends Plugin {
 
             getProxy().getScheduler().schedule(this, this::runGarbageCollector, 5, 5, TimeUnit.MINUTES);
 
-            getProxy().getScheduler().runAsync(this, redisPubSub = new RedisPubSub(new ProxyRedisPubSub(), Redis.SERVER_REDIRECT_CHANNEL, Redis.OPEN_EVENT_CHANNEL, Redis.SKIN_CHANGE_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
+            getProxy().getScheduler().runAsync(this, redisPubSub = new RedisPubSub(new ProxyRedisPubSub(), Redis.SERVER_REDIRECT_CHANNEL, Redis.NICK_ADD_CHANNEL, Redis.OPEN_EVENT_CHANNEL, Redis.SKIN_CHANGE_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
 
             getProxy().getScheduler().schedule(this, () -> {
                 new LogScheduler().run();

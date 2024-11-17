@@ -35,8 +35,9 @@ bukkit {
     name = 'Auth'
     main = 'com.minecraft.auth.Auth'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    description = 'Auth bukkit plugin based on core, core-bukkit and third based on core-proxy.'
+    
+    author = 'hateinblue'
+    description = 'Auth Bukkit Plugin [core, core-bukkit, core-*]'
 }
 
 static String gitVersion() {

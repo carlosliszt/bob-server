@@ -51,8 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static com.minecraft.core.database.enums.Tables.ACCOUNT;
-import static com.minecraft.core.database.enums.Tables.STAFF;
+import static com.minecraft.core.database.enums.Tables.*;
 
 public class AccountLoader implements Listener {
 
@@ -66,7 +65,7 @@ public class AccountLoader implements Listener {
             "Africa", "North Africa", "Pakistan", "Angola", "Bangladesh", "Iraq",
             "Italy", "Croatia", "Taiwan", "Poland", "Hungary");
 
-    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
+    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.NICK_OBJECTS, Columns.LAST_NICK , Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
 
     @EventHandler
     public void onConnectionInit(ClientConnectEvent event) {
@@ -204,6 +203,7 @@ public class AccountLoader implements Listener {
                 account.loadRanks();
                 account.loadPermissions();
 
+
                 if (isFull(loginEvent, account))
                     return;
 
@@ -302,6 +302,7 @@ public class AccountLoader implements Listener {
                 account.setProperty("account_address_data", DataResolver.getInstance().getData(hostName));
                 account.setProperty("authenticated", false);
 
+                account.loadNicks();
                 String customName = account.getData(Columns.NICK).getAsString();
 
                 if (!customName.equals("...") && account.getRank().getId() >= Rank.ELITE.getId()) {
@@ -317,6 +318,7 @@ public class AccountLoader implements Listener {
                 }
 
                 account.getDataStorage().saveTable(ACCOUNT);
+                account.getDataStorage().saveTable(OTHER);
                 Constants.getAccountStorage().store(uniqueId, account);
             } else {
                 loginEvent.setCancelled(true);

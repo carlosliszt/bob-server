@@ -78,7 +78,14 @@ public class Data {
      * @return Long
      */
     public Long getAsLong() {
-        return (Long) this.data;
+        Object value = this.data;
+        if (value instanceof Long) {
+            return (Long) value;
+        } else if (value instanceof Integer) {
+            return ((Integer) value).longValue();
+        } else {
+            throw new ClassCastException("Cannot cast " + value.getClass() + " to Long");
+        }
     }
 
     /**

@@ -34,8 +34,8 @@ bukkit {
     name = 'HungerGames'
     main = 'com.minecraft.hungergames.HungerGames'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    description = 'HungerGames bukkit plugin based on core and core-bukkit.'
+    author = 'hateinblue'
+    description = 'HungerGames Bukkit Plugin [core, core-bukkit, core-*]'
 }
 
 static String gitVersion() {

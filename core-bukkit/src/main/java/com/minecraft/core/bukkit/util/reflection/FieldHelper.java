@@ -6,6 +6,8 @@
 
 package com.minecraft.core.bukkit.util.reflection;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -38,8 +40,11 @@ public class FieldHelper {
 
     public static void makeNonFinal(Field field) throws Exception {
         field.setAccessible(true);
-        Field modifiers = Field.class.getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.set(field, field.getModifiers() & ~Modifier.FINAL);
+
+        VarHandle modifiersHandle = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup())
+                .findVarHandle(Field.class, "modifiers", int.class);
+
+        int mods = (int) modifiersHandle.get(field);
+        modifiersHandle.set(field, mods & ~Modifier.FINAL);
     }
 }

@@ -33,7 +33,7 @@ public class MojangAPI {
     public MojangAPI() {
         this.availableAPI = new ArrayList<>();
         availableAPI.add(new MojangVanillaAPI());
-        availableAPI.add(new PlayerDatabaseAPI());
+       // availableAPI.add(new PlayerDatabaseAPI());
     }
 
     public UUID getUniqueId(String name) {

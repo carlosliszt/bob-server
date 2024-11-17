@@ -34,8 +34,9 @@ bukkit {
     name = 'Limbo'
     main = 'com.minecraft.limbo.Limbo'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    description = 'Limbo bukkit plugin based on core, core-bukkit and third based on core-proxy.'
+    
+    author = 'hateinblue'
+    description = 'Limbo Bukkit Plugin [core, core-bukkit, core-*]'
 }
 
 static String gitVersion() {

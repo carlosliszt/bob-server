@@ -10,10 +10,14 @@ import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.event.server.RedisPubSubEvent;
+import com.minecraft.core.bukkit.util.disguise.PlayerDisguise;
+import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.enums.Tag;
 import com.minecraft.core.util.communication.AccountRankUpdateData;
+import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.JedisPubSub;
@@ -55,6 +59,25 @@ public class BukkitRedisPubSub extends JedisPubSub {
 
             if (player != null)
                 Bukkit.getPluginManager().callEvent(new PlayerUpdateTablistEvent(account, account.getTagList().getHighestTag(), account.getProperty("account_prefix_type", PrefixType.DEFAULT).getAs(PrefixType.class)));
+        } else if(channel.equals(Redis.NICK_DISGUISE_CHANNEL)) {
+            String[] args = message.split(":");
+
+            Account account = Account.fetch(UUID.fromString(args[0]));
+
+            Player player = Bukkit.getPlayer(account.getUniqueId());
+
+            if(player != null) {
+                Property property = new Property("textures", account.getSkinData().getValue(), account.getSkinData().getSignature());
+                PlayerDisguise.disguise(player, args[1], property, true);
+                PlayerUpdateTablistEvent event = new PlayerUpdateTablistEvent(account, Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()), account.getProperty("account_prefix_type").getAs(PrefixType.class));
+                Bukkit.getPluginManager().callEvent(event);
+                if(args[1] == account.getUsername()) {
+                    account.removeProperty("nickname");
+                } else {
+                    account.setDisplayName(args[1]);
+                }
+            }
+
         } else if (channel.equals(Redis.FLAG_UPDATE_CHANNEL)) {
             String[] args = message.split(":");
 

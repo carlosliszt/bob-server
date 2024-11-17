@@ -31,14 +31,23 @@ jar {
 }
 
 bukkit {
-    name = 'Lobby'
+    name = 'lobbyhost'
     main = 'com.minecraft.lobby.Lobby'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    description = 'Lobby bukkit plugin based on core and core-bukkit.'
+    
+    author = 'hateinblue'
+    description = 'Lobby Bukkit Plugin [core, core-bukkit, core-*]'
 }
 
 static String gitVersion() {
     return 'git rev-parse --verify --short HEAD'.execute().getText().trim()
+}
+
+def shadowJarTask = tasks.getByName("shadowJar")
+
+tasks.register("copyToPluginsDir", Copy) {
+    dependsOn shadowJarTask
+    from shadowJarTask.outputs.files
+    into "C:/Users/carlos/Documents/yolomc/server/lobby1/plugins"
 }
 

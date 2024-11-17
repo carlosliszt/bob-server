@@ -52,6 +52,7 @@ public class Account {
 
     private final transient Set<RankData> ranks = new HashSet<>();
     private final transient Set<Punish> punishments = new HashSet<>();
+    private final transient Set<NickData> nicks = new HashSet<>();
 
     private final transient List<TagData> tags = new ArrayList<>();
     private final transient List<ClanTagData> clanTags = new ArrayList<>();
@@ -67,6 +68,8 @@ public class Account {
     public Account(UUID uniqueId, String username) {
         this.dataStorage = new DataStorage(this.uniqueId = uniqueId, this.username = username);
     }
+
+
 
     public void loadPermissions() {
         permissions.clear();
@@ -471,6 +474,41 @@ public class Account {
         loadRanks();
     }
 
+    public void loadNicks() {
+        getNicks().clear();
+
+        JsonArray jsonArray = getData(Columns.NICK_OBJECTS).getAsJsonArray();
+
+        for (JsonElement jsonElement : jsonArray) {
+
+            JsonObject object = jsonElement.getAsJsonObject();
+
+            String nickname = object.get("nickname").getAsString();
+            long expiration = object.get("expiry").getAsLong();
+            long addedAt = object.get("dateChanged").getAsLong();
+
+            getNicks().add(new NickData(nickname, addedAt, expiration));
+        }
+
+        getData(Columns.NICK_OBJECTS).setData(jsonArray);
+        getData(Columns.NICK_OBJECTS).setChanged(true);
+        getDataStorage().saveColumn(Columns.NICK_OBJECTS);
+        getDataStorage().saveTable(Tables.ACCOUNT);
+    }
+
+    public void addNick(String nickname, long changedAt, long expiry) {
+        JsonArray array = getData(Columns.NICK_OBJECTS).getAsJsonArray();
+        JsonObject object = new JsonObject();
+
+        object.addProperty("nickname", nickname);
+        object.addProperty("dateChanged", changedAt);
+        object.addProperty("expiry", expiry);
+
+        array.add(object);
+        getData(Columns.NICK_OBJECTS).setData(array);
+        loadNicks();
+    }
+
     public void giveRank(Rank rank, long expiration, String added_by) {
         JsonArray jsonArray = getData(Columns.RANKS).getAsJsonArray();
 
@@ -504,6 +542,14 @@ public class Account {
 
     public RankData getRankData(Rank rank) {
         return getRanks().stream().filter(rankData -> rankData.getRank() == rank).findFirst().orElse(null);
+    }
+
+    public NickData getNickData(String nickname) {
+        return nicks.stream().filter(nickData -> nickData.getNickname().equalsIgnoreCase(nickname)).findFirst().orElse(null);
+    }
+
+    public List<NickData> getUnexpiredNicks() {
+        return nicks.stream().filter(nickData -> !nickData.hasExpired()).collect(Collectors.toList());
     }
 
     public TagData getTagData(Tag tag) {
@@ -767,4 +813,10 @@ public class Account {
 
         return Constants.getClanService().getClan(getData(Columns.CLAN).getAsInt());
     }
+
+    public void resetNicks() {
+        JsonArray array = new JsonArray();
+        getData(Columns.NICK_OBJECTS).setData(array);
+    }
+
 }

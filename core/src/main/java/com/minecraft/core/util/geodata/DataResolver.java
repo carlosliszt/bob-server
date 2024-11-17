@@ -25,7 +25,7 @@ public class DataResolver {
     private final static DataResolver instance = new DataResolver("991z09-4341q8-776803-4qw930");
 
     private static String key;
-    private static final AddressData BLANK = new AddressData("...", false, false, "...", "...", "...", "...", 0);
+    private static final AddressData BLANK = new AddressData("...", true, false, "...", "...", "...", "...", 0);
     private static final String API = "http://proxycheck.io/v2/%s?key=%s&risk=1&vpn=1&asn=1";
 
     public DataResolver(String f) {

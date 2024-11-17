@@ -34,8 +34,9 @@ bukkit {
     name = 'PvP'
     main = 'com.minecraft.pvp.PvP'
     version = '1.0.0-' + gitVersion()
-    website = 'www.bobmc.com'
-    description = 'PvP bukkit plugin based on core and core-bukkit.'
+    
+    author = 'hateinblue'
+    description = 'PvP Bukkit Plugin [core, core-bukkit, core-*, pvp-engine, pvp-*]'
 }
 
 static String gitVersion() {
