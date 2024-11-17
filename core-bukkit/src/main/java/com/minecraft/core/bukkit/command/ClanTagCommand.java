@@ -27,6 +27,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,9 +66,9 @@ public class ClanTagCommand implements BukkitInterface {
                     i -= 1;
                 }
 
-                String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + " " + (clantag == Clantag.DEFAULT ? ChatColor.valueOf(clan.getColor()) : clantag.getColor()) + "[" + clan.getTag().toUpperCase() + "]" + "\n\n§eClique para selecionar!";
+                String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + " " + clantag.getColor() + "[" + clan.getTag().toUpperCase() + "]" + "\n\n§eClique para selecionar!";
 
-                TextComponent component = createTextComponent((clantag == Clantag.DEFAULT ? ChatColor.valueOf(clan.getColor()) : clantag.getColor()) + clantag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/clantag " + clantag.getName());
+                TextComponent component = createTextComponent(clantag.getColor() + clantag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/clantag " + clantag.getName());
                 textComponents[i] = component;
                 i -= 1;
             }
@@ -86,20 +87,34 @@ public class ClanTagCommand implements BukkitInterface {
                 return;
             }
 
-            if (account.getProperty("account_clan_tag").getAs(Clantag.class).equals(clantag)) {
+            if (clantag.getChatColor().equals(clan.getColor())) {
                 context.info("command.clantag.clantag_already_in_use");
                 return;
             }
 
-            account.setProperty("account_clan_tag", clantag);
-            account.getData(Columns.CLANTAG).setData(clantag.getUniqueCode());
-
             context.info("command.clantag.clantag_change", clantag.getColor() + clantag.getName());
 
-            PlayerUpdateTablistEvent event = new PlayerUpdateTablistEvent(account, account.getProperty("account_tag").getAs(Tag.class), account.getProperty("account_prefix_type").getAs(PrefixType.class));
-            Bukkit.getPluginManager().callEvent(event);
+            clan.setColor(clantag.getChatColor());
+            try {
+                Constants.getClanService().pushClan(clan);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
-            async(() -> account.getDataStorage().saveColumn(Columns.CLANTAG));
+            clan.getMembers().forEach(member -> {
+
+                Player player = Bukkit.getPlayer(member.getUniqueId());
+
+                if (player == null) {
+                    return;
+                }
+
+                Account acc = Account.fetch(player.getUniqueId());
+
+                PlayerUpdateTablistEvent event = new PlayerUpdateTablistEvent(acc, acc.getProperty("account_tag").getAs(Tag.class), acc.getProperty("account_prefix_type").getAs(PrefixType.class));
+                Bukkit.getPluginManager().callEvent(event);
+            });
+
         }
     }
 

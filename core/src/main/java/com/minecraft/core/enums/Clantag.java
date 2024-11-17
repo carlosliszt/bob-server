@@ -15,12 +15,13 @@ import java.util.Arrays;
 @Getter
 public enum Clantag {
 
-    DEFAULT("Default", "§7", "yQFBm", Rank.MEMBER, false),
-    BETA("Beta", "§1", "db37a", Rank.ADMINISTRATOR, true),
-    VIP("VIP", "§a", "hd73b", Rank.ADMINISTRATOR, true),
-    PRO("Pro", "§6", "27adh", Rank.ADMINISTRATOR, true);
+    DEFAULT("Default", "§7", "yQFBm", "GRAY", Rank.MEMBER, false),
+    BETA("Beta", "§1", "db37a", "DARK_BLUE", Rank.ADMINISTRATOR, true),
+    VIP("VIP", "§a", "hd73b", "GREEN", Rank.ADMINISTRATOR, true),
+    PRO("Pro", "§6", "27adh", "GOLD", Rank.ADMINISTRATOR, true),
+    ROSA("Rosa", "§d", "d3a7d", "LIGHT_PURPLE", Rank.ADMINISTRATOR, true),;
 
-    private final String name, color, uniqueCode;
+    private final String name, color, uniqueCode, chatColor;
     private final Rank rank;
     private final boolean dedicated;
 

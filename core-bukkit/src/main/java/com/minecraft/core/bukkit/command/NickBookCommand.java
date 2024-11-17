@@ -57,7 +57,7 @@ public class NickBookCommand {
                 if(args[0].equalsIgnoreCase("start")) {
                     Book book = new Book("Nick", "hateinblue");
                     Book.PageBuilder p1 = new Book.PageBuilder(book);
-                    p1.add("         §l§nNICK: SKIN").build();
+                    p1.add("       §l§nNICK: SKIN").build();
                     p1.add("\n\n").build();
                     p1.add("Escolha a skin para seu disfarce.").build();
                     p1.add("\n\n").build();
@@ -68,12 +68,12 @@ public class NickBookCommand {
                 } else if(args[0].equalsIgnoreCase("randomskin")) {
                     Book book = new Book("Nick", "hateinblue");
                     Book.PageBuilder p1 = new Book.PageBuilder(book);
-                    p1.add("            §l§nNICK: NOME").build();
+                    p1.add("       §l§nNICK: NOME").build();
                     p1.add("\n\n").build();
                     p1.add("Escolha o nome para seu disfarce.").build();
                     p1.add("\n\n").build();
                     p1.add("➤ Aleatório").hoverEvent(Book.HoverAction.Show_Text, "Usar um nome aleatório").clickEvent(Book.ClickAction.Run_Command, "/nickbook randomskin randomnick").build();
-                    if(account.getData(Columns.LAST_NICK).getAsString() != "...") {
+                    if(!account.getData(Columns.LAST_NICK).getAsString().equals("...")) {
                         p1.add("\n➤ Anterior: §l" + account.getData(Columns.LAST_NICK).getAsString()).hoverEvent(Book.HoverAction.Show_Text, "Usar o nome anterior: §l" + account.getData(Columns.LAST_NICK).getAsString()).clickEvent(Book.ClickAction.Run_Command, "/nickbook randomskin last").build();
                     }
                     p1.build();
@@ -82,7 +82,7 @@ public class NickBookCommand {
                 } else if(args[0].equalsIgnoreCase("myskin")) {
                     Book book = new Book("Nick", "hateinblue");
                     Book.PageBuilder p1 = new Book.PageBuilder(book);
-                    p1.add("         §l§nNICK: NOME").build();
+                    p1.add("       §l§nNICK: NOME").build();
                     p1.add("\n\n").build();
                     p1.add("Escolha o nome para seu disfarce.").build();
                     p1.add("\n\n").build();
@@ -101,13 +101,13 @@ public class NickBookCommand {
 
                     Book book = new Book("Nick", "hateinblue");
                     Book.PageBuilder p1 = new Book.PageBuilder(book);
-                    p1.add("         §l§nNICK: NOME").build();
+                    p1.add("       §l§nNICK: NOME").build();
                     p1.add("\n\n").build();
                     p1.add("Nome aleatório gerado!").build();
                     p1.add("\n\n").build();
                     p1.add("§lNOME: §r" + nickname).build();
                     p1.add("\n\n").build();
-                    p1.add("        §2§lUSAR").hoverEvent(Book.HoverAction.Show_Text, "§aClique para usar o nome: " + nickname).clickEvent(Book.ClickAction.Run_Command, "/nickbook " + args[0] + " " + args[1] + " accept:" + nickname).build();
+                    p1.add("          §2§lUSAR").hoverEvent(Book.HoverAction.Show_Text, "§aClique para usar o nome: " + nickname).clickEvent(Book.ClickAction.Run_Command, "/nickbook " + args[0] + " " + args[1] + " accept:" + nickname).build();
                     p1.add("\n  §4§lESCOLHER OUTRO").hoverEvent(Book.HoverAction.Show_Text, "§cClique para escolher um novo disfarce.").clickEvent(Book.ClickAction.Run_Command, "/nickbook " + args[0] + " " + args[1]).build();
 
                     p1.build();

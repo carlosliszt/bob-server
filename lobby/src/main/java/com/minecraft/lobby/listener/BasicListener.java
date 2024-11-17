@@ -54,12 +54,7 @@ public class BasicListener implements Listener {
             if (clan == null) return;
 
             Clantag clantag = account.getProperty("account_clan_tag").getAs(Clantag.class);
-            String tag;
-
-            if (clantag == null || clantag == Clantag.DEFAULT)
-                tag = " " + ChatColor.valueOf(clan.getColor());
-            else
-                tag = " " + clantag.getColor();
+            String tag = " " + ChatColor.valueOf(clan.getColor());
 
             event.getTeam().setSuffix(tag + "[" + clan.getTag().toUpperCase() + "]");
         }

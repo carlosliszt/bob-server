@@ -44,3 +44,11 @@ static String gitVersion() {
     return 'git rev-parse --verify --short HEAD'.execute().getText().trim()
 }
 
+
+def shadowJarTask = tasks.getByName("shadowJar")
+
+tasks.register("copyToPluginsDir", Copy) {
+    dependsOn shadowJarTask
+    from shadowJarTask.outputs.files
+    into "C:/Users/carlos/Documents/yolomc/server/auth/plugins"
+}

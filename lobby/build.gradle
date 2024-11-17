@@ -51,3 +51,10 @@ tasks.register("copyToPluginsDir", Copy) {
     into "C:/Users/carlos/Documents/yolomc/server/lobby1/plugins"
 }
 
+tasks.register("copyToPluginsDir1", Copy) {
+    dependsOn shadowJarTask
+    from shadowJarTask.outputs.files
+    into "C:/Users/carlos/Documents/yolomc/server/lobby2a/plugins"
+}
+
+
