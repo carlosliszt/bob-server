@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserDeathEvent extends ServerEvent {
 
-    private User user;
+    private User user, killer;
     private boolean definitelyLeft;
 
 }

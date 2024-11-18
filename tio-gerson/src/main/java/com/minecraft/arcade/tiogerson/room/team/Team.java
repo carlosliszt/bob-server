@@ -21,8 +21,7 @@ public class Team {
     private int maxPlayers;
 
     public boolean isFull() {
-        int max = maxPlayers / 2;
-        return members.size() == max;
+        return members.size() == maxPlayers;
     }
 
     @Override

@@ -163,14 +163,18 @@ public abstract class Mode implements BukkitInterface, Listener {
 
         RoomStage stage = room.getStage();
         boolean isFull = room.isFull();
+        boolean almostFull = room.getAlivePlayers().size() == room.getMaxPlayers() / 2;
         int time = room.getTime();
 
-        if (stage == RoomStage.WAITING && isFull) {
+        if(stage == RoomStage.WAITING && almostFull) {
+            room.setStage(RoomStage.STARTING);
+            room.setTime(40);
+        } else if (stage == RoomStage.WAITING && isFull) {
             room.setStage(RoomStage.STARTING);
             room.setTime(4);
         } else if (stage == RoomStage.STARTING) {
 
-            if (!isFull) {
+            if (!isFull || !almostFull) {
                 room.setStage(RoomStage.WAITING);
                 room.setTime(-1);
                 return;
@@ -198,8 +202,13 @@ public abstract class Mode implements BukkitInterface, Listener {
                 room.win(room.getTioGerson());
             }
 
+            if(room.getTioGerson().getMembers().isEmpty()) {
+                room.win(room.getEnzo());
+            }
+
             if(room.getTime() == 180) {
                 room.getTioGerson().getMembers().forEach(c -> {
+                    c.getPlayer().sendTitle(new Title("§4§lDERROTA!", "§eVocê não conseguiu achar todos os ENZOS!", 1, 15, 10));
                     c.getPlayer().sendMessage("§cVocê não conseguiu matar os Enzos a tempo!");
                     c.getPlayer().playSound(c.getPlayer().getLocation(), Sound.ANVIL_LAND, 3.5F, 3.5F);
                 });
@@ -326,7 +335,7 @@ public abstract class Mode implements BukkitInterface, Listener {
         if (room.isSpectator(user)) {
             user.getRoom().getSpectators().remove(user);
         } else {
-            new UserDeathEvent(user, true).fire();
+            new UserDeathEvent(user,null, true).fire();
         }
 
         Player player = user.getPlayer();

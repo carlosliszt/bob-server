@@ -28,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.github.paperspigot.Title;
 
 public class ServerListener implements Listener, BukkitInterface {
 
@@ -40,6 +41,7 @@ public class ServerListener implements Listener, BukkitInterface {
     @EventHandler
     public void onDeath(UserDeathEvent event) {
         User user = event.getUser();
+
         Player player = user.getPlayer();
 
         player.closeInventory();
@@ -48,6 +50,7 @@ public class ServerListener implements Listener, BukkitInterface {
         Mode mode = room.getMode();
 
         Team team = room.getEnzo().getMembers().contains(user) ? room.getEnzo() : room.getTioGerson();
+
         team.getMembers().remove(user);
 
         Account account = user.getAccount();
@@ -56,10 +59,18 @@ public class ServerListener implements Listener, BukkitInterface {
             room.getSpectators().add(user);
             mode.join(user, PlayMode.VANISH);
 
-            room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + " §emorreu."));
+            if(event.getKiller() != null) {
+                User killer = event.getKiller();
+                Team killerTeam = room.getEnzo().getMembers().contains(killer) ? room.getEnzo() : room.getTioGerson();
+                room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + " §e foi morto por " + killerTeam.getChatColor() + killer.getPlayer().getName() +"."));
+            } else {
+                room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + " §e morreu."));
+            }
 
             for (int i = 0; i < 4; i++)
                 FireworkAPI.random(player.getLocation());
+
+            event.getUser().getPlayer().sendTitle(new Title("§c§lVOCÊ MORREU!", "§eVocê não conseguiu escapar do TIO GERSON!", 1, 15, 10));
 
             if (room.isCountStats()) {
                 //account.addInt(1, mode.getLoses());
@@ -109,7 +120,8 @@ public class ServerListener implements Listener, BukkitInterface {
                 p.setHealth(20.0D);
 
                 User user = User.fetch(p.getUniqueId());
-                new UserDeathEvent(user, false).fire();
+                User killer = User.fetch(p.getLastDamageCause().getEntity().getUniqueId());
+                new UserDeathEvent(user, killer, false).fire();
             }
         }
     }

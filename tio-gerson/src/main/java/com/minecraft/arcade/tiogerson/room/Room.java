@@ -20,6 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.github.paperspigot.Title;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,12 +51,12 @@ public class Room implements BukkitInterface {
     public Room(int id, Mode mode, World world) {
         this.mode = mode;
         this.code = "tG1" + id;
-        this.tioGerson = new Team(ChatColor.RED, this, 2);
-        this.enzo = new Team(ChatColor.BLUE, this, 8);
+        this.tioGerson = new Team(ChatColor.RED, this, 1);
+        this.enzo = new Team(ChatColor.BLUE, this, 7);
         this.spectators = new HashSet<>();
         this.rollback = new HashSet<>();
         this.stage = RoomStage.WAITING;
-        this.maxPlayers = 10;
+        this.maxPlayers = 8;
         this.time = -1;
         this.win = -1;
         this.countStats = true;
@@ -156,6 +157,12 @@ public class Room implements BukkitInterface {
             Items.find(user.getAccount().getLanguage()).build(player);
 
             Account account = user.getAccount();
+
+            if(team == getEnzo()) {
+                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê sobreviveu ao TIO GERSON!", 1, 15, 10));
+            } else {
+                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê passou encontrou todos os seus SOBRINHOS!", 1, 15, 10));
+            }
 
             Mode mode = getMode();
 
