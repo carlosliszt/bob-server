@@ -119,6 +119,7 @@ public class BukkitGame extends JavaPlugin {
                         "vsf", "fodase", "nerdola", "nerd", "retardado", "viado", "bixa", "corno", "chifrudo", "doente", "mongol", "nazismo", "ku klux klan", "kukluxklan");
 
         bukkitFrame.registerCommands(new StatisticsCommand(), new NickBookCommand(), new TpsCommand(), new ForceskinCommand(), new ReportsCommand(), new ArcadeDevCommand(), new ExportInventoryCommand(), new ParticleCommand(), new PckgstatCommand(), new GetlogsCommand(), new PacketFilterCommand(), new AlertCommand(), new PreferencesCommand(), new CensorCheckCommand(), new TeleportallCommand(), new ClanTagCommand(), new MedalCommand(), new LobbyCommand(), new VariableCommand(), new ChatCommand(), new StafflogCommand(), new GetlocationCommand(), new VanishCommand(), new WhitelistCommand(), new SpeedCommand(), new LanguageCommand(), new ProfileCommand(), new CrashCommand(), new SudoCommand(), new SmiteCommand(), new WhisperCommand(), new FollowCommand(), new EffectsCommand(), new InventoryCommand(), new LoopCommand(), new NickCommand(), new TagCommand(), new PrefixtypeCommand(), new WorldEditCommand(), new TeleportCommand(), new GamemodeCommand(), new MydragonCommand());
+        bukkitFrame.unregisterCommands("ban", "minecraft:ban", "pardon", "minecraft:pardon");
 
         PluginManager pluginManager = getServer().getPluginManager();
 

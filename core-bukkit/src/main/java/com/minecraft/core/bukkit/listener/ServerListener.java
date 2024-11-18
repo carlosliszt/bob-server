@@ -408,9 +408,9 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(tablistPacket);
 
-        final Knockback knockback = BukkitGame.getEngine().getKnockbackService().getKnockbackByName("New");
+        final Knockback knockback = BukkitGame.getEngine().getKnockbackService().getKnockbackByName("vanilla");
         if (knockback != null)
-            BukkitGame.getEngine().getKnockbackService().setKnockback(player, BukkitGame.getEngine().getKnockbackService().getKnockbackByName("New"));
+            BukkitGame.getEngine().getKnockbackService().setKnockback(player, BukkitGame.getEngine().getKnockbackService().getKnockbackByName("vanilla"));
 
         Vanish.getInstance().getPlayerVanish().forEach((uuid, vanishRank) -> {
 

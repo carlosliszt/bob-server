@@ -13,6 +13,9 @@ import com.minecraft.core.bukkit.command.ProfileCommand;
 import com.minecraft.core.bukkit.event.player.PlayerShowEvent;
 import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
 import com.minecraft.core.bukkit.scheduler.GameRunnable;
+import com.minecraft.core.bukkit.server.duels.DuelType;
+import com.minecraft.core.bukkit.server.route.GameRouteContext;
+import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.bossbar.Bossbar;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
@@ -25,6 +28,7 @@ import com.minecraft.core.bukkit.util.npc.NPC;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.bukkit.util.variable.VariableStorage;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.payload.ServerRedirect;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
@@ -427,10 +431,43 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
             }
         });
 
+        InteractableItem tioGerson = new InteractableItem(new ItemFactory().setType(Material.BOOK).setName("§aTio Gerson").setDescription("§7" + Constants.getServerStorage().count(ServerType.MAIN_LOBBY, ServerType.TIOGERSON) + " jogando").getStack(), new InteractableItem.Interact() {
+            @Override
+            public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+                Account account = Account.fetch(player.getUniqueId());
+
+                if (isConnectionCooldown(player.getUniqueId())) {
+                    Cooldown cooldown = getCooldown(player.getUniqueId());
+
+                    player.sendMessage(account.getLanguage().translate("wait_to_connect", Constants.SIMPLE_DECIMAL_FORMAT.format(cooldown.getRemaining())));
+                    return false;
+                }
+
+                addCooldown(player.getUniqueId());
+                Server server = ServerType.TIOGERSON.getServerCategory().getServerFinder().getBestServer(ServerType.TIOGERSON);
+
+                if (server == null) {
+                    player.sendMessage(account.getLanguage().translate("no_server_available", "tio_gerson"));
+                    return false;
+                }
+
+                GameRouteContext context = new GameRouteContext();
+
+                context.setGame(DuelType.BOXING_1V1);
+                context.setPlayMode(Vanish.getInstance().isVanished(account) ? PlayMode.VANISH : PlayMode.PLAYER);
+
+                ServerRedirect.Route route = new ServerRedirect.Route(server, Constants.GSON.toJson(context));
+                ServerRedirect serverRedirect = new ServerRedirect(account.getUniqueId(), route);
+                account.connect(serverRedirect);
+                return true;
+            }
+        });
+
         inventory.setItem(10, hg.getItemStack());
         inventory.setItem(11, duels.getItemStack());
         inventory.setItem(12, pvp.getItemStack());
         inventory.setItem(13, the_bridge.getItemStack());
+        inventory.setItem(14, tioGerson.getItemStack());
 
         player.openInventory(inventory);
     }

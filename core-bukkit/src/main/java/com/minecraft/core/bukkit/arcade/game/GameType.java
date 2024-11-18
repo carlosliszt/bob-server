@@ -8,6 +8,7 @@ import java.util.Arrays;
 public enum GameType {
 
     BEDWARS(GameStyle.ARCADE, false, GameQuantity.SOLO, GameQuantity.DOUBLES, GameQuantity.THREESOME, GameQuantity.GROUP),
+    TIOGERSON(GameStyle.ARCADE, false, GameQuantity.SOLO),
     THE_BRIDGE(GameStyle.DUEL, false, GameQuantity.SOLO, GameQuantity.DOUBLES, GameQuantity.GROUP),
     UHC(GameStyle.DUEL, false, GameQuantity.SOLO, GameQuantity.DOUBLES, GameQuantity.GROUP),
     SKYWARS(GameStyle.ARCADE, false, GameQuantity.SOLO, GameQuantity.DOUBLES),

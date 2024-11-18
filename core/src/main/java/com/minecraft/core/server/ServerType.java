@@ -36,6 +36,7 @@ public enum ServerType {
     GLADIATOR_LOBBY("gladiator", false, ServerCategory.LOBBY),
     MAIN_LOBBY("lobby", false, ServerCategory.LOBBY),
     AUTH("auth", false, ServerCategory.AUTH),
+    TIOGERSON("tiogerson", false, ServerCategory.TIOGERSON),
     DUELS("duels", false, ServerCategory.DUELS);
 
     private final String name;

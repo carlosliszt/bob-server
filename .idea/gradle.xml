@@ -25,6 +25,7 @@
             <option value="$PROJECT_DIR$/skywars" />
             <option value="$PROJECT_DIR$/terrain-generator" />
             <option value="$PROJECT_DIR$/thebridge" />
+            <option value="$PROJECT_DIR$/tio-gerson" />
           </set>
         </option>
       </GradleProjectSettings>

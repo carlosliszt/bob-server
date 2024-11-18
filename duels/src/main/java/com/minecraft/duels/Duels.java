@@ -27,6 +27,7 @@ import java.util.UUID;
 @Getter
 public class Duels extends BukkitGame {
 
+    @Getter
     private static Duels instance;
     private UserStorage userStorage;
     private RoomStorage roomStorage;
@@ -86,10 +87,6 @@ public class Duels extends BukkitGame {
     public void onDisable() {
         super.onDisable();
         roomStorage.end();
-    }
-
-    public static Duels getInstance() {
-        return instance;
     }
 
     protected void makeRecipe() {

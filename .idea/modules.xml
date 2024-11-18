@@ -18,6 +18,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/skywars/server-backend.skywars.main.iml" filepath="$PROJECT_DIR$/.idea/modules/skywars/server-backend.skywars.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/terrain-generator/server-backend.terrain-generator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/terrain-generator/server-backend.terrain-generator.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/thebridge/server-backend.thebridge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/thebridge/server-backend.thebridge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tio-gerson/server-backend.tio-gerson.main.iml" filepath="$PROJECT_DIR$/.idea/modules/tio-gerson/server-backend.tio-gerson.main.iml" />
     </modules>
   </component>
 </project>

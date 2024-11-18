@@ -2,4 +2,5 @@ rootProject.name = 'server-backend'
 include 'core', 'core-bukkit', 'core-proxy', 'hungergames', 'lobby', 'pvp', 'duels', 'auth', 'terrain-generator', 'limbo-afk', 'hub', 'thebridge', 'bedwars', 'skywars'
 include 'arcade-duels'
 include 'arcade-pvp'
+include 'tio-gerson'
 
