@@ -37,6 +37,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.NameTagVisibility;
 
 public class PlayerListener implements Listener {
 
@@ -89,12 +90,6 @@ public class PlayerListener implements Listener {
             Room room = user.getRoom();
 
             if (room == null || room.getStage() != RoomStage.PLAYING || !user.isPlaying() && !Vanish.getInstance().isVanished(player.getUniqueId()))
-                event.setCancelled(true);
-
-            if(room.getTioGerson().getMembers().contains(user))
-                event.setCancelled(true);
-
-            if(room.getEnzo().getMembers().contains(user) && room.getEnzo().getMembers().contains(damagerUser))
                 event.setCancelled(true);
 
         }
@@ -209,8 +204,11 @@ public class PlayerListener implements Listener {
                 }
             } else if (room.getEnzo().getMembers().contains(user)) {
                 event.getTeam().setPrefix("§9§lENZO§9 ");
+                event.getTeam().setNameTagVisibility(NameTagVisibility.HIDE_FOR_OTHER_TEAMS);
             } else {
                 event.getTeam().setPrefix("§c§lTIO§c ");
+                event.getTeam().setNameTagVisibility(NameTagVisibility.ALWAYS);
+
             }
 
 

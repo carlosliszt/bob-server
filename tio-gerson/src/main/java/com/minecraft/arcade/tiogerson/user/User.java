@@ -2,6 +2,7 @@ package com.minecraft.arcade.tiogerson.user;
 
 import com.minecraft.arcade.tiogerson.ArcadeMain;
 import com.minecraft.arcade.tiogerson.room.Room;
+import com.minecraft.arcade.tiogerson.room.team.Team;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.server.route.GameRouteContext;
 import com.minecraft.core.bukkit.util.BukkitInterface;
@@ -28,6 +29,8 @@ public class User implements BukkitInterface {
 
     private Room room;
     private Player player;
+
+    private Team previousTeam;
 
     public User(Account account, GameRouteContext context) {
         this.account = account;

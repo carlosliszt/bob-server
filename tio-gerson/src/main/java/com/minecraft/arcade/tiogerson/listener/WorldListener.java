@@ -51,7 +51,7 @@ public class WorldListener implements Listener {
 
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER && event.getEntityType() != EntityType.DROPPED_ITEM)
+        if (event.getEntityType() != EntityType.PLAYER && event.getEntityType() != EntityType.DROPPED_ITEM && event.getEntityType() != EntityType.ENDER_DRAGON)
             event.setCancelled(true);
     }
 

@@ -141,12 +141,14 @@ public class Room implements BukkitInterface {
         mode.start(this);
         tioGerson.getMembers().forEach(c -> {
             c.getPlayer().teleport(getMapConfiguration().getTioGersonLocation());
+            c.getPlayer().setGameMode(GameMode.SURVIVAL);
             //c.getAccount().addInt(1, getMode().getGames());
             Visibility.refresh(c.getPlayer());
             new PlayerUpdateTablistEvent(c.getAccount(), c.getAccount().getProperty("account_tag").getAs(Tag.class), c.getAccount().getProperty("account_prefix_type").getAs(PrefixType.class)).fire();
         });
         enzo.getMembers().forEach(c -> {
             c.getPlayer().teleport(getMapConfiguration().getEnzoLocation());
+            c.getPlayer().setGameMode(GameMode.SURVIVAL);
             //c.getAccount().addInt(1, getMode().getGames());
             Visibility.refresh(c.getPlayer());
             new PlayerUpdateTablistEvent(c.getAccount(), c.getAccount().getProperty("account_tag").getAs(Tag.class), c.getAccount().getProperty("account_prefix_type").getAs(PrefixType.class)).fire();
@@ -183,6 +185,13 @@ public class Room implements BukkitInterface {
                 async(() -> account.getDataStorage().saveTable(mode.getWins().getTable())); */
             }
         });
+
+        getSpectators().forEach(user -> {
+            if (user.getPreviousTeam() != team && team != user.getRoom().getTioGerson()) {
+                user.getPlayer().sendTitle(new Title("§c§lDERROTA!", "§eVocê não sobreviveu até o final!", 1, 15, 10));
+            }
+        });
+
         setCountStats(true);
     }
 

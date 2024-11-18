@@ -32,6 +32,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.github.paperspigot.Title;
@@ -53,6 +54,8 @@ public abstract class Mode implements BukkitInterface, Listener {
     private World world;
     @Setter
     private Columns wins, loses, winstreak, winstreakRecord, games;
+
+    private int tioGersonDelay = 5;
 
     public void load() {
 
@@ -198,6 +201,25 @@ public abstract class Mode implements BukkitInterface, Listener {
 
         } else if (stage == RoomStage.PLAYING) {
 
+            if (tioGersonDelay > 0) {
+                final Title title = new Title("§c" + tioGersonDelay, "", 1, 15, 10);
+
+                room.getEnzo().getMembers().forEach(c -> {
+                    c.getPlayer().sendTitle(title);
+                    c.getPlayer().sendMessage("§eO Tio Gerson irá começar a caçar em " + tioGersonDelay + " segundos!");
+                    c.getPlayer().playSound(c.getPlayer().getLocation(), Sound.CLICK, 3.5F, 3.5F);
+                });
+
+                room.getTioGerson().getMembers().forEach(c -> {
+                    c.getPlayer().sendTitle(title);
+                    c.getPlayer().sendMessage("§eVocê estará livre para caçar em " + tioGersonDelay + " segundos!");
+                    c.getPlayer().playSound(c.getPlayer().getLocation(), Sound.CLICK, 3.5F, 3.5F);
+
+                    c.getPlayer().teleport(room.getMapConfiguration().getTioGersonLocation());
+                });
+                tioGersonDelay--;
+            }
+
             if (room.getEnzo().getMembers().isEmpty()) {
                 room.win(room.getTioGerson());
             }
@@ -206,7 +228,7 @@ public abstract class Mode implements BukkitInterface, Listener {
                 room.win(room.getEnzo());
             }
 
-            if(room.getTime() == 180) {
+            if (room.getTime() == 365) {
                 room.getTioGerson().getMembers().forEach(c -> {
                     c.getPlayer().sendTitle(new Title("§4§lDERROTA!", "§eVocê não conseguiu achar todos os ENZOS!", 1, 15, 10));
                     c.getPlayer().sendMessage("§cVocê não conseguiu matar os Enzos a tempo!");
@@ -249,6 +271,32 @@ public abstract class Mode implements BukkitInterface, Listener {
         }
 
         room.getWorld().getPlayers().forEach(c -> handleSidebar(User.fetch(c.getUniqueId())));
+    }
+
+    public void pointCompass(User user, Room room, Action action) {
+        Player comparator = null;
+        Player consumer = user.getPlayer();
+
+        for (User other : room.getEnzo().getMembers()) {
+
+            if (other.getUniqueId().equals(user.getUniqueId()))
+                continue;
+
+            Player player = other.getPlayer();
+
+            if (player.getLocation().distanceSquared(consumer.getLocation()) >= 225) {
+                if (comparator == null || comparator.getLocation().distanceSquared(consumer.getLocation()) > player.getLocation().distanceSquared(consumer.getLocation())) {
+                    comparator = player;
+                }
+            }
+        }
+
+        if (comparator == null) {
+            consumer.sendMessage("§cNenhum jogador encontrado.");
+        } else {
+            consumer.setCompassTarget(comparator.getLocation());
+            consumer.sendMessage("§aA bússola foi apontada para " + comparator.getName() + ".");
+        }
     }
 
     public void setup(Room room) {
@@ -409,11 +457,11 @@ public abstract class Mode implements BukkitInterface, Listener {
     }
 
     public boolean isCanBuild() {
-        return true;
+        return false;
     }
 
     public boolean isAllowDrops() {
-        return true;
+        return false;
     }
 
     public void refresh(User user) {

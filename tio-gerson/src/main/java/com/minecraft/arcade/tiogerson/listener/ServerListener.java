@@ -90,7 +90,7 @@ public class ServerListener implements Listener, BukkitInterface {
     private final ImmutableSet<Material> CHECK_MATERIALS = Sets.immutableEnumSet(Material.CHEST, Material.ENCHANTMENT_TABLE, Material.ANVIL, Material.FURNACE, Material.JUKEBOX, Material.ENDER_CHEST, Material.HOPPER, Material.HOPPER_MINECART, Material.DROPPER, Material.DISPENSER);
 
     @EventHandler
-    public void onInteractChest(PlayerInteractEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         if (!event.hasBlock())
             return;
 
