@@ -61,8 +61,8 @@ public class Normal extends Mode {
 
             player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 5), true);
             player.getInventory().setItem(0, new ItemFactory(Material.STICK).setName("§aPau").setDescription("§7PAU NELES!!!").addEnchantment(Enchantment.DAMAGE_ALL, 5).setUnbreakable().addItemFlag(ItemFlag.HIDE_ATTRIBUTES).getStack());
-            player.getInventory().setItem(1, compass);
-            player.getInventory().setItem(2, magicSugar);
+            player.getInventory().setItem(4, magicSugar);
+            player.getInventory().setItem(8, compass);
 
             player.updateInventory();
         });
