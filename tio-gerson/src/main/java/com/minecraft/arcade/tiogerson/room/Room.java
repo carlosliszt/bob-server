@@ -22,10 +22,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.github.paperspigot.Title;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,9 +45,21 @@ public class Room implements BukkitInterface {
     private MapConfiguration mapConfiguration;
     private int time;
 
+    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int CODE_LENGTH = 3;
+    private static final Random RANDOM = new Random();
+
+    public static String generateRoomCode() {
+        StringBuilder code = new StringBuilder(CODE_LENGTH);
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+        return code.toString();
+    }
+
     public Room(int id, Mode mode, World world) {
         this.mode = mode;
-        this.code = "tG1" + id;
+        this.code = generateRoomCode() + id;
         this.tioGerson = new Team(ChatColor.RED, this, 1);
         this.enzo = new Team(ChatColor.BLUE, this, 7);
         this.spectators = new HashSet<>();
