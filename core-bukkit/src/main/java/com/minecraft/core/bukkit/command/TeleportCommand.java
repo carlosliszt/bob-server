@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class TeleportCommand implements BukkitInterface {
 
-    @Command(name = "teleport", aliases = {"tp"}, usage = "{label} [player] <target> and/or <x> <y> <z>", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "teleport", aliases = {"tp"}, usage = "{label} [player] <target> and/or <x> <y> <z>", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context, String[] args) {
         Player sender = context.getSender();
 

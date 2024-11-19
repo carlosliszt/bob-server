@@ -5,6 +5,7 @@ import com.minecraft.arcade.tiogerson.room.Room;
 import com.minecraft.arcade.tiogerson.user.User;
 import com.minecraft.arcade.tiogerson.util.enums.RoomStage;
 import com.minecraft.core.Constants;
+import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
 import com.minecraft.core.bukkit.util.item.ItemFactory;
@@ -19,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -36,7 +38,7 @@ public class Normal extends Mode {
         setWinstreakRecord(Columns.TIOGERSON_MAX_WINSTREAK);
     }
 
-    ItemStack kbStick = new ItemFactory(Material.STICK).setName("§aSAII FORA!").setDescription("§7SAI TITIO!!!").addEnchantment(Enchantment.KNOCKBACK, 2).setUnbreakable().addItemFlag(ItemFlag.HIDE_ATTRIBUTES).getStack();
+    ItemStack kbStick = new ItemFactory(Material.STICK).setName("§aSAII FORA!").setDescription("§7SAI TITIO!!!").addEnchantment(Enchantment.KNOCKBACK, 4).setUnbreakable().addItemFlag(ItemFlag.HIDE_ATTRIBUTES).getStack();
     ItemStack compass = new ItemFactory(Material.COMPASS).setName("§aLocalizar").setDescription("§7Localize o §9ENZO§7 mais próximo").getStack();
 
     ItemStack magicSugar = new ItemFactory(Material.SUGAR).setAmount(3).setName("§aPózinho Magico").setDescription("§7Aumenta a velocidade por 10 segundos").getStack();
@@ -85,8 +87,8 @@ public class Normal extends Mode {
         if (item == null || item.getType() == Material.AIR)
             return;
 
-        if (item.isSimilar(compass)) {
-            pointCompass(user, user.getRoom());
+        if (item.getType() == Material.COMPASS) {
+            pointCompass(user);
         }
 
         if (item.isSimilar(magicSugar)) {
@@ -107,6 +109,34 @@ public class Normal extends Mode {
         }
 
     }
+
+    @EventHandler
+    public void onPlayerMovement(PlayerMoveEvent e) {
+        Player comparator = null;
+        Player consumer = e.getPlayer();
+        User consumerUser = User.fetch(consumer.getUniqueId());
+
+        if (consumerUser.getRoom().getTioGerson().getMembers().contains(consumerUser)) {
+            for (User other : consumerUser.getRoom().getTioGerson().getMembers()) {
+                if (other.getUniqueId().equals(consumerUser.getUniqueId())) {
+                    continue;
+                }
+
+                Player p = other.getPlayer();
+                if (p != null && p.getLocation().distanceSquared(consumer.getLocation()) >= 100) {
+                    if (comparator == null ||
+                            comparator.getLocation().distanceSquared(consumer.getLocation()) > p.getLocation().distanceSquared(consumer.getLocation())) {
+                        comparator = p;
+                    }
+                }
+            }
+
+            if (comparator != null && comparator.isOnline()) {
+                consumer.playSound(comparator.getLocation(), Sound.NOTE_PLING, 2F, 2F);
+            }
+        }
+    }
+
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {

@@ -292,7 +292,7 @@ public abstract class Mode implements BukkitInterface, Listener {
         } else {
             Account account = Account.fetch(player.getUniqueId());
 
-            if (account.hasPermission(Rank.STREAMER_PLUS)) {
+            if (account.hasPermission(Rank.PARTNER_PLUS)) {
                 Vanish.getInstance().setVanished(player, account.getRank());
             } else {
                 player.setGameMode(GameMode.SURVIVAL);

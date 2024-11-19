@@ -38,7 +38,7 @@ public class VariableCommand implements BukkitInterface {
         BukkitGame.getEngine().getBukkitFrame().registerAdapter(SimpleVariable.class, variableLoader::getVariable);
     }
 
-    @Command(name = "var", aliases = {"variable"}, platform = Platform.BOTH, rank = Rank.STREAMER_PLUS, usage = "{label} <variable> [value]")
+    @Command(name = "var", aliases = {"variable"}, platform = Platform.BOTH, rank = Rank.PARTNER_PLUS, usage = "{label} <variable> [value]")
     public void handleCommand(Context<CommandSender> context, SimpleVariable variable) throws IllegalAccessException, InvocationTargetException {
 
         if (context.getArg(0).equalsIgnoreCase("list")) {
@@ -152,7 +152,7 @@ public class VariableCommand implements BukkitInterface {
 
     public void log(String key, String value) {
         List<Account> receivers = new ArrayList<>(Constants.getAccountStorage().getAccounts());
-        receivers.removeIf(accounts -> accounts.getRank().getId() < Rank.STREAMER_PLUS.getId() || accounts.getProperty("stafflog", false).getAsBoolean());
+        receivers.removeIf(accounts -> accounts.getRank().getId() < Rank.PARTNER_PLUS.getId() || accounts.getProperty("stafflog", false).getAsBoolean());
         receivers.forEach(receiver -> {
             Player staff = Bukkit.getPlayer(receiver.getUniqueId());
             if (staff == null)

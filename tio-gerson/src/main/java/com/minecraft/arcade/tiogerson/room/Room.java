@@ -190,7 +190,7 @@ public class Room implements BukkitInterface {
             if(team == getEnzo()) {
                 user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê sobreviveu ao TIO GERSON!", 1, 40, 10));
             } else {
-                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê passou encontrou todos os seus SOBRINHOS!", 1, 40, 10));
+                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê encontrou todos os seus SOBRINHOS!", 1, 40, 10));
             }
 
             Mode mode = getMode();
@@ -205,7 +205,7 @@ public class Room implements BukkitInterface {
         });
 
         getSpectators().forEach(user -> {
-            if (user.getPreviousTeam() != team && team != user.getRoom().getTioGerson()) {
+            if (user.getPreviousTeam() != null && user.getPreviousTeam() != team && team != user.getRoom().getTioGerson()) {
                 user.getPlayer().sendTitle(new Title("§c§lDERROTA!", "§eVocê não sobreviveu até o final!", 1, 40, 10));
             }
         });

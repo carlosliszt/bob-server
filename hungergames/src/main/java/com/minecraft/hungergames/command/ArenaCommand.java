@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 public class ArenaCommand implements BukkitInterface, Assistance {
 
-    @Command(name = "arena", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "arena", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context) {
 
         String[] args = context.getArgs();

@@ -19,7 +19,7 @@ public @interface Variable {
 
     String name();
 
-    Rank permission() default Rank.STREAMER_PLUS;
+    Rank permission() default Rank.PARTNER_PLUS;
 
     boolean announce() default false;
 

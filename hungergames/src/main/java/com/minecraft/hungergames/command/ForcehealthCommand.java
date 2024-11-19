@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ForcehealthCommand implements Assistance, BukkitInterface {
 
-    @Command(name = "forcehealth", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS, usage = "{label} <target...> <health>")
+    @Command(name = "forcehealth", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS, usage = "{label} <target...> <health>")
     public void forcehealthCommand(Context<Player> context, String rawUsers, double health) {
 
         if (health < 0.5) {

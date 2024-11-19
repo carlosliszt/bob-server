@@ -34,6 +34,7 @@ import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
 import com.minecraft.core.translation.Language;
 import com.minecraft.lobby.Lobby;
+import com.minecraft.lobby.feature.chair.ChairStairs;
 import com.minecraft.lobby.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -109,6 +110,8 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
 
         getWorld().setTime(6000);
         getWorld().setGameRuleValue("doDaylightCycle ", "false");
+
+        new ChairStairs(lobby);
     }
 
     protected int tick;

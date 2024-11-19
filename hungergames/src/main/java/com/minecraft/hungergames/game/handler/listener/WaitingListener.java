@@ -69,7 +69,7 @@ public class WaitingListener implements Listener, BukkitInterface, Assistance, V
         user.setCondition(Condition.ALIVE);
         user.loadKits();
 
-        if (account.hasPermission(Rank.STREAMER_PLUS))
+        if (account.hasPermission(Rank.PARTNER_PLUS))
             Vanish.getInstance().setVanished(p, account.getRank());
 
         Items.STARTING.apply(user);

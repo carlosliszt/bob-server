@@ -25,7 +25,7 @@ import java.util.List;
 
 public class EffectsCommand implements BukkitInterface {
 
-    @Command(name = "effects", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "effects", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context, Player target) {
         Player sender = context.getSender();
 

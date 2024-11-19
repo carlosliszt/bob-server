@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 public class TemplatekitCommand implements Assistance, BukkitInterface {
 
-    @Command(name = "skit", aliases = {"templatekit", "tkit"}, rank = Rank.STREAMER_PLUS, platform = Platform.PLAYER)
+    @Command(name = "skit", aliases = {"templatekit", "tkit"}, rank = Rank.PARTNER_PLUS, platform = Platform.PLAYER)
     public void handleCommand(Context<Player> context) {
 
         String[] args = context.getArgs();

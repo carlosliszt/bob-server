@@ -16,6 +16,7 @@ import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.Clantag;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Tag;
@@ -26,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import redis.clients.jedis.Jedis;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -92,6 +94,11 @@ public class ClanTagCommand implements BukkitInterface {
                 return;
             }
 
+            if (!clan.getMember(account.getUniqueId()).isAdmin()) {
+                context.sendMessage("§cVocê precisa ser um administrador do clan para alterar a clan tag.");
+                return;
+            }
+
             context.info("command.clantag.clantag_change", clantag.getColor() + clantag.getName());
 
             clan.setColor(clantag.getChatColor());
@@ -99,6 +106,10 @@ public class ClanTagCommand implements BukkitInterface {
                 Constants.getClanService().pushClan(clan);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+
+            try (Jedis jedis = Constants.getRedis().getResource()) {
+                jedis.publish(Redis.CLAN_TAG_UPDATE, clan.getIndex() + ":" + clan.getColor());
             }
 
             clan.getMembers().forEach(member -> {

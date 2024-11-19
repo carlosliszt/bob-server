@@ -171,8 +171,8 @@ public class HungerGames extends BukkitGame {
         }
 
         bukkitFrame.registerCommands(new InfoCommand<>(User.class, str -> User.fetch(UUID.fromString(str))));
-        bukkitFrame.getCommands(WorldEditCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.STREAMER_PLUS));
-        bukkitFrame.getCommands(WhitelistCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.STREAMER_PLUS));
+        bukkitFrame.getCommands(WorldEditCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.PARTNER_PLUS));
+        bukkitFrame.getCommands(WhitelistCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.PARTNER_PLUS));
         bukkitFrame.registerAdapter(Kit.class, getKitStorage()::getKit);
         bukkitFrame.registerAdapter(Celebration.class, getCelebrationStorage()::getCelebration);
         bukkitFrame.registerAdapter(User.class, User::getUser);

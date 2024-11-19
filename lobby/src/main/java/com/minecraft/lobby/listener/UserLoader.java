@@ -67,11 +67,11 @@ public class UserLoader implements Listener {
 
         Account account = user.getAccount();
 
-        if (account.hasPermission(Rank.STREAMER_PLUS))
+        if (account.hasPermission(Rank.PARTNER_PLUS))
             Vanish.getInstance().setVanished(event.getPlayer(), account.getRank());
 
         Tag tag = account.getProperty("account_tag").getAs(Tag.class);
-        boolean announcePlayerJoin = tag.isBetween(Tag.STREAMER_PLUS, Tag.MEMBER) && !Vanish.getInstance().isVanished(user.getUniqueId());
+        boolean announcePlayerJoin = tag.isBetween(Tag.PARTNER_PLUS, Tag.MEMBER) && !Vanish.getInstance().isVanished(user.getUniqueId());
 
         if (announcePlayerJoin) {
             hall.getUsers().forEach(recipient -> {

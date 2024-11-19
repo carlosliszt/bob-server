@@ -41,7 +41,6 @@ import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.md_5.bungee.protocol.Property;
@@ -305,7 +304,7 @@ public class AccountLoader implements Listener {
                 account.loadNicks();
                 String customName = account.getData(Columns.NICK).getAsString();
 
-                if (!customName.equals("...") && account.getRank().getId() >= Rank.ELITE.getId()) {
+                if (!customName.equals("...") && account.getRank().getId() >= Rank.ULTRA_PLUS.getId()) {
                     account.setDisplayName(customName);
                 } else account.getData(Columns.NICK).setData("...");
 

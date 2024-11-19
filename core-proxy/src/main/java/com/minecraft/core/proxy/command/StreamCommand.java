@@ -24,7 +24,7 @@ public class StreamCommand implements ProxyInterface {
 
         Account account = context.getAccount();
 
-        if (!account.hasPermission(Rank.STREAMER_PLUS) && !account.hasTag(Tag.DESTAQUE)) {
+        if (!account.hasPermission(Rank.PARTNER_PLUS)) {
             context.info("command.insufficient_permission");
             return;
         }

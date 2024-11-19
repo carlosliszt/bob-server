@@ -103,7 +103,7 @@ public class UserListeners implements Listener, BukkitInterface {
             if (Vanish.getInstance().isVanished(player.getUniqueId()))
                 Vanish.getInstance().setVanished(player, null);
         } else {
-            if (account.hasPermission(Rank.STREAMER_PLUS)) {
+            if (account.hasPermission(Rank.PARTNER_PLUS)) {
                 Vanish.getInstance().setVanished(player, account.getRank());
             } else {
                 player.setGameMode(GameMode.SURVIVAL);

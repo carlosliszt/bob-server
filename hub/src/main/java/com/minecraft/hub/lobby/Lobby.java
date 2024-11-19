@@ -125,7 +125,7 @@ public abstract class Lobby implements VariableStorage, Listener, BukkitInterfac
 
         final Tag tag = account.getProperty("account_tag").getAs(Tag.class);
 
-        if (!vanish && account.getPreference(Preference.LOBBY_ANNOUNCE_JOIN) && tag.isBetween(Tag.STREAMER_PLUS, Tag.MEMBER)) {
+        if (!vanish && account.getPreference(Preference.LOBBY_ANNOUNCE_JOIN) && tag.isBetween(Tag.PARTNER_PLUS, Tag.MEMBER)) {
             getHub().getUserStorage().getUsers().forEach(target -> {
                 final Account targetAccount = target.getAccount();
 

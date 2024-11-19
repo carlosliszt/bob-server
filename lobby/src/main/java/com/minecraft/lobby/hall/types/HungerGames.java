@@ -403,7 +403,7 @@ public class HungerGames extends Hall {
 
         Account account = Account.fetch(player.getUniqueId());
 
-        if(!account.hasPermission(Rank.STREAMER_PLUS)) {
+        if (!account.hasPermission(Rank.PARTNER_PLUS)) {
             player.sendMessage("§cEm breve!");
             return;
         }

@@ -176,7 +176,7 @@ public class PunishCommand implements ProxyInterface {
         }));
     }
 
-    @Command(name = "cban", rank = Rank.STREAMER_PLUS, usage = "cban <target> <reason>")
+    @Command(name = "cban", rank = Rank.PARTNER_PLUS, usage = "cban <target> <reason>")
     public void cbanCommand(Context<CommandSender> context, String target) {
 
         if (context.getAccount().getFlag(Flag.PUNISH)) {

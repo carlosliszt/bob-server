@@ -78,13 +78,13 @@ public class ClanxClan extends Game {
         getVariables().setCountStats(false);
         setDamage(false);
         hungerGames.getWhitelist().setActive(true);
-        hungerGames.getWhitelist().setMinimumRank(Rank.STREAMER_PLUS);
+        hungerGames.getWhitelist().setMinimumRank(Rank.PARTNER_PLUS);
         getPlugin().setRankingFactory(null);
         getPlugin().getBukkitFrame().registerCommands(new TeamCommand());
 
-        getPlugin().getBukkitFrame().getCommands(TimeCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.STREAMER_PLUS));
-        getPlugin().getBukkitFrame().getCommands(KitsCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.STREAMER_PLUS));
-        getPlugin().getBukkitFrame().getCommands(TeleportallCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.STREAMER_PLUS));
+        getPlugin().getBukkitFrame().getCommands(TimeCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.PARTNER_PLUS));
+        getPlugin().getBukkitFrame().getCommands(KitsCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.PARTNER_PLUS));
+        getPlugin().getBukkitFrame().getCommands(TeleportallCommand.class).forEach(c -> c.getCommandInfo().setRank(Rank.PARTNER_PLUS));
     }
 
     @Override
@@ -93,8 +93,8 @@ public class ClanxClan extends Game {
         try {
             getVariable("hg.respawn").setValue(false);
             getVariable("hg.kit.default").setValue(getKit("Miner"));
-            getVariable("hg.border.max_y").setDefaultRank(Rank.STREAMER_PLUS);
-            getVariable("hg.border.max_radius").setDefaultRank(Rank.STREAMER_PLUS);
+            getVariable("hg.border.max_y").setDefaultRank(Rank.PARTNER_PLUS);
+            getVariable("hg.border.max_radius").setDefaultRank(Rank.PARTNER_PLUS);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -181,7 +181,7 @@ public class ClanxClan extends Game {
             if (user.isAlive() && team.isMember(user))
                 return false;
 
-            return user.isAlive() || !user.getAccount().hasPermission(Rank.STREAMER_PLUS);
+            return user.isAlive() || !user.getAccount().hasPermission(Rank.PARTNER_PLUS);
         });
 
         Account account = Account.fetch(player.getUniqueId());

@@ -27,7 +27,7 @@ import java.util.UUID;
 public class Whitelist {
 
     private boolean active = false;
-    private Rank minimumRank = Rank.STREAMER_PLUS;
+    private Rank minimumRank = Rank.PARTNER_PLUS;
     private transient Set<WhitelistData> whitelistedPlayers = new HashSet<>();
 
     public boolean isWhitelisted(String name) {

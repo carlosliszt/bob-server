@@ -59,11 +59,10 @@ public enum ChatType {
         clan.getMembers().forEach(member -> {
 
             ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(member.getUniqueId());
-
             if (proxiedPlayer == null)
                 return;
 
-            proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§9[CLAN] §7" + sender.getUsername() + ": §r" + chatEvent.getMessage()));
+            proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§9[CLAN] " + sender.getRank().getDefaultTag().getFormattedColor() + sender.getUsername() + ": §r" + chatEvent.getMessage()));
         });
     });
 

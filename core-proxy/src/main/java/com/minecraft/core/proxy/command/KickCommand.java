@@ -25,7 +25,7 @@ import java.util.List;
 
 public class KickCommand implements ProxyInterface {
 
-    @Command(name = "kick", usage = "kick <target> <reason>", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "kick", usage = "kick <target> <reason>", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<ProxiedPlayer> context, Account target, @Optional(def = "Não informado.") String[] reason) {
         if (target == null) {
             context.info("target.not_found");

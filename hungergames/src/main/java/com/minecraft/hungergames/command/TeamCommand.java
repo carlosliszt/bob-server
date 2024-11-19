@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class TeamCommand {
 
-    @Command(name = "team", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS, aliases = "tm")
+    @Command(name = "team", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS, aliases = "tm")
     public void teamCommand(Context<CommandSender> context) {
 
         String label = context.getLabel();

@@ -86,6 +86,34 @@ public class AccountCommand implements ProxyInterface {
         }
     }
 
+    @Completer(name = "acc")
+    public List<String> handleComplete(Context<CommandSender> context) {
+        if (context.getAccount().hasPermission(Rank.PARTNER_PLUS)) {
+            String[] args = context.getArgs();
+            if (args.length == 1)
+                return getOnlineNicknames(context);
+            else if (args.length == 2)
+                return Arrays.stream(Argument.values()).filter(arg -> arg.getArg() != null && context.getAccount().hasPermission(arg.getRank()) && startsWith(arg.getArg(), args[1])).map(Argument::getArg).sorted().collect(Collectors.toList());
+            else if (args.length == 3) {
+                if (args[1].equalsIgnoreCase("rank"))
+                    return Arrays.stream(Rank.values()).filter(rank -> rank != Rank.MEMBER && startsWith(rank.getDisplayName(), args[2]) && context.getAccount().hasPermission(rank)).map(r -> r.getDisplayName().toLowerCase()).collect(Collectors.toList());
+                else if (args[1].equalsIgnoreCase("flag"))
+                    return Arrays.stream(Flag.values()).filter(flag -> context.getAccount().hasPermission(flag.getRank()) && startsWith(flag.getName(), args[2])).map(flag -> flag.getName().toLowerCase()).collect(Collectors.toList());
+            } else if (args.length == 4) {
+                if (args[1].equalsIgnoreCase("rank"))
+                    return Stream.of("n", "5h", "3d", "7d", "1mo", "3mo", "6mo", "1y").filter(c -> startsWith(c, args[3])).collect(Collectors.toList());
+                if (args[1].equalsIgnoreCase("flag"))
+                    return Stream.of("true", "false").filter(c -> startsWith(c, args[3])).collect(Collectors.toList());
+
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private interface Executor {
+        void execute(Account account, Context<CommandSender> context);
+    }
+
     @Getter
     @AllArgsConstructor
     public enum Argument {
@@ -914,7 +942,7 @@ public class AccountCommand implements ProxyInterface {
             }
         }),
 
-        INFO(null, Rank.STREAMER_PLUS, (account, context) -> {
+        INFO(null, Rank.PARTNER_PLUS, (account, context) -> {
 
             Account localAccount = context.getAccount();
 
@@ -1021,33 +1049,5 @@ public class AccountCommand implements ProxyInterface {
         public static Argument get(String key) {
             return Arrays.stream(values()).filter(argument -> argument.getArg() != null && argument.getArg().equalsIgnoreCase(key)).findFirst().orElse(null);
         }
-    }
-
-    private interface Executor {
-        void execute(Account account, Context<CommandSender> context);
-    }
-
-    @Completer(name = "acc")
-    public List<String> handleComplete(Context<CommandSender> context) {
-        if (context.getAccount().hasPermission(Rank.STREAMER_PLUS)) {
-            String[] args = context.getArgs();
-            if (args.length == 1)
-                return getOnlineNicknames(context);
-            else if (args.length == 2)
-                return Arrays.stream(Argument.values()).filter(arg -> arg.getArg() != null && context.getAccount().hasPermission(arg.getRank()) && startsWith(arg.getArg(), args[1])).map(Argument::getArg).sorted().collect(Collectors.toList());
-            else if (args.length == 3) {
-                if (args[1].equalsIgnoreCase("rank"))
-                    return Arrays.stream(Rank.values()).filter(rank -> rank != Rank.MEMBER && startsWith(rank.getDisplayName(), args[2]) && context.getAccount().hasPermission(rank)).map(r -> r.getDisplayName().toLowerCase()).collect(Collectors.toList());
-                else if (args[1].equalsIgnoreCase("flag"))
-                    return Arrays.stream(Flag.values()).filter(flag -> context.getAccount().hasPermission(flag.getRank()) && startsWith(flag.getName(), args[2])).map(flag -> flag.getName().toLowerCase()).collect(Collectors.toList());
-            } else if (args.length == 4) {
-                if (args[1].equalsIgnoreCase("rank"))
-                    return Stream.of("n", "5h", "3d", "7d", "1mo", "3mo", "6mo", "1y").filter(c -> startsWith(c, args[3])).collect(Collectors.toList());
-                if (args[1].equalsIgnoreCase("flag"))
-                    return Stream.of("true", "false").filter(c -> startsWith(c, args[3])).collect(Collectors.toList());
-
-            }
-        }
-        return Collections.emptyList();
     }
 }

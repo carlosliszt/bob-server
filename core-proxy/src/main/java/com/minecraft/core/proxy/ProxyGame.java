@@ -115,7 +115,7 @@ public class ProxyGame extends Plugin {
 
             getProxy().getScheduler().schedule(this, this::runGarbageCollector, 5, 5, TimeUnit.MINUTES);
 
-            getProxy().getScheduler().runAsync(this, redisPubSub = new RedisPubSub(new ProxyRedisPubSub(), Redis.SERVER_REDIRECT_CHANNEL, Redis.NICK_ADD_CHANNEL, Redis.OPEN_EVENT_CHANNEL, Redis.SKIN_CHANGE_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
+            getProxy().getScheduler().runAsync(this, redisPubSub = new RedisPubSub(new ProxyRedisPubSub(), Redis.SERVER_REDIRECT_CHANNEL, Redis.CLAN_TAG_UPDATE, Redis.NICK_ADD_CHANNEL, Redis.OPEN_EVENT_CHANNEL, Redis.SKIN_CHANGE_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
 
             getProxy().getScheduler().schedule(this, () -> {
                 new LogScheduler().run();

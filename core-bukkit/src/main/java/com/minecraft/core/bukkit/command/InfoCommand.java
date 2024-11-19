@@ -27,7 +27,7 @@ public class InfoCommand<T> implements BukkitInterface {
     private final Class<?> infoClass;
     private final TypeAdapter<T> adapter;
 
-    @Command(name = "info", usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "info", usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context, Player target) {
 
         if (target == null) {

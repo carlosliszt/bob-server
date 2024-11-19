@@ -24,7 +24,7 @@ import java.util.List;
 
 public class GamemodeCommand implements BukkitInterface {
 
-    @Command(name = "gamemode", aliases = {"gm"}, usage = "{label} <mode> [player]", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "gamemode", aliases = {"gm"}, usage = "{label} <mode> [player]", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context, String[] args) {
         Player sender = context.getSender();
 

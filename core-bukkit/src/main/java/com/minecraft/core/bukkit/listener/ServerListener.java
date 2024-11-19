@@ -229,7 +229,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
         Account account = Account.fetch(event.getPlayer().getUniqueId());
 
-        if (account.hasPermission(Rank.STREAMER_PLUS))
+        if (account.hasPermission(Rank.PARTNER_PLUS))
             return;
 
         Cooldown cooldown = CooldownProvider.getGenericInstance().getCooldown(event.getPlayer().getUniqueId(), "command.cooldown");
@@ -272,7 +272,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
         Cooldown cooldown = CooldownProvider.getGenericInstance().getCooldown(event.getPlayer().getUniqueId(), "chat.cooldown");
 
-        boolean isStaff = account.hasPermission(Rank.STREAMER_PLUS);
+        boolean isStaff = account.hasPermission(Rank.PARTNER_PLUS);
 
         if (!isStaff) {
             if (cooldown != null && !cooldown.expired()) {

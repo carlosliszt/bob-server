@@ -70,7 +70,7 @@ public class User {
     }
 
     public boolean hasKit(Kit kit, int slot) {
-        return getAccount().hasPermission(kit.getRank()) || slot == 0 && PvP.getInstance().getKitStorage().getGameType().getMaxKits() > 1 || kit.isNone() || account.hasTag(Tag.BOOST) || account.hasTag(Tag.TWITCH);
+        return getAccount().hasPermission(kit.getRank()) || slot == 0 && PvP.getInstance().getKitStorage().getGameType().getMaxKits() > 1 || kit.isNone();
     }
 
     @Info(fancyName = "Kits")

@@ -9,6 +9,8 @@ package com.minecraft.core.proxy.redis;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.datas.SkinData;
+import com.minecraft.core.clan.Clan;
+import com.minecraft.core.clan.service.ClanService;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.proxy.ProxyGame;
@@ -23,10 +25,12 @@ import com.minecraft.core.translation.Language;
 import com.minecraft.core.util.communication.AccountRankUpdateData;
 import com.minecraft.core.util.communication.NicknameUpdateData;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import redis.clients.jedis.JedisPubSub;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class ProxyRedisPubSub extends JedisPubSub {
@@ -54,6 +58,21 @@ public class ProxyRedisPubSub extends JedisPubSub {
 
             if (!proxyserverStorage.getServers().contains(server)) {
                 proxyserverStorage.getServers().add(server);
+            }
+
+        } else if (channel.equals(Redis.CLAN_TAG_UPDATE)) {
+
+            String[] parsed = message.split(":");
+            String clanId = parsed[0];
+            String tagColor = parsed[1];
+
+            Clan clan = Constants.getClanService().getClan(Integer.parseInt(clanId));
+            clan.setColor(tagColor);
+
+            try {
+                Constants.getClanService().pushClan(clan);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
 
         } else if (channel.equals(Redis.NICK_DISGUISE_CHANNEL)) {

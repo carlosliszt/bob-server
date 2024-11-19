@@ -26,7 +26,7 @@ public class VanishCommand implements BukkitInterface {
 
     Vanish vanish = Vanish.getInstance();
 
-    @Command(name = "vanish", aliases = {"v"}, platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "vanish", aliases = {"v"}, platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context) {
         boolean vanished = vanish.isVanished(context.getUniqueId());
         if (context.getArgs().length == 0) {
@@ -58,7 +58,7 @@ public class VanishCommand implements BukkitInterface {
                 try {
                     category = Rank.Category.valueOf(args[0].toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    context.sendMessage("§cCategoria inválida, tente: " + Arrays.stream(Rank.Category.values()).map(Rank.Category::name).collect(Collectors.joining(", ")) + ".");
+                    context.sendMessage("§cCategoria inválida, tente: " + Arrays.stream(Rank.Category.values()).filter(r -> r.getImportance() <= context.getAccount().getRank().getCategory().getImportance()).map(Rank.Category::name).collect(Collectors.joining(", ")) + ".");
                     return;
                 }
 

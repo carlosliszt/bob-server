@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class ForcekitCommand implements Assistance, BukkitInterface {
 
-    @Command(name = "forcekit", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS, usage = "{label} <target...> <kit>")
+    @Command(name = "forcekit", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS, usage = "{label} <target...> <kit>")
     public void killCommand(Context<Player> context, String rawUsers, String rawKit) {
 
         Kit kit = getPlugin().getKitStorage().getKit(rawKit);

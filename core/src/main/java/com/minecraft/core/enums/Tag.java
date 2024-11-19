@@ -13,33 +13,30 @@ import java.util.Arrays;
 @Getter
 public enum Tag {
 
-    ROSA(30, "0", "§d", false, "r0s4", "Rosa", "Pink"),
-    ADMINISTRATOR(25, "A", "§4", false, "IzPLp", "Admin", "administrator"),
-    PRIMARY_MOD(24, "B", "§5", false, "CYrov", "Mod+", "moderator+"),
-    SECONDARY_MOD(23, "C", "§5", false, "dyOYO", "Mod", "moderator"),
-    TRIAL_MODERATOR(22, "D", "§5", false, "XGyAp", "Trial", "trialmoderator", "trialmod"),
-    YOUTUBER_PLUS(21, "E", "§3", false, "vAjST", "YT+", "youtuberplus", "youtuber+", "youtuber+"),
-    STREAMER_PLUS(20, "F", "§3", false, "Ofjaf", "Streamer+", "streamerplus", "stream+"),
-    HELPER(19, "G", "§9", false, "b3761", "Helper", "Ajudante"),
-    BUILDER(18, "H", "§3", false, "VvNPg", "Builder", "constructor"),
-    DESTAQUE(17, "I", "§6", true, "dstqe", "Destaque"),
-    YOUTUBER(16, "J", "§b", false, "lMFIR", "YT", "youtuber"),
-    STREAMER(15, "K", "§b", false, "OMFaf", "Stream", "Streamer'"),
-    PARTNER(14, "L", "§b", false, "OBFGf", "Partner"),
-    SHORTS(13, "M", "§b", false, "dn873", "Shorts", "Short"),
-    CHAMPION(12, "N", "§6", true, "c7x3b", "Champion", "Vencedor"),
-    ELITE(11, "O", "§c", false, "m8AnE", "Elite"),
-    BETA(10, "P", "§1", false, "DxmFd", "Beta"),
-    BOB(9, "Q", "§d", true, "jSBMB", "Bob"),
-    CXC(8, "R", "§6", true, "3b28a", "CxC"),
-    YEAR_2021(7, "S", "§b", true, "21g47", "2021"),
-    NATAL(6, "T", "§c", true, "xma21", "Natal", "Christmas"),
-    HALLOWEEN(5, "U", "§5", true, "hlw21", "Halloween"),
-    PRO(4, "V", "§6", false, "QHGIn", "Pro"),
-    VIP(3, "W", "§a", false, "yDTiT", "VIP"),
-    BOOST(2, "X", "§d", true, "qVFqz", "Boost", "nitro", "nitrobooster", "booster"),
-    TWITCH(1, "Y", "§5", true, "ytw22", "Twitch", "Subscriber"),
-    MEMBER(0, "Z", "§7", false, "EalNl", "Membro", "member", "normal", "default", "none", "null");
+    ROSA(100, "0", "§d", false, "r0s4", "Rosa", "Pink"),
+    ADMINISTRATOR(22, "A", "§4", false, "IzPLp", "Admin", "administrator"),
+    REPORTER(21, "B", "§c", true, "uwu12", "Reporter"),
+    PRIMARY_MOD(20, "C", "§5", false, "CYrov", "Mod+", "moderator+"),
+    SECONDARY_MOD(19, "D", "§5", false, "dyOYO", "Mod", "moderator"),
+    TRIAL_MODERATOR(18, "E", "§5", false, "XGyAp", "Trial", "trialmoderator", "trialmod"),
+    PARTNER_PLUS(17, "F", "§3", false, "vAjST", "Partner+", "Partnermais"),
+    HELPER(16, "G", "§9", false, "b3761", "Helper", "Ajudante"),
+    BUILDER(15, "H", "§3", false, "VvNPg", "Builder", "constructor"),
+    PARTNER(14, "I", "§b", false, "OBFGf", "Partner"),
+    YOUTUBER(13, "J", "§b", false, "lMFIR", "YT", "youtuber"),
+    STREAMER(12, "K", "§b", false, "OMFaf", "Stream", "Streamer'"),
+    CHAMPION(11, "L", "§6", true, "c7x3b", "Champion", "Vencedor"),
+    BETA(10, "M", "§1", false, "DxmFd", "Beta"),
+    ULTRA_PLUS(9, "N", "§d", false, "m8AnE", "Ultra+", "Ultramais"),
+    CARNAVAL(8, "O", "§6", true, "carnv", "Carnaval"),
+    NATAL(7, "P", "§c", true, "xma21", "Natal", "Christmas"),
+    FERIAS(6, "Q", "§a", true, "vc021", "Férias", "Vacation"),
+    ENDERLORE(5, "R", "§5", true, "hlw21", "Enderlore"),
+    ULTRA(4, "S", "§d", false, "y7t2a", "Ultra"),
+    PRO(3, "T", "§6", false, "QHGIn", "Pro"),
+    MVP(2, "U", "§9", false, "ytw22", "MVP"),
+    VIP(1, "V", "§a", false, "yDTiT", "VIP"),
+    MEMBER(0, "W", "§7", false, "EalNl", "Membro", "member", "normal", "default", "none", "null");
 
     private final int id;
     private final String order;
@@ -103,7 +100,7 @@ public enum Tag {
     }
 
     public String getFormattedColor() {
-        if (this == STREAMER_PLUS || this == PRIMARY_MOD || this == ROSA)
+        if (this == PARTNER_PLUS || this == PRIMARY_MOD || this == ROSA || this == SECONDARY_MOD || this == ADMINISTRATOR || this == HELPER || this == PARTNER || this == TRIAL_MODERATOR)
             return color + "§o";
         return color;
     }

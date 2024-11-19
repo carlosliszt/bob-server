@@ -115,7 +115,7 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
         if (event.getChannel().getId().equals(ID)) {
 
             String msg = fixMessage(event);
-            Constants.getAccountStorage().getAccounts().stream().filter(account -> account.hasPermission(Rank.YOUTUBER_PLUS) && account.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
+            Constants.getAccountStorage().getAccounts().stream().filter(account -> account.hasPermission(Rank.PARTNER_PLUS) && account.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
 
                 ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(acc.getUniqueId());
 

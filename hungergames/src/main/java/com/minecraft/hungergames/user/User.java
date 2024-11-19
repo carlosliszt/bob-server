@@ -206,7 +206,7 @@ public class User {
     }
 
     public boolean hasKit(Kit kit, int slot) {
-        return hungerGames.getKitStorage().isFreeKits() || getAccount().hasPermission(kit.getPermission()) || slot == 0 && hungerGames.getGame().getType().getMaxKits() > 1 || kit instanceof Nenhum || accountKits.contains(kit) || account.hasTag(Tag.BOOST) || account.hasTag(Tag.TWITCH);
+        return hungerGames.getKitStorage().isFreeKits() || getAccount().hasPermission(kit.getPermission()) || slot == 0 && hungerGames.getGame().getType().getMaxKits() > 1 || kit instanceof Nenhum || accountKits.contains(kit);
     }
 
     public boolean hasCelebration(Celebration celebration) {

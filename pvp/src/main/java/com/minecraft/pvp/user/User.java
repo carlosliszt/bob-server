@@ -142,7 +142,7 @@ public class User {
     }
 
     public boolean hasKit(Kit kit, Type type) {
-        return kit.isNone() || type == Type.PRIMARY || getAccount().hasPermission(kit.getDefaultRank()) || kits.contains(kit) || account.hasTag(Tag.BOOST) || account.hasTag(Tag.TWITCH);
+        return kit.isNone() || type == Type.PRIMARY || getAccount().hasPermission(kit.getDefaultRank()) || kits.contains(kit);
     }
 
     private int boost(int value) {
@@ -180,7 +180,7 @@ public class User {
     }
 
     public void vanish() {
-        if (getAccount().hasPermission(Rank.STREAMER_PLUS))
+        if (getAccount().hasPermission(Rank.PARTNER_PLUS))
             Vanish.getInstance().setVanished(player, getAccount().getRank());
     }
 

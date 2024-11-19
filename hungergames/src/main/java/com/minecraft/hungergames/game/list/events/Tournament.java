@@ -70,7 +70,7 @@ public class Tournament extends Event {
     public void load() {
         super.load();
         getKits(' ', "Achilles Timelord Stomper Demoman Endermage AntiTower Launcher Phantom Switcher Fisherman Cultivator Camel Tank Blink Rider Berserker Checkpoint Chameleon Boxer Monk Digger Gladiator").forEach(kit -> kit.setActive(false, false));
-        getVariable("hg.advantages.minimum_rank").setValue(Rank.STREAMER_PLUS);
+        getVariable("hg.advantages.minimum_rank").setValue(Rank.PARTNER_PLUS);
     }
 
     @Variable(name = "hg.tournament.name_encryption")

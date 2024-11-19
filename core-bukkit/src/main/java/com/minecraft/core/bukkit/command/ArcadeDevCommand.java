@@ -24,7 +24,7 @@ public class ArcadeDevCommand implements BukkitInterface {
         frame.registerAdapter(GameQuantity.class, GameQuantity::fetch);
     }
 
-    @Command(name = "arcadedev", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "arcadedev", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<CommandSender> context, GameType gameType, GameQuantity gameQuantity, int mapId) {
         final Server server = Constants.getServerStorage().getServer("arcadedev");
 

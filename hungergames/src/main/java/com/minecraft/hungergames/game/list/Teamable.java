@@ -163,7 +163,7 @@ public class Teamable extends Game {
 
         Account account = Account.fetch(player.getUniqueId());
 
-        player.setOp(account.hasPermission(Rank.STREAMER_PLUS));
+        player.setOp(account.hasPermission(Rank.PARTNER_PLUS));
 
         if (getStage() != GameStage.WAITING)
             return;

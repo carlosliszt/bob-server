@@ -17,6 +17,7 @@ import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
 import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
+import com.minecraft.core.database.enums.Tables;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -88,7 +89,7 @@ public class ServerListener implements Listener, BukkitInterface {
 
         if (room.isCountStats()) {
             async(() -> {
-                user.getAccount().getDataStorage().saveTable(user.getRouteContext().getGame().getTable());
+                user.getAccount().getDataStorage().saveTable(Tables.TIOGERSON);
             });
         }
     }

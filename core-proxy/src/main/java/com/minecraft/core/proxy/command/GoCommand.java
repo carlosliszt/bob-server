@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class GoCommand implements Listener, ProxyInterface {
 
-    @Command(name = "go", rank = Rank.STREAMER_PLUS, platform = Platform.PLAYER, usage = "go <target>")
+    @Command(name = "go", rank = Rank.PARTNER_PLUS, platform = Platform.PLAYER, usage = "go <target>")
     public void handleCommand(Context<ProxiedPlayer> context, String username) {
 
         ProxiedPlayer sender = context.getSender();

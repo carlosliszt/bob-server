@@ -203,7 +203,7 @@ public class RoomListener implements Listener, Assistance, BukkitInterface, Vari
 
         if (hasStarted()) {
             if (user.getCondition() == Condition.SPECTATOR) {
-                if (user.getAccount().hasPermission(Rank.STREAMER_PLUS) && !user.isVanish())
+                if (user.getAccount().hasPermission(Rank.PARTNER_PLUS) && !user.isVanish())
                     Vanish.getInstance().setVanished(event.getPlayer(), user.getAccount().getRank());
             }
         }
@@ -292,7 +292,7 @@ public class RoomListener implements Listener, Assistance, BukkitInterface, Vari
             if (user.getAccount().hasPermission(rank)) {
                 if (isLateLimit()) {
                     if (user.getCondition() == Condition.LOADING) {
-                        if (user.getAccount().hasPermission(Rank.STREAMER_PLUS)) {
+                        if (user.getAccount().hasPermission(Rank.PARTNER_PLUS)) {
                             user.setCondition(Condition.SPECTATOR);
                             run(() -> {
                                 Vanish.getInstance().setVanished(user.getPlayer(), user.getAccount().getRank());

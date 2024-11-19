@@ -222,7 +222,7 @@ public abstract class Game extends GameExecutor implements VariableStorage, List
             p.setAllowFlight(true);
             p.setFlying(true);
             Items.SPECTATOR.apply(user);
-            if (!account.hasPermission(Rank.STREAMER_PLUS))
+            if (!account.hasPermission(Rank.PARTNER_PLUS))
                 p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 2, false, false), true);
         }
         p.updateInventory();
@@ -277,7 +277,7 @@ public abstract class Game extends GameExecutor implements VariableStorage, List
 
                 user.getVictims().clear();
 
-                if (account.hasPermission(Rank.STREAMER_PLUS)) {
+                if (account.hasPermission(Rank.PARTNER_PLUS)) {
                     if (!user.isVanish())
                         Vanish.getInstance().setVanished(player, account.getRank());
                 } else

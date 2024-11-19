@@ -120,7 +120,7 @@ public class SpectatorListener implements Listener, BukkitInterface, Assistance 
         if (user.isAlive())
             return;
 
-        if (user.getAccount().hasPermission(Rank.STREAMER_PLUS))
+        if (user.getAccount().hasPermission(Rank.PARTNER_PLUS))
             return;
 
         event.setCancelled(true);

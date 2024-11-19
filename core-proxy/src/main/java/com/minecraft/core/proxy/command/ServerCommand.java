@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class ServerCommand implements ProxyInterface, Listener {
 
-    @Command(name = "server", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "server", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<ProxiedPlayer> context) {
         String[] args = context.getArgs();
 

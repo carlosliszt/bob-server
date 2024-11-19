@@ -11,6 +11,7 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.event.server.RedisPubSubEvent;
 import com.minecraft.core.bukkit.util.disguise.PlayerDisguise;
+import com.minecraft.core.clan.Clan;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.PrefixType;
@@ -22,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.JedisPubSub;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class BukkitRedisPubSub extends JedisPubSub {
@@ -77,6 +79,34 @@ public class BukkitRedisPubSub extends JedisPubSub {
                     account.setDisplayName(args[1]);
                 }
             }
+
+        } else if (channel.equals(Redis.CLAN_TAG_UPDATE)) {
+
+            String[] parsed = message.split(":");
+            String clanId = parsed[0];
+            String tagColor = parsed[1];
+
+            Clan clan = Constants.getClanService().getClan(Integer.parseInt(clanId));
+            clan.setColor(tagColor);
+
+            try {
+                Constants.getClanService().pushClan(clan);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            clan.getMembers().forEach(member -> {
+
+                Player player = Bukkit.getPlayer(member.getUniqueId());
+
+                if (player == null) {
+                    return;
+                }
+
+                Account account = Account.fetch(player.getUniqueId());
+
+                new PlayerUpdateTablistEvent(account, account.getProperty("account_tag").getAs(Tag.class), account.getProperty("account_prefix_type").getAs(PrefixType.class)).fire();
+            });
 
         } else if (channel.equals(Redis.FLAG_UPDATE_CHANNEL)) {
             String[] args = message.split(":");

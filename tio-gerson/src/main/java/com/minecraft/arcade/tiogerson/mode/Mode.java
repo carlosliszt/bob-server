@@ -272,29 +272,31 @@ public abstract class Mode implements BukkitInterface, Listener {
         room.getWorld().getPlayers().forEach(c -> handleSidebar(User.fetch(c.getUniqueId())));
     }
 
-    public void pointCompass(User user, Room room) {
-        Player closestPlayer = null;
-        Player consumer = user.getPlayer();
-        double closestDistance = Double.MAX_VALUE;
+    public void pointCompass(User user) {
 
-        for (User other : room.getEnzo().getMembers()) {
+        Player comparator = null;
+        Player consumer = user.getPlayer();
+
+        for (User other : user.getRoom().getEnzo().getMembers()) {
+
             if (other.getUniqueId().equals(user.getUniqueId()))
                 continue;
 
             Player player = other.getPlayer();
-            double distance = player.getLocation().distanceSquared(consumer.getLocation());
 
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestPlayer = player;
+            if (player.getLocation().distanceSquared(consumer.getLocation()) >= 225) {
+                if (comparator == null || comparator.getLocation().distanceSquared(consumer.getLocation()) > player.getLocation().distanceSquared(consumer.getLocation())) {
+                    comparator = player;
+                }
             }
         }
 
-        if (closestPlayer == null) {
+        if (comparator == null) {
             consumer.sendMessage("§cNenhum jogador encontrado.");
+            consumer.setCompassTarget(user.getRoom().getMapConfiguration().getTioGersonLocation());
         } else {
-            consumer.setCompassTarget(closestPlayer.getLocation());
-            consumer.sendMessage("§aA bússola foi apontada para " + closestPlayer.getName() + ".");
+            consumer.setCompassTarget(comparator.getLocation());
+            consumer.sendMessage(user.getAccount().getLanguage().translate("hg.game.user.compass_pointing_to", comparator.getName()));
         }
     }
 
@@ -354,7 +356,7 @@ public abstract class Mode implements BukkitInterface, Listener {
         } else {
             Account account = Account.fetch(player.getUniqueId());
 
-            if (account.hasPermission(Rank.STREAMER_PLUS)) {
+            if (account.hasPermission(Rank.PARTNER_PLUS)) {
                 Vanish.getInstance().setVanished(player, account.getRank());
             } else {
                 player.setGameMode(GameMode.SURVIVAL);

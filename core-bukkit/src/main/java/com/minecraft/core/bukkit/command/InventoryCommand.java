@@ -26,7 +26,7 @@ import java.util.List;
 
 public class InventoryCommand implements BukkitInterface {
 
-    @Command(name = "inventory", aliases = {"inv", "invsee"}, usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.STREAMER_PLUS)
+    @Command(name = "inventory", aliases = {"inv", "invsee"}, usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<Player> context, Player target) {
         Player sender = context.getSender();
 

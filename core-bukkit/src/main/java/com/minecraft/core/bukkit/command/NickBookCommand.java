@@ -22,19 +22,12 @@ import com.minecraft.core.enums.Tag;
 import com.minecraft.core.util.StringTimeUtils;
 import com.minecraft.core.util.communication.NicknameUpdateData;
 import com.minecraft.core.util.skin.Skin;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
-import java.awt.*;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -47,7 +40,7 @@ public class NickBookCommand {
             "neymar", "alessia", "drone","fest", "festinha","alan",  "aleeessia", "alexa", "faasty", "Neymar", "lucas", "naruto", "Naruto", "Sasuke", "Matheuszinho", "matheuszinho", "matheus", "bizarro", "ricardinho", "biajoaninha", "bob", "wal"};
 
 
-    @Command(name = "nickbook", rank = Rank.ELITE, platform = Platform.PLAYER)
+    @Command(name = "nickbook", rank = Rank.ULTRA_PLUS, platform = Platform.PLAYER)
     public void onNickBookCommand(Context<Player> ctx) {
         String[] args = ctx.getArgs();
         Account account = ctx.getAccount();

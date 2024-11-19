@@ -38,7 +38,7 @@ public class ChatCommand implements BukkitInterface, Listener, VariableStorage {
     @Variable(name = "chat")
     public boolean CHAT_ACTIVE = true;
 
-    @Command(name = "chat", platform = Platform.BOTH, rank = Rank.STREAMER_PLUS, usage = "chat <clear/true/false>")
+    @Command(name = "chat", platform = Platform.BOTH, rank = Rank.PARTNER_PLUS, usage = "chat <clear/true/false>")
     public void handleCommand(Context<CommandSender> context, String str) {
         if (isBoolean(str)) {
             setActive(BukkitGame.getEngine().getBukkitFrame().getAdapterMap().getBoolean(str));
@@ -76,7 +76,7 @@ public class ChatCommand implements BukkitInterface, Listener, VariableStorage {
 
         Account account = Account.fetch(event.getPlayer().getUniqueId());
 
-        if (!account.hasPermission(Rank.STREAMER_PLUS)) {
+        if (!account.hasPermission(Rank.PARTNER_PLUS)) {
             event.getPlayer().sendMessage(account.getLanguage().translate("chat.not_enabled"));
             event.setCancelled(true);
         }
@@ -84,7 +84,7 @@ public class ChatCommand implements BukkitInterface, Listener, VariableStorage {
 
     public void log(String key, String value) {
         List<Account> receivers = new ArrayList<>(Constants.getAccountStorage().getAccounts());
-        receivers.removeIf(accounts -> accounts.getRank().getId() < Rank.STREAMER_PLUS.getId() || accounts.getProperty("stafflog", false).getAsBoolean());
+        receivers.removeIf(accounts -> accounts.getRank().getId() < Rank.PARTNER_PLUS.getId() || accounts.getProperty("stafflog", false).getAsBoolean());
         receivers.forEach(receiver -> {
             Player staff = Bukkit.getPlayer(receiver.getUniqueId());
             if (staff == null)

@@ -29,13 +29,13 @@ import java.util.stream.Collectors;
 
 public class PrefixtypeCommand implements BukkitInterface {
 
-    @Command(name = "prefixtype", usage = "{label} <prefixtype>", platform = Platform.PLAYER, rank = Rank.ELITE)
+    @Command(name = "prefixtype", usage = "{label} <prefixtype>", platform = Platform.PLAYER, rank = Rank.ULTRA_PLUS)
     public void handleCommand(Context<Player> context, String type) {
 
         Account account = context.getAccount();
 
-        if (!account.hasPermission(Rank.STREAMER_PLUS) && account.getRank().getId() != Rank.ELITE.getId()) {
-            context.info("game.spectatorlist.no_permission", Rank.ELITE.getName(), Constants.SERVER_WEBSITE);
+        if (!account.hasPermission(Rank.PARTNER_PLUS) && account.getRank().getId() != Rank.ULTRA_PLUS.getId()) {
+            context.info("game.spectatorlist.no_permission", Rank.ULTRA_PLUS.getName(), Constants.SERVER_WEBSITE);
             return;
         }
 

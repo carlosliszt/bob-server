@@ -57,7 +57,7 @@ public class WhisperCommand implements BukkitInterface {
 
         Cooldown cooldown = CooldownProvider.getGenericInstance().getCooldown(context.getUniqueId(), "chat.cooldown");
 
-        if (!accountSender.hasPermission(Rank.STREAMER_PLUS)) {
+        if (!accountSender.hasPermission(Rank.PARTNER_PLUS)) {
             if (cooldown != null && !cooldown.expired()) {
                 context.info("wait_to_chat", Constants.SIMPLE_DECIMAL_FORMAT.format(cooldown.getRemaining()));
                 return;

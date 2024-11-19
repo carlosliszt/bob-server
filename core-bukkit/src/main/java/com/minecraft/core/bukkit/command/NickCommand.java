@@ -175,14 +175,14 @@ public class NickCommand implements BukkitInterface {
         return new Property("textures", property.getValue(), property.getSignature());
     }
 
-    @Command(name = "nick", platform = Platform.PLAYER, rank = Rank.ELITE)
+    @Command(name = "nick", platform = Platform.PLAYER, rank = Rank.ULTRA_PLUS)
     public void handleCommand(Context<Player> context) {
         String[] args = context.getArgs();
 
         Player sender = context.getSender();
         Account account = context.getAccount();
 
-        boolean hasReachedLimited = account.getRank() == Rank.ELITE && account.getUnexpiredNicks().size() >= 3;
+        boolean hasReachedLimited = account.getRank() == Rank.ULTRA_PLUS && account.getUnexpiredNicks().size() >= 3;
 
         if (args.length == 0) {
             Book book = new Book("Nick", "hateinblue");
@@ -224,18 +224,18 @@ public class NickCommand implements BukkitInterface {
     @AllArgsConstructor
     enum Argument {
 
-        LAST("last", Rank.ELITE, (account, context) -> {
+        LAST("last", Rank.ULTRA_PLUS, (account, context) -> {
             accept("last", context, account.getData(Columns.LAST_NICK).getAsString(), true, false);
         }),
 
-        RANDOM("random", Rank.ELITE, (account, context) -> {
+        RANDOM("random", Rank.ULTRA_PLUS, (account, context) -> {
 
             if (account.getFlag(Flag.NICK)) {
                 context.info("flag.locked");
                 return;
             }
 
-            boolean hasReachedLimited = account.getRank() == Rank.ELITE && account.getUnexpiredNicks().size() >= 3;
+            boolean hasReachedLimited = account.getRank() == Rank.ULTRA_PLUS && account.getUnexpiredNicks().size() >= 3;
 
             if(hasReachedLimited) {
                 context.sendMessage("§cVocê já usou todos os seus disfarces hoje.");
@@ -249,7 +249,7 @@ public class NickCommand implements BukkitInterface {
             });
         }),
 
-        RESET("reset", Rank.ELITE, (account, context) -> {
+        RESET("reset", Rank.ULTRA_PLUS, (account, context) -> {
 
             if (account.getFlag(Flag.NICK)) {
                 context.info("flag.locked");
@@ -289,7 +289,7 @@ public class NickCommand implements BukkitInterface {
             context.info("command.nick.nickname_remove");
         }),
 
-        LIST("list", Rank.STREAMER_PLUS, (account, context) -> {
+        LIST("list", Rank.PARTNER_PLUS, (account, context) -> {
 
             List<Account> accountList = new ArrayList<>(Constants.getAccountStorage().getAccounts());
             accountList.removeIf(accounts -> {
@@ -317,7 +317,7 @@ public class NickCommand implements BukkitInterface {
             accountList.forEach(accounts -> context.sendMessage("§7- §6" + accounts.getDisplayName() + "§e=§b" + accounts.getUsername()));
         }),
 
-        SKIN("skin", Rank.SHORTS, (account, context) -> {
+        SKIN("skin", Rank.PARTNER, (account, context) -> {
 
             if (account.getFlag(Flag.SKIN)) {
                 context.info("flag.locked");

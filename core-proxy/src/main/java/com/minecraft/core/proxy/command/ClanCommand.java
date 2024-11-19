@@ -105,21 +105,21 @@ public class ClanCommand implements ProxyInterface {
         HELP(0, "help") {
             @Override
             public void execute(Context<ProxiedPlayer> context) throws SQLException {
-                context.sendMessage("§cUso do /clan:");
-                context.sendMessage("§c * /clan ver [clan] - §eVeja as informações de um clan.");
-                context.sendMessage("§c * /clan membros [clan] - §eVeja os membros de um clan.");
-                context.sendMessage("§c * /clan criar <nome> <tag> - §eCrie um clan.");
-                context.sendMessage("§c * /clan apagar - §eAcabe com o seu clan.");
-                context.sendMessage("§c * /clan sair - §eSaia do seu clan.");
-                context.sendMessage("§c * /clan convidar <alvo> - §eConvide jogadores para seu clan.");
-                context.sendMessage("§c * /clan transferir <alvo> - §eTransfira a posse do clan para outro membro.");
-                context.sendMessage("§c * /clan promover <alvo> - §ePromova um membro do clan.");
-                context.sendMessage("§c * /clan rebaixar <alvo> - §eRebaixe um administrador do clan.");
-                context.sendMessage("§c * /clan expulsar <alvo> - §eExpulse um membro do clan.");
-                context.sendMessage("§c * /clan convites - §eVisualize os convites recentes.");
-                context.sendMessage("§c * /clan aceitar <clan> - §eAceite um convite de clan recebido.");
-                context.sendMessage("§c * /clan negar <clan> - §eNegue um convite de clan recebido.");
-                context.sendMessage("§c * /clan chat - §eEntre em um bate-papo particular com seu clan.");
+                context.sendMessage("§6Uso do §a/clan§6:");
+                context.sendMessage("§e/clan ver [clan] - §bVeja as informações de um clan.");
+                context.sendMessage("§e/clan membros [clan] - §bVeja os membros de um clan.");
+                context.sendMessage("§e/clan criar <nome> <tag> - §bCrie um clan.");
+                context.sendMessage("§e/clan apagar - §bAcabe com o seu clan.");
+                context.sendMessage("§e/clan sair - §bSaia do seu clan.");
+                context.sendMessage("§e/clan convidar <alvo> - §bConvide jogadores para seu clan.");
+                context.sendMessage("§e/clan transferir <alvo> - §bTransfira a posse do clan para outro membro.");
+                context.sendMessage("§e/clan promover <alvo> - §bPromova um membro do clan.");
+                context.sendMessage("§e/clan rebaixar <alvo> - §bRebaixe um administrador do clan.");
+                context.sendMessage("§e/clan expulsar <alvo> - §bExpulse um membro do clan.");
+                context.sendMessage("§e/clan convites - §bVisualize os convites recentes.");
+                context.sendMessage("§e/clan aceitar <clan> - §bAceite um convite de clan recebido.");
+                context.sendMessage("§e/clan negar <clan> - §bNegue um convite de clan recebido.");
+                context.sendMessage("§e/clan chat - §bEntre em um bate-papo particular com seu clan.");
             }
         },
 
@@ -285,7 +285,7 @@ public class ClanCommand implements ProxyInterface {
 
                     try {
                         if (clanService.delete(clan)) {
-                            sendMessage(clan, account.getUsername() + " acabou com o clan.");
+                            sendMessage(clan, account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eacabou com o clan.");
 
                             for (Member clanMember : clan.getMembers()) {
 
@@ -370,7 +370,8 @@ public class ClanCommand implements ProxyInterface {
 
                 Invite invite = new Invite(target.getUsername(), target.getUniqueId(), Invite.Status.PENDING, member);
                 clan.getInvites().add(invite);
-                sendMessage(clan, target.getDisplayName() + " foi convidado para o clan.");
+                Account targetAccount = Account.fetch(target.getUniqueId());
+                sendMessage(clan, target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + " §efoi convidado para o clan.");
 
                 TextComponent interactable = new TextComponent(TextComponent
                         .fromLegacyText("§ePara aceitar o convite, §b§lCLIQUE AQUI"));
@@ -412,7 +413,8 @@ public class ClanCommand implements ProxyInterface {
 
                 target.setRole(Role.OWNER);
                 member.setRole(Role.MEMBER);
-                sendMessage(clan, target.getName() + " agora é dono do clan.");
+                Account targetAccount = Account.fetch(target.getUniqueId());
+                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §eagora é dono do clan.");
                 clanService.pushClan(clan);
             }
         },
@@ -432,7 +434,7 @@ public class ClanCommand implements ProxyInterface {
                 Member member = clan.getMember(account.getUniqueId());
 
                 if (member.getRole() != Role.OWNER) {
-                    context.sendMessage("§cApenas o dono do clan pode promover membros.");
+                    context.sendMessage("§cApenas o líder do clan pode promover membros.");
                     return;
                 }
 
@@ -448,8 +450,9 @@ public class ClanCommand implements ProxyInterface {
                     return;
                 }
 
+                Account targetAccount = Account.fetch(target.getUniqueId());
                 target.setRole(Role.ADMINISTRATOR);
-                sendMessage(clan, target.getName() + " foi promovido para Administrador.");
+                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §efoi promovido para gerente.");
 
                 try {
                     clanService.pushClan(clan);
@@ -476,7 +479,7 @@ public class ClanCommand implements ProxyInterface {
                 Member member = clan.getMember(account.getUniqueId());
 
                 if (member.getRole() != Role.OWNER) {
-                    context.sendMessage("§cApenas donos podem rebaixar administradores.");
+                    context.sendMessage("§cApenas líderes podem rebaixar gerentes.");
                     return;
                 }
 
@@ -488,12 +491,13 @@ public class ClanCommand implements ProxyInterface {
                 }
 
                 if (target.getRole() != Role.ADMINISTRATOR) {
-                    context.sendMessage("§cEste jogador não é administrador do clan.");
+                    context.sendMessage("§cEste jogador não é gerente do clan.");
                     return;
                 }
 
+                Account targetAccount = Account.fetch(target.getUniqueId());
                 target.setRole(Role.MEMBER);
-                sendMessage(clan, target.getName() + " não é mais um Administrador.");
+                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §enão é mais um Gerente.");
                 clanService.pushClan(clan);
             }
         },
@@ -513,7 +517,7 @@ public class ClanCommand implements ProxyInterface {
                 Member member = clan.getMember(account.getUniqueId());
 
                 if (!member.isAdmin()) {
-                    context.sendMessage("§cApenas administradores podem expulsar jogadores.");
+                    context.sendMessage("§cApenas gerentes podem expulsar jogadores.");
                     return;
                 }
 
@@ -529,7 +533,8 @@ public class ClanCommand implements ProxyInterface {
                     return;
                 }
 
-                sendMessage(clan, target.getName() + " foi expulso do clan.");
+                Account targetAccount = Account.fetch(target.getUniqueId());
+                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §efoi expulso do clan.");
 
                 clan.quit(target.getUniqueId());
 
@@ -574,7 +579,7 @@ public class ClanCommand implements ProxyInterface {
                 clan.quit(account.getUniqueId());
                 account.getData(Columns.CLAN).setData(-1);
                 account.getDataStorage().saveColumn(Columns.CLAN);
-                sendMessage(clan, account.getUsername() + " saiu do clan.");
+                sendMessage(clan, account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §esaiu do clan.");
                 context.sendMessage("§aVocê saiu do clan " + clan.getName() + " com sucesso.");
                 clanService.pushClan(clan);
 
@@ -633,7 +638,7 @@ public class ClanCommand implements ProxyInterface {
 
                 Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
 
-                sendMessage(clan, account.getUsername() + " entrou no clan.");
+                sendMessage(clan, account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou no clan.");
                 clanService.pushClan(clan);
             }
         },
@@ -783,13 +788,14 @@ public class ClanCommand implements ProxyInterface {
                 }
 
                 context.sendMessage("");
-                context.sendMessage("§eMembros de " + clan.getName() + ":");
+                context.sendMessage("§aMembros de " + ChatColor.valueOf(clan.getColor()) + clan.getName() + "§a:");
 
                 List<Member> ordered = new ArrayList<>(clan.getMembers());
                 ordered.sort((a, b) -> Integer.compare(b.getRole().getId(), a.getRole().getId()));
 
                 for (Member member : ordered) {
-                    context.sendMessage(" §e" + member.getName() + " - §b" + member.getRole().getDisplay());
+                    Account memberAccount = Account.fetch(member.getUniqueId());
+                    context.sendMessage(" " + memberAccount.getRank().getDefaultTag().getFormattedColor() + member.getName() + " §e- " + member.getRole().getDisplay());
                 }
             }
         };
@@ -804,7 +810,7 @@ public class ClanCommand implements ProxyInterface {
             this.field = strings;
         }
 
-        private final String MESSAGE_PREFIX = "§9[CLAN]§7 ";
+        private final String MESSAGE_PREFIX = "§9[CLAN] ";
 
         public void sendMessage(Clan clan, String msg) {
             clan.getMembers().forEach(c -> {

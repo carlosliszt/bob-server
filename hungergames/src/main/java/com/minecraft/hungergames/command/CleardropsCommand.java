@@ -27,7 +27,7 @@ import org.bukkit.event.Listener;
 
 public class CleardropsCommand implements BukkitInterface {
 
-    @Command(name = "cleardrops", platform = Platform.BOTH, rank = Rank.STREAMER_PLUS)
+    @Command(name = "cleardrops", platform = Platform.BOTH, rank = Rank.PARTNER_PLUS)
     public void handleCommand(Context<CommandSender> context, @Optional(def = "0") String[] args) {
 
         if (!isInteger(args[0])) {
