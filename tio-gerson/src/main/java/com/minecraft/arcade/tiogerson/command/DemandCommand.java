@@ -1,9 +1,7 @@
 package com.minecraft.arcade.tiogerson.command;
 
 import com.minecraft.arcade.tiogerson.ArcadeMain;
-import com.minecraft.arcade.tiogerson.mode.Mode;
 import com.minecraft.arcade.tiogerson.room.Room;
-import com.minecraft.core.bukkit.server.duels.DuelType;
 import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;

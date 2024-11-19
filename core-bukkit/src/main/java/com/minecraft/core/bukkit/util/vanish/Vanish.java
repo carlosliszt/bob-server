@@ -122,4 +122,12 @@ public class Vanish {
     public boolean isVanished(Account account) {
         return playerVanish.containsKey(account.getUniqueId());
     }
+
+    public boolean isVanishedToRankExact(UUID uniqueId, Rank rank) {
+        return playerVanish.get(uniqueId).getCategory().getImportance() == rank.getCategory().getImportance();
+    }
+
+    public boolean isVanishedToCategory(UUID uniqueId, Rank.Category category) {
+        return playerVanish.get(uniqueId).getCategory().getImportance() == category.getImportance();
+    }
 }

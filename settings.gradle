@@ -3,4 +3,6 @@ include 'core', 'core-bukkit', 'core-proxy', 'hungergames', 'lobby', 'pvp', 'due
 include 'arcade-duels'
 include 'arcade-pvp'
 include 'tio-gerson'
+include 'lobbyhost'
+include 'lobbyhost'
 

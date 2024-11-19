@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
@@ -61,6 +63,10 @@ public enum Rank {
 
     public static Rank fromUniqueCode(String code) {
         return Arrays.stream(getValues()).filter(rank -> rank.getUniqueCode().equals(code)).findFirst().orElse(null);
+    }
+
+    public static List<Rank> getRanksByCategory(Category category) {
+        return Arrays.stream(getValues()).filter(rank -> rank.getCategory() == category).collect(Collectors.toList());
     }
 
     @Getter

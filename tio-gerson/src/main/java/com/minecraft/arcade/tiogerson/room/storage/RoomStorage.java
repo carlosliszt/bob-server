@@ -71,4 +71,8 @@ public class RoomStorage {
         return getRooms().values().stream().filter(room -> room.getStage() != RoomStage.WAITING && room.getStage() != RoomStage.STARTING).collect(Collectors.toList());
     }
 
+    public Room getRoomById(String id) {
+        return getRooms().values().stream().filter(room -> room.getCode().equals(id)).findFirst().orElse(null);
+    }
+
 }
