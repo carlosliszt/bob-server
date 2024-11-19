@@ -3,11 +3,15 @@ package com.minecraft.arcade.tiogerson.mode.list;
 import com.minecraft.arcade.tiogerson.mode.Mode;
 import com.minecraft.arcade.tiogerson.room.Room;
 import com.minecraft.arcade.tiogerson.user.User;
+import com.minecraft.arcade.tiogerson.util.enums.RoomStage;
 import com.minecraft.core.Constants;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
 import com.minecraft.core.bukkit.util.item.ItemFactory;
+import com.minecraft.core.bukkit.util.vanish.Vanish;
+import com.minecraft.core.database.enums.Columns;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -25,12 +29,16 @@ public class Normal extends Mode {
 
     public Normal() {
         super(10);
+        setGames(Columns.TIOGERSON_GAMES);
+        setLoses(Columns.TIOGERSON_LOSSES);
+        setWins(Columns.TIOGERSON_WINS);
+        setWinstreak(Columns.TIOGERSON_WINSTREAK);
+        setWinstreakRecord(Columns.TIOGERSON_MAX_WINSTREAK);
     }
 
     ItemStack kbStick = new ItemFactory(Material.STICK).setName("§aSAII FORA!").setDescription("§7SAI TITIO!!!").addEnchantment(Enchantment.KNOCKBACK, 2).setUnbreakable().addItemFlag(ItemFlag.HIDE_ATTRIBUTES).getStack();
     ItemStack compass = new ItemFactory(Material.COMPASS).setName("§aLocalizar").setDescription("§7Localize o §9ENZO§7 mais próximo").getStack();
 
-    Cooldown sugarCooldown = new Cooldown("Pózinho Mágico", "magicSugar", 30, true);
     ItemStack magicSugar = new ItemFactory(Material.SUGAR).setAmount(3).setName("§aPózinho Magico").setDescription("§7Aumenta a velocidade por 10 segundos").getStack();
 
     @Override
@@ -44,7 +52,7 @@ public class Normal extends Mode {
             playerInventory.clear();
             user.setPreviousTeam(room.getEnzo());
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), true);
 
             player.getInventory().setItem(0, kbStick);
             player.updateInventory();
@@ -78,17 +86,22 @@ public class Normal extends Mode {
             return;
 
         if (item.isSimilar(compass)) {
-            pointCompass(user, user.getRoom(), event.getAction());
+            pointCompass(user, user.getRoom());
         }
 
         if (item.isSimilar(magicSugar)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (CooldownProvider.getGenericInstance().hasCooldown(user.getUniqueId(), "magicSugar")) {
-                    user.getPlayer().sendMessage(user.getAccount().getLanguage().translate("wait_generic", Constants.SIMPLE_DECIMAL_FORMAT.format(sugarCooldown.getRemaining())));
+                    user.getPlayer().sendMessage(user.getAccount().getLanguage().translate("wait_generic", Constants.SIMPLE_DECIMAL_FORMAT.format(CooldownProvider.getGenericInstance().getCooldown(player.getUniqueId(), "magicSugar").getRemaining())));
                 } else {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 5));
-                    player.getInventory().remove(magicSugar);
-                    CooldownProvider.getGenericInstance().addCooldown(player, sugarCooldown);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
+                    if (player.getItemInHand().getAmount() > 1) {
+                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+                    } else {
+                        player.setItemInHand(new ItemStack(Material.AIR));
+                    }
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 3F, 1F);
+                    CooldownProvider.getGenericInstance().addCooldown(player.getUniqueId(), "Pózinho de Pirlimpimpim", "magicSugar", 20, true);
                 }
             }
         }
@@ -97,23 +110,31 @@ public class Normal extends Mode {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        Player player = (Player) event.getEntity();
-        Player damager = (Player) event.getDamager();
+        if (event.isBothPlayers()) {
+            Player player = (Player) event.getEntity();
+            Player damager = (Player) event.getDamager();
 
-        User user = User.fetch(player.getUniqueId());
-        User damagerUser = User.fetch(damager.getUniqueId());
+            User user = User.fetch(player.getUniqueId());
+            User damagerUser = User.fetch(damager.getUniqueId());
 
-        Room room = user.getRoom();
+            Room room = user.getRoom();
 
-        if (room.getTioGerson().getMembers().contains(user) && !damager.getItemInHand().isSimilar(kbStick)) {
-            event.setCancelled(true);
-        } else {
-            event.setCancelled(false);
-            damager.getInventory().remove(kbStick);
+            if (room == null || room.getStage() != RoomStage.PLAYING || !user.isPlaying() && !Vanish.getInstance().isVanished(player.getUniqueId())) {
+                event.setCancelled(true);
+            } else {
+
+                if (room.getTioGerson().getMembers().contains(user) && !damager.getItemInHand().isSimilar(kbStick)) {
+                    event.setCancelled(true);
+                } else {
+                    event.setCancelled(false);
+                    damager.getInventory().remove(kbStick);
+                }
+
+                if (room.getEnzo().getMembers().contains(user) && room.getEnzo().getMembers().contains(damagerUser))
+                    event.setCancelled(true);
+            }
+
         }
-
-        if (room.getEnzo().getMembers().contains(user) && room.getEnzo().getMembers().contains(damagerUser))
-            event.setCancelled(true);
 
     }
 

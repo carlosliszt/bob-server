@@ -19,6 +19,7 @@ import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -29,6 +30,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.github.paperspigot.Title;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ServerListener implements Listener, BukkitInterface {
 
@@ -52,6 +56,7 @@ public class ServerListener implements Listener, BukkitInterface {
         Team team = room.getEnzo().getMembers().contains(user) ? room.getEnzo() : room.getTioGerson();
 
         team.getMembers().remove(user);
+        room.getAlivePlayers().remove(user);
 
         Account account = user.getAccount();
 
@@ -62,19 +67,20 @@ public class ServerListener implements Listener, BukkitInterface {
             if(event.getKiller() != null) {
                 User killer = event.getKiller();
                 Team killerTeam = room.getEnzo().getMembers().contains(killer) ? room.getEnzo() : room.getTioGerson();
-                room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + " §e foi morto por " + killerTeam.getChatColor() + killer.getPlayer().getName() +"."));
+                room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + "§e foi morto por " + killerTeam.getChatColor() + killer.getPlayer().getName() + "."));
             } else {
-                room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + " §e morreu."));
+                room.getWorld().getPlayers().forEach(players -> players.sendMessage(team.getChatColor() + user.getName() + "§e morreu."));
             }
 
             for (int i = 0; i < 4; i++)
                 FireworkAPI.random(player.getLocation());
 
-            event.getUser().getPlayer().sendTitle(new Title("§c§lVOCÊ MORREU!", "§eVocê não conseguiu escapar do TIO GERSON!", 1, 15, 10));
+            event.getUser().getPlayer().sendTitle(new Title("§c§lVOCÊ MORREU!", "§eVocê não conseguiu escapar do TIO GERSON!", 1, 40, 10));
+            player.playSound(player.getLocation(), Sound.ENDERDRAGON_GROWL, 3F, 1F);
 
             if (room.isCountStats()) {
-                //account.addInt(1, mode.getLoses());
-                //account.getData(mode.getWinstreak()).setData(0);
+                account.addInt(1, mode.getLoses());
+                account.getData(mode.getWinstreak()).setData(0);
             }
         }
 
@@ -82,7 +88,7 @@ public class ServerListener implements Listener, BukkitInterface {
 
         if (room.isCountStats()) {
             async(() -> {
-               // user.getAccount().getDataStorage().saveTable(user.getRouteContext().getGame().getTable());
+                user.getAccount().getDataStorage().saveTable(user.getRouteContext().getGame().getTable());
             });
         }
     }
@@ -120,8 +126,8 @@ public class ServerListener implements Listener, BukkitInterface {
                 p.setHealth(20.0D);
 
                 User user = User.fetch(p.getUniqueId());
-                User killer = User.fetch(p.getLastDamageCause().getEntity().getUniqueId());
-                new UserDeathEvent(user, killer, false).fire();
+                new UserDeathEvent(user, new ArrayList<>(user.getRoom().getTioGerson().getMembers()).get(0), false).fire();
+
             }
         }
     }

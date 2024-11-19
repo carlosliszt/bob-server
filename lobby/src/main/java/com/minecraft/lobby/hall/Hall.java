@@ -431,7 +431,7 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
             }
         });
 
-        InteractableItem tioGerson = new InteractableItem(new ItemFactory().setType(Material.BOOK).setName("§aTio Gerson").setDescription("§7" + Constants.getServerStorage().count(ServerType.MAIN_LOBBY, ServerType.TIOGERSON) + " jogando").getStack(), new InteractableItem.Interact() {
+        InteractableItem tioGerson = new InteractableItem(new ItemFactory().setType(Material.STICK).setName("§aTio Gerson").setDescription("§7" + Constants.getServerStorage().count(ServerType.TIOGERSON) + " jogando").getStack(), new InteractableItem.Interact() {
             @Override
             public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
                 Account account = Account.fetch(player.getUniqueId());
@@ -458,6 +458,8 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
 
                 ServerRedirect.Route route = new ServerRedirect.Route(server, Constants.GSON.toJson(context));
                 ServerRedirect serverRedirect = new ServerRedirect(account.getUniqueId(), route);
+
+                player.closeInventory();
                 account.connect(serverRedirect);
                 return true;
             }

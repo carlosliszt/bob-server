@@ -1,5 +1,7 @@
 package com.minecraft.arcade.tiogerson;
 
+import com.minecraft.arcade.tiogerson.command.ForceStartCommand;
+import com.minecraft.arcade.tiogerson.command.DemandCommand;
 import com.minecraft.arcade.tiogerson.listener.DamageListener;
 import com.minecraft.arcade.tiogerson.listener.PlayerListener;
 import com.minecraft.arcade.tiogerson.listener.ServerListener;
@@ -49,6 +51,8 @@ public class ArcadeMain extends BukkitGame {
         Constants.setLobbyType(ServerType.MAIN_LOBBY);
 
         new Normal().load();
+
+        getBukkitFrame().registerCommands(new DemandCommand(), new ForceStartCommand());
 
         getNPCProvider().getNpcListener().unload();
         getHologramProvider().getHologramListener().unload();

@@ -169,7 +169,7 @@ public abstract class Mode implements BukkitInterface, Listener {
         boolean almostFull = room.getAlivePlayers().size() == room.getMaxPlayers() / 2;
         int time = room.getTime();
 
-        if(stage == RoomStage.WAITING && almostFull) {
+        if (stage == RoomStage.WAITING && almostFull) {
             room.setStage(RoomStage.STARTING);
             room.setTime(40);
         } else if (stage == RoomStage.WAITING && isFull) {
@@ -177,13 +177,13 @@ public abstract class Mode implements BukkitInterface, Listener {
             room.setTime(4);
         } else if (stage == RoomStage.STARTING) {
 
-            if (!isFull || !almostFull) {
+            if (!isFull && !almostFull) {
                 room.setStage(RoomStage.WAITING);
                 room.setTime(-1);
                 return;
             }
 
-            room.setTime(time = time - 1);
+            room.setTime(time - 1);
 
             if (time == 0)
                 room.start();
@@ -198,7 +198,6 @@ public abstract class Mode implements BukkitInterface, Listener {
                     c.playSound(c.getLocation(), Sound.CLICK, 3.5F, 3.5F);
                 });
             }
-
         } else if (stage == RoomStage.PLAYING) {
 
             if (tioGersonDelay > 0) {
@@ -230,7 +229,7 @@ public abstract class Mode implements BukkitInterface, Listener {
 
             if (room.getTime() == 365) {
                 room.getTioGerson().getMembers().forEach(c -> {
-                    c.getPlayer().sendTitle(new Title("§4§lDERROTA!", "§eVocê não conseguiu achar todos os ENZOS!", 1, 15, 10));
+                    c.getPlayer().sendTitle(new Title("§4§lDERROTA!", "§eVocê não conseguiu achar todos os ENZOS!", 1, 40, 10));
                     c.getPlayer().sendMessage("§cVocê não conseguiu matar os Enzos a tempo!");
                     c.getPlayer().playSound(c.getPlayer().getLocation(), Sound.ANVIL_LAND, 3.5F, 3.5F);
                 });
@@ -273,29 +272,29 @@ public abstract class Mode implements BukkitInterface, Listener {
         room.getWorld().getPlayers().forEach(c -> handleSidebar(User.fetch(c.getUniqueId())));
     }
 
-    public void pointCompass(User user, Room room, Action action) {
-        Player comparator = null;
+    public void pointCompass(User user, Room room) {
+        Player closestPlayer = null;
         Player consumer = user.getPlayer();
+        double closestDistance = Double.MAX_VALUE;
 
         for (User other : room.getEnzo().getMembers()) {
-
             if (other.getUniqueId().equals(user.getUniqueId()))
                 continue;
 
             Player player = other.getPlayer();
+            double distance = player.getLocation().distanceSquared(consumer.getLocation());
 
-            if (player.getLocation().distanceSquared(consumer.getLocation()) >= 225) {
-                if (comparator == null || comparator.getLocation().distanceSquared(consumer.getLocation()) > player.getLocation().distanceSquared(consumer.getLocation())) {
-                    comparator = player;
-                }
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestPlayer = player;
             }
         }
 
-        if (comparator == null) {
+        if (closestPlayer == null) {
             consumer.sendMessage("§cNenhum jogador encontrado.");
         } else {
-            consumer.setCompassTarget(comparator.getLocation());
-            consumer.sendMessage("§aA bússola foi apontada para " + comparator.getName() + ".");
+            consumer.setCompassTarget(closestPlayer.getLocation());
+            consumer.sendMessage("§aA bússola foi apontada para " + closestPlayer.getName() + ".");
         }
     }
 

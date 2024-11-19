@@ -34,6 +34,7 @@ public class Room implements BukkitInterface {
     private final String code;
     private final World world;
     private final Team tioGerson, enzo;
+    private static final int CODE_LENGTH = 5;
     private final Set<User> spectators;
     private final Set<Block> rollback;
     private int maxPlayers;
@@ -46,7 +47,7 @@ public class Room implements BukkitInterface {
     private int time;
 
     private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final int CODE_LENGTH = 3;
+    private final Set<User> alivePlayers;
     private static final Random RANDOM = new Random();
 
     public static String generateRoomCode() {
@@ -63,6 +64,7 @@ public class Room implements BukkitInterface {
         this.tioGerson = new Team(ChatColor.RED, this, 1);
         this.enzo = new Team(ChatColor.BLUE, this, 7);
         this.spectators = new HashSet<>();
+        this.alivePlayers = new HashSet<>();
         this.rollback = new HashSet<>();
         this.stage = RoomStage.WAITING;
         this.maxPlayers = 8;
@@ -89,10 +91,6 @@ public class Room implements BukkitInterface {
         getWorld().getEntitiesByClasses(Item.class).forEach(Entity::remove);
     }
 
-    public List<User> getAlivePlayers() { // TODO: Change this
-        return Stream.concat(tioGerson.getMembers().stream().filter(user -> user.getUniqueId() != null), enzo.getMembers().stream().filter(user -> user.getUniqueId() != null)).collect(Collectors.toList());
-    }
-
     public boolean isFull() {
         return enzo.isFull() && tioGerson.isFull();
     }
@@ -115,15 +113,12 @@ public class Room implements BukkitInterface {
             } else if (getStage() != RoomStage.WAITING) {
                 player.sendMessage(account.getLanguage().translate("arcade.room.already_started", getCode()));
                 user.lobby();
-            } else {
-                if (getTioGerson().isFull())
-                    getEnzo().getMembers().add(user);
-                else
-                    getTioGerson().getMembers().add(user);
             }
+
+            getAlivePlayers().add(user);
+
         } else {
-            getEnzo().getMembers().remove(user);
-            getTioGerson().getMembers().remove(user);
+            getAlivePlayers().remove(user);
             getSpectators().add(user);
         }
 
@@ -138,18 +133,41 @@ public class Room implements BukkitInterface {
     public void start() {
         this.stage = RoomStage.PLAYING;
         this.time = 1;
+
+        List<User> shuffledPlayers = new ArrayList<>(getAlivePlayers());
+        Collections.shuffle(shuffledPlayers);
+
+        boolean firstUser = true;
+        for (User user : shuffledPlayers) {
+            if (firstUser) {
+                getTioGerson().getMembers().add(user);
+                firstUser = false;
+            } else if (getTioGerson().isFull()) {
+                getEnzo().getMembers().add(user);
+            } else if (getEnzo().isFull()) {
+                getTioGerson().getMembers().add(user);
+            } else {
+                if (new Random().nextBoolean()) {
+                    getTioGerson().getMembers().add(user);
+                } else {
+                    getEnzo().getMembers().add(user);
+                }
+            }
+        }
+
         mode.start(this);
+
         tioGerson.getMembers().forEach(c -> {
             c.getPlayer().teleport(getMapConfiguration().getTioGersonLocation());
             c.getPlayer().setGameMode(GameMode.SURVIVAL);
-            //c.getAccount().addInt(1, getMode().getGames());
+            c.getAccount().addInt(1, getMode().getGames());
             Visibility.refresh(c.getPlayer());
             new PlayerUpdateTablistEvent(c.getAccount(), c.getAccount().getProperty("account_tag").getAs(Tag.class), c.getAccount().getProperty("account_prefix_type").getAs(PrefixType.class)).fire();
         });
         enzo.getMembers().forEach(c -> {
             c.getPlayer().teleport(getMapConfiguration().getEnzoLocation());
             c.getPlayer().setGameMode(GameMode.SURVIVAL);
-            //c.getAccount().addInt(1, getMode().getGames());
+            c.getAccount().addInt(1, getMode().getGames());
             Visibility.refresh(c.getPlayer());
             new PlayerUpdateTablistEvent(c.getAccount(), c.getAccount().getProperty("account_tag").getAs(Tag.class), c.getAccount().getProperty("account_prefix_type").getAs(PrefixType.class)).fire();
         });
@@ -170,25 +188,25 @@ public class Room implements BukkitInterface {
             Account account = user.getAccount();
 
             if(team == getEnzo()) {
-                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê sobreviveu ao TIO GERSON!", 1, 15, 10));
+                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê sobreviveu ao TIO GERSON!", 1, 40, 10));
             } else {
-                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê passou encontrou todos os seus SOBRINHOS!", 1, 15, 10));
+                user.getPlayer().sendTitle(new Title("§2§lVITÓRIA!", "§eVocê passou encontrou todos os seus SOBRINHOS!", 1, 40, 10));
             }
 
             Mode mode = getMode();
 
             if (countStats) {
-               // account.addInt(1, mode.getWins());
-               // account.addInt(1, mode.getWinstreak());
-              /*  if (account.getData(mode.getWinstreak()).getAsInt() > account.getData(mode.getWinstreakRecord()).getAsInt())
+                account.addInt(1, mode.getWins());
+                account.addInt(1, mode.getWinstreak());
+                if (account.getData(mode.getWinstreak()).getAsInt() > account.getData(mode.getWinstreakRecord()).getAsInt())
                     account.getData(mode.getWinstreakRecord()).setData(account.getData(mode.getWinstreak()).getAsInt());
-                async(() -> account.getDataStorage().saveTable(mode.getWins().getTable())); */
+                async(() -> account.getDataStorage().saveTable(mode.getWins().getTable()));
             }
         });
 
         getSpectators().forEach(user -> {
             if (user.getPreviousTeam() != team && team != user.getRoom().getTioGerson()) {
-                user.getPlayer().sendTitle(new Title("§c§lDERROTA!", "§eVocê não sobreviveu até o final!", 1, 15, 10));
+                user.getPlayer().sendTitle(new Title("§c§lDERROTA!", "§eVocê não sobreviveu até o final!", 1, 40, 10));
             }
         });
 

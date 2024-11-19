@@ -150,6 +150,12 @@ public enum Columns {
     DUELS_BOXING_RATING(1500, "Int", "boxing_rating", "INT(100)"),
     DUELS_BOXING_INVENTORY("...", "String", "boxing_inventory", "VARCHAR(5000)"),
 
+    TIOGERSON_WINS(0, "Int", "tiogerson_wins", "INT(100)"),
+    TIOGERSON_LOSSES(0, "Int", "tiogerson_losses", "INT(100)"),
+    TIOGERSON_WINSTREAK(0, "Int", "tiogerson_winstreak", "INT(100)"),
+    TIOGERSON_MAX_WINSTREAK(0, "Int", "tiogerson_max_winstreak", "INT(100)"),
+    TIOGERSON_GAMES(0, "Int", "tiogerson_games", "INT(100)"),
+
     BRIDGE_SOLO_WINS(0, "Int", "solo_wins", "INT(100)"),
     BRIDGE_SOLO_LOSSES(0, "Int", "solo_losses", "INT(100)"),
     BRIDGE_SOLO_KILLS(0, "Int", "solo_kills", "INT(100)"),

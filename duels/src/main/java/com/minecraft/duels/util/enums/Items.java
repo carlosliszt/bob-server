@@ -119,6 +119,9 @@ public enum Items {
     }
 
     public static Items find(Language language) {
+        if (language.equals(Language.MEOW)) {
+            return PORTUGUESE;
+        }
         return Arrays.stream(getValues()).filter(c -> c.name().equalsIgnoreCase(language.name())).findFirst().orElse(null);
     }
 
