@@ -15,6 +15,7 @@ public class ClanIntegrationMessage {
     private String clanName = "?";
     private String clanTag = "?";
     private int cost;
+    private String color = "GRAY";
     private MessageCause messageCause;
 
     public enum MessageCause {

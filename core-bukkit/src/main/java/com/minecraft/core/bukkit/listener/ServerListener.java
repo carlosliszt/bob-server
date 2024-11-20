@@ -105,8 +105,9 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
                 if (player == null)
                     return;
 
-                clan = new Clan(integrationMessage.getIndex(), integrationMessage.getClanName(), integrationMessage.getClanTag(), 18, System.currentTimeMillis(), 0, "GRAY");
+                clan = new Clan(integrationMessage.getIndex(), integrationMessage.getClanName(), integrationMessage.getClanTag(), 18, System.currentTimeMillis(), 0, integrationMessage.getColor());
                 clan.getMembers().add(owner);
+                clan.setColor(integrationMessage.getColor());
                 Constants.getClanService().add(clan);
 
                 Account account = Account.fetch(player.getUniqueId());

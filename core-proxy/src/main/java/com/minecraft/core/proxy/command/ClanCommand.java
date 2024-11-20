@@ -214,7 +214,7 @@ public class ClanCommand implements ProxyInterface {
                         .messageCause(ClanIntegrationMessage.MessageCause.CREATION)
                         .clanTag(clan.getTag())
                         .index(clan.getIndex()).clanName(clan.getName())
-                        .cost(cost).target(clan.getMember(creator.getUniqueId())).build();
+                        .cost(cost).target(clan.getMember(creator.getUniqueId())).color("GRAY").build();
 
                 Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
             }
@@ -259,7 +259,8 @@ public class ClanCommand implements ProxyInterface {
                                     .messageCause(ClanIntegrationMessage.MessageCause.DISBAND)
                                     .clanTag(clan.getTag())
                                     .index(clan.getIndex())
-                                    .clanName(clan.getName()).build();
+                                    .clanName(clan.getName()).color(clan.getColor())
+                                    .build();
 
                             Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
                             context.sendMessage("§cClan '" + clan.getName() + "' apagada com sucesso.");
@@ -285,7 +286,10 @@ public class ClanCommand implements ProxyInterface {
 
                     try {
                         if (clanService.delete(clan)) {
-                            sendMessage(clan, account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eacabou com o clan.");
+                            search(context, member.getName(), memberAccount -> {
+                                memberAccount.loadRanks();
+                                sendMessage(clan, memberAccount.getRank().getDefaultTag().getFormattedColor() + memberAccount.getUsername() + " §eacabou com o clan.");
+                            });
 
                             for (Member clanMember : clan.getMembers()) {
 
@@ -301,7 +305,7 @@ public class ClanCommand implements ProxyInterface {
                                     .messageCause(ClanIntegrationMessage.MessageCause.DISBAND)
                                     .clanTag(clan.getTag())
                                     .index(clan.getIndex())
-                                    .clanName(clan.getName()).build();
+                                    .clanName(clan.getName()).color(clan.getColor()).build();
 
                             Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
                         }
@@ -370,8 +374,10 @@ public class ClanCommand implements ProxyInterface {
 
                 Invite invite = new Invite(target.getUsername(), target.getUniqueId(), Invite.Status.PENDING, member);
                 clan.getInvites().add(invite);
-                Account targetAccount = Account.fetch(target.getUniqueId());
-                sendMessage(clan, target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + " §efoi convidado para o clan.");
+                search(context, target.getUsername(), memberAccount -> {
+                    memberAccount.loadRanks();
+                    sendMessage(clan, memberAccount.getRank().getDefaultTag().getFormattedColor() + memberAccount.getUsername() + " §efoi convidado para o clan.");
+                });
 
                 TextComponent interactable = new TextComponent(TextComponent
                         .fromLegacyText("§ePara aceitar o convite, §b§lCLIQUE AQUI"));
@@ -413,8 +419,13 @@ public class ClanCommand implements ProxyInterface {
 
                 target.setRole(Role.OWNER);
                 member.setRole(Role.MEMBER);
-                Account targetAccount = Account.fetch(target.getUniqueId());
-                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §eagora é dono do clan.");
+
+                search(context, target.getName(), memberAccount -> {
+                    memberAccount.loadRanks();
+                    sendMessage(clan, memberAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §eagora é dono do clan.");
+
+                });
+
                 clanService.pushClan(clan);
             }
         },
@@ -452,7 +463,10 @@ public class ClanCommand implements ProxyInterface {
 
                 Account targetAccount = Account.fetch(target.getUniqueId());
                 target.setRole(Role.ADMINISTRATOR);
-                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §efoi promovido para gerente.");
+                search(context, target.getName(), memberAccount -> {
+                    memberAccount.loadRanks();
+                    sendMessage(clan, memberAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §efoi promovido para gerente.");
+                });
 
                 try {
                     clanService.pushClan(clan);
@@ -495,9 +509,11 @@ public class ClanCommand implements ProxyInterface {
                     return;
                 }
 
-                Account targetAccount = Account.fetch(target.getUniqueId());
                 target.setRole(Role.MEMBER);
-                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §enão é mais um Gerente.");
+                search(context, target.getName(), memberAccount -> {
+                    memberAccount.loadRanks();
+                    sendMessage(clan, memberAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §enão é mais um Gerente.");
+                });
                 clanService.pushClan(clan);
             }
         },
@@ -533,8 +549,10 @@ public class ClanCommand implements ProxyInterface {
                     return;
                 }
 
-                Account targetAccount = Account.fetch(target.getUniqueId());
-                sendMessage(clan, targetAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §efoi expulso do clan.");
+                search(context, target.getName(), memberAccount -> {
+                    memberAccount.loadRanks();
+                    sendMessage(clan, memberAccount.getRank().getDefaultTag().getFormattedColor() + target.getName() + " §efoi expulso do clan.");
+                });
 
                 clan.quit(target.getUniqueId());
 
@@ -551,7 +569,7 @@ public class ClanCommand implements ProxyInterface {
                         .messageCause(ClanIntegrationMessage.MessageCause.MEMBER_LEFT)
                         .clanTag(clan.getTag())
                         .index(clan.getIndex()).clanName(clan.getName())
-                        .target(target).build();
+                        .target(target).color(clan.getColor()).color(clan.getColor()).build();
 
                 Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
             }
@@ -587,7 +605,7 @@ public class ClanCommand implements ProxyInterface {
                         .messageCause(ClanIntegrationMessage.MessageCause.MEMBER_LEFT)
                         .clanTag(clan.getTag()).index(clan.getIndex())
                         .clanName(clan.getName())
-                        .target(member).build();
+                        .target(member).color(clan.getColor()).build();
 
                 Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
 
@@ -634,7 +652,7 @@ public class ClanCommand implements ProxyInterface {
                         .messageCause(ClanIntegrationMessage.MessageCause.MEMBER_JOIN)
                         .clanTag(clan.getTag()).index(clan.getIndex())
                         .clanName(clan.getName())
-                        .target(clan.getMember(account.getUniqueId())).build();
+                        .target(clan.getMember(account.getUniqueId())).color(clan.getColor()).build();
 
                 Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
 
@@ -794,8 +812,12 @@ public class ClanCommand implements ProxyInterface {
                 ordered.sort((a, b) -> Integer.compare(b.getRole().getId(), a.getRole().getId()));
 
                 for (Member member : ordered) {
-                    Account memberAccount = Account.fetch(member.getUniqueId());
-                    context.sendMessage(" " + memberAccount.getRank().getDefaultTag().getFormattedColor() + member.getName() + " §e- " + member.getRole().getDisplay());
+
+                    search(context, member.getName(), memberAccount -> {
+                        memberAccount.loadRanks();
+                        context.sendMessage(" " + memberAccount.getRank().getDefaultTag().getFormattedColor() + member.getName() + " §e- " + member.getRole().getDisplay());
+                    });
+
                 }
             }
         };

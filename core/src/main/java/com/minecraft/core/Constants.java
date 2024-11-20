@@ -18,6 +18,7 @@ import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerStorage;
 import com.minecraft.core.server.ServerType;
+import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -52,9 +53,11 @@ public class Constants {
         return redis;
     }
 
+
     public static void setRedis(Redis redis) {
         Constants.redis = redis;
     }
+
 
     /**
      * Asynchronous Thread

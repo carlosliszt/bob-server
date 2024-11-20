@@ -72,6 +72,7 @@ public class ProxyGame extends Plugin {
         instance = this;
         Constants.setMySQL(new MySQL(MySQLProperties.load(new File(getSQLDirectory(), "mysql.json"))).connect());
         Constants.setRedis(new Redis());
+
         enableConfig();
     }
 
