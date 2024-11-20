@@ -6,6 +6,7 @@
 
 package com.minecraft.core.proxy.util.command;
 
+import com.google.gson.GsonBuilder;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.AccountStorage;
@@ -130,6 +131,8 @@ public class ProxyFrame implements CommandFrame<Plugin, CommandSender, ProxyComm
             if (Listener.class.isAssignableFrom(object.getClass()))
                 BungeeCord.getInstance().getPluginManager().registerListener(getPlugin(), (Listener) object);
         }
+
+        publish();
     }
 
     @Override
@@ -168,9 +171,15 @@ public class ProxyFrame implements CommandFrame<Plugin, CommandSender, ProxyComm
 
         ProxyServer.getInstance().getPluginManager().unregisterCommand(command);
         getCommandInfoList().remove(command.getCommandInfo());
+        ProxyServer.getInstance().getScheduler().runAsync(ProxyGame.getInstance(), this::publish);
         return true;
     }
 
-
+    private void publish() {
+        try (Jedis redis = Constants.getRedis().getResource(Redis.SERVER_CACHE)) {
+            CommandList commandList = new CommandList(getCommandInfoList());
+            redis.set("proxy.commands", new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(commandList));
+        }
+    }
 
 }

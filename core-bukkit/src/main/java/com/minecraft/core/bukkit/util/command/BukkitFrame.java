@@ -6,6 +6,7 @@
 
 package com.minecraft.core.bukkit.util.command;
 
+import com.google.gson.GsonBuilder;
 import com.minecraft.core.Constants;
 import com.minecraft.core.bukkit.util.command.command.BukkitCommand;
 import com.minecraft.core.bukkit.util.command.executor.BukkitAsynchronouslyExecutor;
@@ -240,12 +241,16 @@ public final class BukkitFrame implements CommandFrame<Plugin, CommandSender, Bu
                 return proxy;
             }
             String JSON = jedis.get("proxy.commands");
-            CommandList commandList = Constants.GSON.fromJson(JSON, CommandList.class);
-            proxy.addAll(commandList.getCommands());
+            CommandList commandList = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create()
+                    .fromJson(JSON, CommandList.class);
+            if (commandList != null && commandList.getCommands() != null) {
+                proxy.addAll(commandList.getCommands());
+            }
         }
         return proxy;
     }
-
     public List<BukkitCommand> getCommands(Class<?> clzz) {
         return getBukkitCommandList().stream().filter(c -> c.getCommandInfo().getHolder().getName().equals(clzz.getName())).collect(Collectors.toList());
     }

@@ -6,6 +6,7 @@
 
 package com.minecraft.core.command.command;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.platform.Platform;
@@ -25,6 +26,7 @@ public class CommandInfo {
      * parentcommand.subcommand<p>
      */
     @NonNull
+    @Expose
     private final String name;
 
     /**
@@ -34,8 +36,16 @@ public class CommandInfo {
      */
     @NonNull
     @Builder.Default
+    @Expose
     private final String[] aliases = new String[0];
-
+    /**
+     * Tells the executor how to run the command,
+     * some implementations might ignore this option as they are async by default.
+     * This option requires an executor.
+     */
+    @Builder.Default
+    @Expose
+    private final boolean async = false;
     /**
      * Defines the description of the command,
      * if it wasn't provided, it returns a empty
@@ -43,16 +53,16 @@ public class CommandInfo {
      */
     @Setter
     @Builder.Default
+    @Expose
     private String description = "";
-
     /**
      * Defines the command usage for the MessageuHolder,
      * if it's empty, returns a empty String
      */
     @Setter
     @Builder.Default
+    @Expose
     private String usage = "";
-
     /**
      * Defines the rank required to execute
      * the command, if it's empty the default rank
@@ -61,8 +71,8 @@ public class CommandInfo {
     @Setter
     @Builder.Default
     @SerializedName("rank")
+    @Expose
     private Rank rank = Rank.MEMBER;
-
     /**
      * Defines the Platform of the command,
      * if it's empty, it returns a ALL platform.
@@ -70,17 +80,10 @@ public class CommandInfo {
     @Setter
     @NonNull
     @Builder.Default
+    @Expose
     private Platform platform = Platform.BOTH;
-
-    /**
-     * Tells the executor how to run the command,
-     * some implementations might ignore this option as they are async by default.
-     * This option requires an executor.
-     */
-    @Builder.Default
-    private final boolean async = false;
-
     @Setter@NonNull
+    @Expose(serialize = false, deserialize = false)
     private Class<?> holder;
 
     public CommandInfo(Command command, Class<?> holder) {

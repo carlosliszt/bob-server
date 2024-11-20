@@ -444,9 +444,6 @@ public class AccountLoader implements Listener {
 
                 msg.append("§cPode comprar unban: ").append(punish.isInexcusable() ? "Não" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "Não" : "Sim")).append("\n");
 
-                if (punish.isAutomatic())
-                    msg.append("§cBanimento automático.\n");
-
                 msg.append("§cID: #").append(punish.getCode()).append("\n\n");
                 msg.append("§cSaiba mais em ").append(Constants.SERVER_WEBSITE);
             } else {
@@ -458,9 +455,6 @@ public class AccountLoader implements Listener {
                     msg.append("§cExpires in: ").append(DateUtils.formatDifference(punish.getTime())).append("\n");
 
                 msg.append("§cCan buy unban: ").append(punish.isInexcusable() ? "No" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "No" : "Yes")).append("\n");
-
-                if (punish.isAutomatic())
-                    msg.append("§cAutomatic ban.\n");
 
                 msg.append("§cID: #").append(punish.getCode()).append("\n\n");
                 msg.append("§cFind out more on ").append(Constants.SERVER_WEBSITE);

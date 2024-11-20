@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 @Getter
 public class Discord {
@@ -22,7 +23,7 @@ public class Discord {
 
     public Discord start(String token) {
          try {
-            JDA = JDABuilder.createDefault(token).setAutoReconnect(true).build();
+             JDA = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MESSAGE_REACTIONS).setAutoReconnect(true).build();
             JDA.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
             JDA.getPresence().setPresence(Activity.playing(Constants.SERVER_STORE), true);
             JDA.addEventListener(this.discordListener = new DiscordListener(this));

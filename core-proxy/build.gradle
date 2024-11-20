@@ -29,7 +29,7 @@ dependencies {
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-    compile('net.dv8tion:JDA:4.2.1_266') {
+    compile('net.dv8tion:JDA:5.2.1') {
         exclude module: 'opus-java'
     }
 

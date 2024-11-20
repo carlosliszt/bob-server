@@ -19,7 +19,7 @@ import com.minecraft.core.util.DateUtils;
 import com.minecraft.core.util.StringTimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -55,9 +55,6 @@ public class PunishmentListener implements Listener, ProxyInterface {
 
                     msg.append("§cPode comprar unban: ").append(punish.isInexcusable() ? "Não" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "Não" : "Sim")).append("\n");
 
-                    if (punish.isAutomatic())
-                        msg.append("§cBanimento automático.\n");
-
                     msg.append("§cID: #").append(punish.getCode()).append("\n\n");
                     msg.append("§cSaiba mais em ").append(Constants.SERVER_WEBSITE);
                 } else {
@@ -69,9 +66,6 @@ public class PunishmentListener implements Listener, ProxyInterface {
                         msg.append("§cExpires in: ").append(DateUtils.formatDifference(punish.getTime())).append("\n");
 
                     msg.append("§cCan buy unban: ").append(punish.isInexcusable() ? "No" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "No" : "Yes")).append("\n");
-
-                    if (punish.isAutomatic())
-                        msg.append("§cAutomatic ban.\n");
 
                     msg.append("§cBan ID: #").append(punish.getCode()).append("\n\n");
                     msg.append("§cFind out more on ").append(Constants.SERVER_WEBSITE);
@@ -110,29 +104,29 @@ public class PunishmentListener implements Listener, ProxyInterface {
             switch (punish.getType()) {
                 case BAN:
                     builder.setColor(Color.RED);
-                    builder.setTitle(":hammer: BANIDO" + (punish.getCategory() == PunishCategory.CHEATING ? (event.getAccount().count(punish.getType()) >= 3 ? " :x:" : "") : ""));
-                    builder.setDescription(account.getUsername());
+                    builder.setAuthor("🔨 BANIDO" + (punish.getCategory() == PunishCategory.CHEATING ? (event.getAccount().count(punish.getType()) >= 3 ? " :x:" : "") : ""));
+                    builder.setTitle(account.getUsername());
                     builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE) + " (#" + event.getAccount().count(punish.getType()) + ")", false));
                     if (!punish.isPermanent())
                         builder.addField(":stopwatch: Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), false);
-                    builder.setThumbnail("https://mineskin.eu/helm/" + account.getUsername() + "/256");
+                    builder.setThumbnail("https://mineskin.eu/helm/" + account.getUniqueId() + "/256");
                     break;
 
                 case MUTE:
                     builder.setColor(Color.YELLOW);
-                    builder.setTitle(":mute: MUTADO");
-                    builder.setDescription(account.getUsername());
+                    builder.setAuthor("🔇 MUTADO");
+                    builder.setTitle(account.getUsername());
                     builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE), false));
                     if (!punish.isPermanent())
                         builder.addField(":stopwatch: Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), false);
-                    builder.setThumbnail("https://mineskin.eu/helm/" + account.getUsername() + "/256");
+                    builder.setThumbnail("https://mineskin.eu/helm/" + account.getUniqueId() + "/256");
                     break;
             }
 
-            TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1261563759806382082");
+            TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308641060741709917");
 
             if (textChannel != null && punish.getType() == PunishType.BAN || punish.getType() == PunishType.MUTE)
-                textChannel.sendMessage(builder.build()).queue();
+                textChannel.sendMessageEmbeds(builder.build()).queue();
         });
     }
 

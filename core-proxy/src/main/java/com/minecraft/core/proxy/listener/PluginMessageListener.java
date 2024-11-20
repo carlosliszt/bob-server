@@ -13,6 +13,7 @@ import com.minecraft.core.account.fields.Property;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.payload.ServerRedirect;
+import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.event.PunishAssignEvent;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.proxy.util.player.PlayerPingHistory;
@@ -27,6 +28,9 @@ import com.minecraft.core.util.StringTimeUtils;
 import com.minecraft.core.util.anticheat.AntiCheatAlert;
 import com.minecraft.core.util.anticheat.information.Information;
 import com.minecraft.core.util.geodata.DataResolver;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -37,6 +41,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import redis.clients.jedis.Jedis;
 
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -206,6 +211,22 @@ public class PluginMessageListener implements Listener, ProxyInterface {
                     proxiedPlayer.sendMessage("§e[STAFF]§r §b§lBOB§e: §eJogador §6" + account.getUsername() + "§e foi banido.");
 
                 });
+
+                //1308862548132495402
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.RED);
+                builder.setAuthor("🔨 ANTI-CHEAT " + (account.count(punish.getType()) >= 3 ? " :x:" : ""));
+                builder.setTitle(account.getUsername());
+                builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getReason() + " (#" + account.count(punish.getType()) + ")", false));
+                if (!punish.isPermanent())
+                    builder.addField(":stopwatch: Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), false);
+                builder.setThumbnail("https://mineskin.eu/helm/" + account.getUniqueId() + "/256");
+
+                TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308862548132495402");
+
+                if (textChannel != null)
+                    textChannel.sendMessageEmbeds(builder.build()).queue();
 
                 DataResolver.getInstance().getData(punish.getAddress()).setBanned(true);
             } catch (Exception e) {

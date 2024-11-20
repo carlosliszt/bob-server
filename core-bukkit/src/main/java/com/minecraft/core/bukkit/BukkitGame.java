@@ -135,7 +135,7 @@ public class BukkitGame extends JavaPlugin {
         messenger.registerOutgoingPluginChannel(this, "AntiCheat");
         messenger.registerOutgoingPluginChannel(this, "Redirection");
 
-        getServer().getScheduler().runTaskAsynchronously(this, redisPubSub = new RedisPubSub(new BukkitRedisPubSub(), Redis.CLAN_INTEGRATION_CHANNEL, Redis.CLAN_TAG_UPDATE, Redis.NICK_ADD_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.NICK_ADD_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
+        getServer().getScheduler().runTaskAsynchronously(this, redisPubSub = new RedisPubSub(new BukkitRedisPubSub(), "proxy.commands", Redis.CLAN_INTEGRATION_CHANNEL, Redis.CLAN_TAG_UPDATE, Redis.NICK_ADD_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.NICK_ADD_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
 
         new BukkitServerTicker().start(this);
 

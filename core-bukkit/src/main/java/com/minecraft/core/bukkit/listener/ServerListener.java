@@ -207,6 +207,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
         for (CommandInfo commandInfo : BukkitGame.getEngine().getBukkitFrame().getProxyCommands()) { // PROXY COMMANDS
 
+            System.out.println(commandInfo.getRank().getName());
             if (!event.getAccount().hasPermission(commandInfo.getRank()) && !event.getAccount().hasPermission("command." + commandInfo.getName()))
                 continue;
 

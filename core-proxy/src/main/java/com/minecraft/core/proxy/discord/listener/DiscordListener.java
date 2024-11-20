@@ -11,7 +11,10 @@ import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.discord.Discord;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -20,11 +23,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DiscordListener extends ListenerAdapter implements ProxyInterface {
 
     private final Discord discord;
     private final Map<String, WebhookClient> webHooks = Collections.synchronizedMap(new HashMap<>());
+    private ArrayList<Member> discordMembers = new ArrayList<>();
 
     public DiscordListener(Discord discord) {
         this.discord = discord;
@@ -85,12 +92,37 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
     public void hook(Account account, String message) {
         async(() -> {
             try {
-                WebhookClient webhookClient = getWebhook(discord.getJDA().getTextChannelById("1261563759806382082"), account);
+                WebhookClient webhookClient = getWebhook(discord.getJDA().getTextChannelById("1308642016095371325"), account);
+                String avatarUrl = "https://mineskin.eu/helm/" + account.getUniqueId() + "/256";
 
                 if (webhookClient == null)
                     return;
 
-                webhookClient.send(new WebhookMessageBuilder().setAllowedMentions(AllowedMentions.none()).setAvatarUrl("https://crafatar.com/avatars/" + account.getUniqueId() + "?size=256").setContent(message).build());
+                Pattern pattern = Pattern.compile("@(\\w+)");
+                Matcher matcher = pattern.matcher(message);
+                StringBuffer sb = new StringBuffer();
+
+                while (matcher.find()) {
+                    String username = matcher.group(1);
+
+                    Optional<Member> member = discordMembers.stream().filter(m -> m.getUser().getName().equalsIgnoreCase(username)).findFirst();
+
+                    if (member.isPresent()) {
+                        String userId = "<@" + member.get().getId() + ">";
+                        matcher.appendReplacement(sb, userId);
+                    } else {
+                        matcher.appendReplacement(sb, "@" + username);
+                    }
+                }
+                matcher.appendTail(sb);
+
+                String content = sb.toString();
+
+                webhookClient.send(new WebhookMessageBuilder()
+                        .setAvatarUrl(avatarUrl)
+                        .setAllowedMentions(new AllowedMentions().withParseEveryone(false).withParseRoles(false).withParseUsers(true))
+                        .setContent(content)
+                        .build());
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Falha ao enviar a mensagem " + message + " de " + account.getUsername() + ". (thread=" + Thread.currentThread().getName() + ", error=" + e.getMessage() + ")");
@@ -98,20 +130,19 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
         });
     }
 
+
     @Override
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        super.onGuildMessageReceived(event);
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        super.onMessageReceived(event);
 
         if (event.getAuthor().isBot() || event.isWebhookMessage())
             return;
         if (event.getMessage().isSuppressedEmbeds() || event.getMessage().isTTS())
             return;
-        if (event.getMessage().getEmotes().size() > 0 || !event.getMessage().getEmotes().isEmpty())
-            return;
         if (event.getMessage().getContentRaw().isEmpty())
             return;
 
-        String ID = "1261563759806382082";
+        String ID = "1308642016095371325";
         if (event.getChannel().getId().equals(ID)) {
 
             String msg = fixMessage(event);
@@ -122,6 +153,9 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
                 if (proxiedPlayer == null)
                     return;
 
+                if (!discordMembers.contains(event.getMember())) {
+                    discordMembers.add(event.getMember());
+                }
                 proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§e[STAFF] §7@" + event.getAuthor().getName()  + "§f: " + msg));
             });
         }
@@ -130,29 +164,29 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
 
             String[] args = event.getMessage().getContentRaw().split(" ");
 
-            VoiceChannel to = event.getChannel().getGuild().getVoiceChannelById(args[1]);
-            VoiceChannel from = event.getChannel().getGuild().getVoiceChannelById(args[2]);
+            VoiceChannel to = event.getMessage().getGuild().getVoiceChannelById(args[1]);
+            VoiceChannel from = event.getMessage().getGuild().getVoiceChannelById(args[2]);
 
             if (to == null || from == null)
                 return;
 
             to.getMembers().forEach(c -> {
-                if (c.getVoiceState() == null || c.getVoiceState().inVoiceChannel())
+                if (c.getVoiceState() == null || c.getVoiceState().inAudioChannel())
                     from.getGuild().moveVoiceMember(c, from).queue();
             });
         }
+
     }
 
-
-    public String fixMessage(GuildMessageReceivedEvent event) {
+    public String fixMessage(MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
 
         if (message.length() > 300)
             message = message.substring(0, 300) + " §8[...]";
 
-        List<Member> members = event.getMessage().getMentionedMembers();
-        List<TextChannel> channels = event.getMessage().getMentionedChannels();
-        List<Role> roles = event.getMessage().getMentionedRoles();
+        List<Member> members = event.getMessage().getMentions().getMembers();
+        List<GuildChannel> channels = event.getMessage().getMentions().getChannels();
+        List<Role> roles = event.getMessage().getMentions().getRoles();
 
 //        if (event.getMessage().getReferenced != null) {
 //            Message message1 = event.getMessage();
@@ -186,7 +220,7 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
                 args[i] = "§c@here§f";
             } else if (!channels.isEmpty() && s.contains("<#")) {
                 String id = StringUtils.replace(s.split("<#")[1], ">", "");
-                TextChannel channel = channels.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
+                GuildChannel channel = channels.stream().filter(m -> m.getId().equals(id)).findFirst().orElse(null);
                 if (channel != null) {
                     args[i] = "§e#" + channel.getName() + "§f";
                 } else
