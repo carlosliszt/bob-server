@@ -14,6 +14,7 @@ import com.minecraft.core.bukkit.util.item.ItemFactory;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.bukkit.util.variable.object.Variable;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
@@ -201,7 +202,7 @@ public class ClanxClan extends Game {
             Account account_recipient = Account.fetch(recipient.getUniqueId());
             PrefixType prefixType = account_recipient.getProperty("account_prefix_type").getAs(PrefixType.class);
             String prefix = team.getChatColor() + "[" + account_recipient.getLanguage().translate(team.getName()) + "] ";
-            recipient.sendRawMessage(prefix + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + " §7»§r " + event.getMessage());
+            recipient.sendRawMessage(prefix + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")) + account.getDisplayName() + " §7»§r " + event.getMessage());
         });
     }
 

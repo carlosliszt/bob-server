@@ -75,7 +75,7 @@ public class ClanService {
     }
 
     public void pushClan(Clan clan) throws SQLException {
-        String query = "UPDATE `clans` SET `tag`= ?, `members` = ?, `slots` = ?, `creation` = ?, `points` = ? WHERE `index` = ? LIMIT 1;";
+        String query = "UPDATE `clans` SET `tag`= ?, `members` = ?, `slots` = ?, `creation` = ?, `points` = ?, `color` = ? WHERE `index` = ? LIMIT 1;";
 
         try (PreparedStatement ps = Constants.getMySQL().getConnection().prepareStatement(query)) {
             ps.setString(1, clan.getTag());
@@ -83,7 +83,8 @@ public class ClanService {
             ps.setInt(3, clan.getSlots());
             ps.setLong(4, clan.getCreation());
             ps.setInt(5, clan.getPoints());
-            ps.setInt(6, clan.getIndex());
+            ps.setString(6, clan.getColor());
+            ps.setInt(7, clan.getIndex());
             ps.executeUpdate();
         }
     }

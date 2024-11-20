@@ -45,6 +45,7 @@ public class Account {
     private transient MedalList medalList = new MedalList(this);
     private transient ClanTagList clanTagList = new ClanTagList(this);
     private transient TitleList titleList = new TitleList(this);
+    private final transient List<PlusColorData> plusColors = new ArrayList<>();
 
     private transient UnloadTask unloadTask;
 
@@ -61,6 +62,7 @@ public class Account {
     private final transient List<MedalData> medals = new ArrayList<>();
     private final transient List<PermissionData> permissions = new ArrayList<>();
     private final transient List<TitleData> titles = new ArrayList<>();
+    private transient PlusColorList plusColorList = new PlusColorList(this);
 
     private final transient HashMap<String, Property> properties = new HashMap<>();
 
@@ -72,6 +74,75 @@ public class Account {
         this.dataStorage = new DataStorage(this.uniqueId = uniqueId, this.username = username);
     }
 
+    public void loadPlusColors() {
+        plusColors.clear();
+
+        JsonArray jsonArray = getData(Columns.PLUSCOLORS).getAsJsonArray();
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            String code = object.get("plusColor").getAsString();
+            String addedBy = object.get("added_by").getAsString();
+            long expiration = object.get("expiration").getAsLong();
+            long addedAt = object.get("added_at").getAsLong();
+            long updatedAt = object.has("updated_at") ? object.get("updated_at").getAsLong() : object.get("added_at").getAsLong();
+
+            PlusColor plusColor = PlusColor.fromUniqueCode(code);
+
+            if (plusColor == null) {
+                System.out.println("PlusColor '" + code + "' not found, removing from " + username + "'s account.");
+                iterator.remove();
+                continue;
+            }
+
+            if (expiration != -1 && expiration < System.currentTimeMillis()) {
+                System.out.println("PlusColor '" + plusColor.getName() + "' expired, removing from " + username + "'s account.");
+                iterator.remove();
+                continue;
+            }
+
+            plusColors.add(new PlusColorData(plusColor, addedBy, addedAt, expiration));
+        }
+
+        getData(Columns.PLUSCOLORS).setData(jsonArray);
+        getData(Columns.PLUSCOLORS).setChanged(true);
+    }
+
+    public void givePlusColors(PlusColor plusColor, long expiration, String added_by) {
+        JsonArray jsonArray = getData(Columns.PLUSCOLORS).getAsJsonArray();
+
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("plusColor", plusColor.getUniqueCode());
+        jsonObject.addProperty("expiration", expiration);
+        jsonObject.addProperty("added_by", added_by);
+        jsonObject.addProperty("added_at", System.currentTimeMillis());
+        jsonArray.add(jsonObject);
+
+        getData(Columns.PLUSCOLORS).setData(jsonArray);
+        loadPlusColors();
+    }
+
+    public void removePlusColor(PlusColor plusColor) {
+        JsonArray jsonArray = getData(Columns.PLUSCOLORS).getAsJsonArray();
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            PlusColor comparator = PlusColor.fromUniqueCode(object.get("plusColor").getAsString());
+
+            if (comparator == plusColor) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        getData(Columns.PLUSCOLORS).setData(jsonArray);
+        loadPlusColors();
+    }
 
     public void loadTitles() {
         titles.clear();
@@ -472,6 +543,14 @@ public class Account {
         return tags.stream().filter(tagData -> tagData.getTag().getUniqueCode().equalsIgnoreCase(tag.getUniqueCode())).findFirst().orElse(null);
     }
 
+    public boolean hasPlusColor(PlusColor plusColor) {
+        return getPlusColor(plusColor) != null;
+    }
+
+    private PlusColorData getPlusColor(PlusColor plusColor) {
+        return plusColors.stream().filter(plusColorData -> plusColorData.getPlusColor().getUniqueCode().equalsIgnoreCase(plusColor.getUniqueCode())).findFirst().orElse(null);
+    }
+
     public boolean hasMedal(Medal medal) {
         return getMedal(medal) != null;
     }
@@ -637,6 +716,10 @@ public class Account {
 
     public List<NickData> getUnexpiredNicks() {
         return nicks.stream().filter(nickData -> !nickData.hasExpired()).collect(Collectors.toList());
+    }
+
+    public PlusColorData getPlusColorData(PlusColor plusColor) {
+        return getPlusColors().stream().filter(plusColorData -> plusColorData.getPlusColor() == plusColor).findFirst().orElse(null);
     }
 
     public TagData getTagData(Tag tag) {

@@ -29,10 +29,7 @@ import com.minecraft.core.clan.member.Member;
 import com.minecraft.core.command.command.CommandInfo;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
-import com.minecraft.core.enums.Medal;
-import com.minecraft.core.enums.PrefixType;
-import com.minecraft.core.enums.Rank;
-import com.minecraft.core.enums.Tag;
+import com.minecraft.core.enums.*;
 import com.minecraft.core.server.ServerCategory;
 import com.viaversion.viaversion.ViaVersionPlugin;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -97,6 +94,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
                 return;
             }
 
+
             if (messageCause == ClanIntegrationMessage.MessageCause.CREATION) {
 
                 Member owner = integrationMessage.getTarget();
@@ -139,6 +137,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
                 Constants.getClanService().forget(clan);
             } else if (messageCause == ClanIntegrationMessage.MessageCause.MEMBER_JOIN) {
                 clan.getMembers().add(integrationMessage.getTarget());
+                clan.setColor(integrationMessage.getColor());
 
                 Account account = Account.fetch(integrationMessage.getTarget().getUniqueId());
 
@@ -147,6 +146,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
             } else if (messageCause == ClanIntegrationMessage.MessageCause.MEMBER_LEFT) {
                 clan.getMembers().remove(integrationMessage.getTarget());
+                clan.setColor(integrationMessage.getColor());
 
                 Account account = Account.fetch(integrationMessage.getTarget().getUniqueId());
 
@@ -304,7 +304,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
             TextComponent textComponent = new TextComponent(medal == Medal.NONE ? "" : medal.getColor() + medal.getIcon() + " ");
             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(medal.getFormattedName() + "§f: §7" + medal.getDescription()).create()));
 
-            TextComponent textComponent1 = new TextComponent((tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + " §7»§r " + event.getMessage());
+            TextComponent textComponent1 = new TextComponent((tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")) + account.getDisplayName() + " §7»§r " + event.getMessage());
 
             recipient.sendMessage(textComponent, textComponent1);
         });
@@ -318,6 +318,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
         Tag playerTag = event.getTag();
         PrefixType playerPrefixtype = event.getPrefixType();
 
+
         Player player = Bukkit.getPlayer(account.getUniqueId());
 
         if (player == null)
@@ -325,7 +326,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
         String teamOrder = "tag:" + playerTag.getOrder() + account.getRanking().getOrder() + player.getEntityId();
 
-        PlayerTeamAssignEvent assignEvent = (PlayerTeamAssignEvent) new PlayerTeamAssignEvent(account, player, createTeamIfNotExists(player, player.getName(), teamOrder, (playerTag == Tag.MEMBER ? playerTag.getMemberSetting(playerPrefixtype) : playerPrefixtype.getFormatter().format(playerTag)), "")).fire();
+        PlayerTeamAssignEvent assignEvent = (PlayerTeamAssignEvent) new PlayerTeamAssignEvent(account, player, createTeamIfNotExists(player, player.getName(), teamOrder, (playerTag == Tag.MEMBER ? playerTag.getMemberSetting(playerPrefixtype) : playerPrefixtype.getFormatter().format(playerTag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")), "")).fire();
         Team selfView = assignEvent.getTeam();
 
         for (Team old : player.getScoreboard().getTeams()) {
@@ -345,7 +346,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
             String playersTeamOrder = "tag:" + playersTag.getOrder() + accounts.getRanking().getOrder() + players.getEntityId();
             playersTeamOrder = playersTeamOrder + Constants.KEY(16 - playersTeamOrder.length(), true);
 
-            PlayerTeamAssignEvent teamAssignEvent = (PlayerTeamAssignEvent) new PlayerTeamAssignEvent(accounts, player, createTeamIfNotExists(player, players.getName(), playersTeamOrder, (playersTag == Tag.MEMBER ? playersTag.getMemberSetting(playerPrefixtype) : playerPrefixtype.getFormatter().format(playersTag)), "")).fire();
+            PlayerTeamAssignEvent teamAssignEvent = (PlayerTeamAssignEvent) new PlayerTeamAssignEvent(accounts, player, createTeamIfNotExists(player, players.getName(), playersTeamOrder, (playersTag == Tag.MEMBER ? playersTag.getMemberSetting(playerPrefixtype) : playerPrefixtype.getFormatter().format(playersTag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")), "")).fire();
             Team to = teamAssignEvent.getTeam();
 
             for (Team old2 : player.getScoreboard().getTeams()) {
@@ -353,7 +354,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
                     old2.unregister();
             }
             PrefixType playersPrefixType = accounts.getProperty("account_prefix_type").getAs(PrefixType.class);
-            new PlayerTeamAssignEvent(account, players, createTeamIfNotExists(players, player.getName(), teamOrder, (playerTag == Tag.MEMBER ? playersTag.getMemberSetting(playerPrefixtype) : playersPrefixType.getFormatter().format(playerTag)), "")).fire();
+            new PlayerTeamAssignEvent(account, players, createTeamIfNotExists(players, player.getName(), teamOrder, (playerTag == Tag.MEMBER ? playersTag.getMemberSetting(playerPrefixtype) : playersPrefixType.getFormatter().format(playerTag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")), "")).fire();
         }
     }
 

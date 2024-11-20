@@ -10,6 +10,7 @@ import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
@@ -81,7 +82,7 @@ public class UserLoader implements Listener {
                     return;
 
                 PrefixType prefixType = account_recipient.getProperty("account_prefix_type", PrefixType.DEFAULT).getAs(PrefixType.class);
-                recipient.getPlayer().sendRawMessage(prefixType.getFormatter().format(tag) + account.getDisplayName() + " §6entrou no lobby!");
+                recipient.getPlayer().sendRawMessage(prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+") + account.getDisplayName() + " §6entrou no lobby!");
             });
         }
 

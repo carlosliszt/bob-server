@@ -12,6 +12,7 @@ import com.minecraft.core.bukkit.event.player.PlayerMassiveTeleportExecuteEvent;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
@@ -146,7 +147,7 @@ public class SpectatorListener implements Listener, BukkitInterface, Assistance 
             Account account_recipient = Account.fetch(recipient.getUniqueId());
             PrefixType prefixType = account_recipient.getProperty("account_prefix_type").getAs(PrefixType.class);
             String prefix = account_recipient.getLanguage() == Language.PORTUGUESE ? "§7[ESPECTADOR] " : "§7[SPECTATOR] ";
-            recipient.sendRawMessage(prefix + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + " §7»§r " + event.getMessage());
+            recipient.sendRawMessage(prefix + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")) + account.getDisplayName() + " §7»§r " + event.getMessage());
         });
     }
 

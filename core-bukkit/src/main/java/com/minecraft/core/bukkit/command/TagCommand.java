@@ -15,6 +15,7 @@ import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Tag;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -54,9 +55,9 @@ public class TagCommand implements BukkitInterface {
                     i -= 1;
                 }
 
-                String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + "\n\n§eClique para selecionar!";
+                String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")) + account.getDisplayName() + "\n\n§eClique para selecionar!";
 
-                TextComponent component = createTextComponent(tag.getColor() + tag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/tag " + tag.getName());
+                TextComponent component = createTextComponent(tag.getColor() + tag.getName().replace("+", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/tag " + tag.getName());
                 textComponents[i] = component;
                 i -= 1;
             }

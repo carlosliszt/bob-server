@@ -18,7 +18,6 @@ import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Medal;
 import com.minecraft.core.enums.Rank;
-import com.minecraft.core.enums.Tag;
 import com.minecraft.hungergames.HungerGames;
 import com.minecraft.hungergames.game.team.Team;
 import com.minecraft.hungergames.user.celebrations.Celebration;
@@ -234,7 +233,7 @@ public class User {
             return value * 2;
         } else if (rank.getId() == Rank.VIP.getId()) {
             return (int) (value * 1.5);
-        } else if (getAccount().hasMedal(Medal.SUPPORTER)) {
+        } else if (getAccount().hasMedal(Medal.BOB)) {
             return (int) (value * 1.25);
         }
 

@@ -64,7 +64,7 @@ public class AccountLoader implements Listener {
             "Africa", "North Africa", "Pakistan", "Angola", "Bangladesh", "Iraq",
             "Italy", "Croatia", "Taiwan", "Poland", "Hungary");
 
-    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.NICK_OBJECTS, Columns.LAST_NICK , Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
+    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
 
     @EventHandler
     public void onConnectionInit(ClientConnectEvent event) {
@@ -208,6 +208,7 @@ public class AccountLoader implements Listener {
 
                 account.loadTags();
                 account.loadMedals();
+                account.loadPlusColors();
                 account.loadSkinData();
                 account.loadClanTags();
 
@@ -309,8 +310,8 @@ public class AccountLoader implements Listener {
                 } else account.getData(Columns.NICK).setData("...");
 
                 if (pendingConnection.isOnlineMode() && name.contains("BOB")) {
-                    account.giveMedal(Medal.SUPPORTER, -1, "[SERVER]");
-                } else account.removeMedal(Medal.SUPPORTER);
+                    account.giveMedal(Medal.BOB, -1, "[SERVER]");
+                } else account.removeMedal(Medal.BOB);
 
                 if (account.getRank().isStaffer()) {
                     account.getDataStorage().load(STAFF);
@@ -409,6 +410,8 @@ public class AccountLoader implements Listener {
 
         account.getTagList().getTags().clear();
         account.getMedalList().getMedals().clear();
+        account.getPlusColorList().getPlusColor().clear();
+        account.getPlusColors().clear();
         account.getMedals().clear();
         account.getRanks().clear();
         SkinData skinData = account.getSkinData();

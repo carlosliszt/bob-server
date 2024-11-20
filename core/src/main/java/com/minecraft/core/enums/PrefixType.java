@@ -15,17 +15,17 @@ import java.util.Arrays;
 @Getter
 public enum PrefixType {
 
-    DEFAULT("dMjgl", Rank.MEMBER, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + tag.getName().toUpperCase() + " " + tag.getColor()),
-    BRACES("LRBwT", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "{" + tag.getName() + "} "),
-    BRACKETS("sJvjZ", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + tag.getName() + "] "),
-    BRACKETS_UPPER("fHYat", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + tag.getName().toUpperCase() + "] "),
+    DEFAULT("dMjgl", Rank.MEMBER, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " "),
+    BRACES("LRBwT", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "{" + formatTagName(tag.getName(), tag) + tag.getColor() + "} "),
+    BRACKETS("sJvjZ", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + formatTagName(tag.getName(), tag) + tag.getColor() + "] "),
+    BRACKETS_UPPER("fHYat", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + "] "),
     COLOR("xOEsP", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getFormattedColor()),
-    PARENTHESIS("bvjLy", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "(" + tag.getName() + ") "),
-    VANILLA("EDhtE", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "<" + tag.getName() + "> "),
-    DEFAULT_BOLD("XspJC", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + tag.getName().toUpperCase() + " "),
-    DEFAULT_GRAY("bWJnm", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + tag.getName().toUpperCase() + " §7"),
-    DEFAULT_LOWER("wtFLH", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + tag.getName() + " "),
-    DEFAULT_WHITE("YnRcF", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + tag.getName().toUpperCase() + " §f");
+    PARENTHESIS("bvjLy", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "(" + formatTagName(tag.getName(), tag) + tag.getColor() + ") "),
+    VANILLA("EDhtE", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "<" + formatTagName(tag.getName(), tag) + tag.getColor() + "> "),
+    DEFAULT_BOLD("XspJC", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " "),
+    DEFAULT_GRAY("bWJnm", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " §7"),
+    DEFAULT_LOWER("wtFLH", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + formatTagName(tag.getName(), tag) + tag.getColor() + " "),
+    DEFAULT_WHITE("YnRcF", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " §f");
 
     private final String uniqueCode;
     private final Rank rank;
@@ -48,5 +48,12 @@ public enum PrefixType {
 
     public interface Formatter {
         String format(Tag tag);
+    }
+
+    private static String formatTagName(String name, Tag tag) {
+        if (tag != Tag.PARTNER_PLUS) {
+            return name.replace("+", "#");
+        }
+        return name;
     }
 }

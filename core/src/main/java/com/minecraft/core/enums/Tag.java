@@ -102,6 +102,7 @@ public enum Tag {
     public String getFormattedColor() {
         if (this == PARTNER_PLUS || this == PRIMARY_MOD || this == ROSA || this == SECONDARY_MOD || this == ADMINISTRATOR || this == HELPER || this == PARTNER || this == TRIAL_MODERATOR)
             return color + "§o";
+
         return color;
     }
 }

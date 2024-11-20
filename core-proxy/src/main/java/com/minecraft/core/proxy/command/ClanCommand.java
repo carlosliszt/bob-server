@@ -214,7 +214,7 @@ public class ClanCommand implements ProxyInterface {
                         .messageCause(ClanIntegrationMessage.MessageCause.CREATION)
                         .clanTag(clan.getTag())
                         .index(clan.getIndex()).clanName(clan.getName())
-                        .cost(cost).target(clan.getMember(creator.getUniqueId())).color("GRAY").build();
+                        .cost(cost).target(clan.getMember(creator.getUniqueId())).color(clan.getColor()).build();
 
                 Constants.getRedis().publish(Redis.CLAN_INTEGRATION_CHANNEL, Constants.GSON.toJson(message));
             }

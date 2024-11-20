@@ -10,6 +10,7 @@ import com.minecraft.core.bukkit.util.scoreboard.AnimatedString;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.bukkit.util.variable.VariableStorage;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
@@ -132,7 +133,7 @@ public abstract class Lobby implements VariableStorage, Listener, BukkitInterfac
                 if (targetAccount == null)
                     return;
 
-                target.getPlayer().sendMessage(targetAccount.getProperty("account_prefix_type", PrefixType.DEFAULT).getAs(PrefixType.class).getFormatter().format(tag) + player.getName() + " " + targetAccount.getLanguage().translate("lobby.joined_message"));
+                target.getPlayer().sendMessage(targetAccount.getProperty("account_prefix_type", PrefixType.DEFAULT).getAs(PrefixType.class).getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+") + player.getName() + " " + targetAccount.getLanguage().translate("lobby.joined_message"));
             });
         }
 

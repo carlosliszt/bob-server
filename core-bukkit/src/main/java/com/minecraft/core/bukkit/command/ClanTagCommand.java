@@ -18,6 +18,7 @@ import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.Clantag;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Tag;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -68,7 +69,7 @@ public class ClanTagCommand implements BukkitInterface {
                     i -= 1;
                 }
 
-                String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)) + account.getDisplayName() + " " + clantag.getColor() + "[" + clan.getTag().toUpperCase() + "]" + "\n\n§eClique para selecionar!";
+                String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+") + account.getDisplayName() + " " + clantag.getColor() + "[" + clan.getTag().toUpperCase() + "]" + "\n\n§eClique para selecionar!";
 
                 TextComponent component = createTextComponent(clantag.getColor() + clantag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/clantag " + clantag.getName());
                 textComponents[i] = component;
