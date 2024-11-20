@@ -7,7 +7,9 @@
 package com.minecraft.core.proxy.command;
 
 import com.minecraft.core.Constants;
+import com.minecraft.core.account.Account;
 import com.minecraft.core.account.fields.Flag;
+import com.minecraft.core.account.fields.Preference;
 import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
@@ -20,10 +22,12 @@ import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.punish.Punish;
 import com.minecraft.core.punish.PunishCategory;
 import com.minecraft.core.punish.PunishType;
+import com.minecraft.core.translation.Language;
 import com.minecraft.core.util.StringTimeUtils;
 import com.minecraft.core.util.geodata.DataResolver;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Collections;
 import java.util.List;
@@ -116,6 +120,18 @@ public class PunishCommand implements ProxyInterface {
 
             BungeeCord.getInstance().getPluginManager().callEvent(new PunishAssignEvent(account, punish));
 
+            Constants.getAccountStorage().getAccounts().stream().filter(staff -> staff.hasPermission(Rank.PARTNER_PLUS) && staff.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
+
+                ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(acc.getUniqueId());
+
+                if (proxiedPlayer == null)
+                    return;
+
+                if (punish.getType() == PunishType.BAN)
+                    proxiedPlayer.sendMessage("§e[STAFF]§r §5§lMODS§e: §eJogador §6" + account.getUsername() + " §efoi banido por " + punish.getCategory().getDisplay(Language.PORTUGUESE).toLowerCase() + ".");
+
+            });
+
             context.info("command.punish.punished_succesful", type.name().toLowerCase(), category.getName().toLowerCase(), account.getUsername());
 
             if (punish.getType() == PunishType.BAN) {
@@ -193,6 +209,47 @@ public class PunishCommand implements ProxyInterface {
         BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "punish ban cheating n " + target + " " + reason);
     }
 
+    @Command(name = "badbuild", rank = Rank.PARTNER_PLUS, usage = "badbuild <target>", aliases = {"bb"})
+    public void badBuildCommand(Context<CommandSender> context, String target) {
+
+        if (context.getAccount().getFlag(Flag.PUNISH)) {
+            context.info("flag.locked");
+            return;
+        }
+
+        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "punish ban badbuild 1d " + target + " Construção indevida");
+    }
+
+    @Command(name = "extremism", rank = Rank.PARTNER_PLUS, usage = "extremism <target>", aliases = {"e"})
+    public void extremismCommand(Context<CommandSender> context, String target) {
+
+        if (context.getAccount().getFlag(Flag.PUNISH)) {
+            context.info("flag.locked");
+            return;
+        }
+
+        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "punish ban extremism n " + target + " Extremismo");
+    }
+
+    @Command(name = "badnick", rank = Rank.PARTNER_PLUS, usage = "bn <target>", aliases = {"bn"})
+    public void badNickCommand(Context<CommandSender> context, String target) {
+
+        if (context.getAccount().getFlag(Flag.PUNISH)) {
+            context.info("flag.locked");
+            return;
+        }
+
+        search(context, target, result -> {
+            if (result != null) {
+                String timeString = result.getData(Columns.PREMIUM).getAsBoolean() ? "30d" : "n";
+                BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "punish ban badnick " + timeString + " " + target + " nickname");
+            } else {
+                context.info("object.not_found", "Player");
+            }
+        });
+
+    }
+
     @Completer(name = "p")
     public List<String> handlePunishComplete(Context<CommandSender> context) {
         String[] args = context.getArgs();
@@ -219,6 +276,21 @@ public class PunishCommand implements ProxyInterface {
         if (args.length == 1)
             return getOnlineNicknames(context);
         return PunishCategory.CHEATING.getSuggestions().stream().filter(c -> startsWith(c, context.getArg(context.argsCount() - 1))).collect(Collectors.toList());
+    }
+
+    @Completer(name = "badbuild")
+    public List<String> badBuildComplete(Context<CommandSender> context) {
+        return getOnlineNicknames(context);
+    }
+
+    @Completer(name = "extremism")
+    public List<String> extremismComplete(Context<CommandSender> context) {
+        return getOnlineNicknames(context);
+    }
+
+    @Completer(name = "badnick")
+    public List<String> badNickComplete(Context<CommandSender> context) {
+        return getOnlineNicknames(context);
     }
 
     @Completer(name = "unpunish")

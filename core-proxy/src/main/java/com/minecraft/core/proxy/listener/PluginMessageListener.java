@@ -22,6 +22,7 @@ import com.minecraft.core.punish.PunishCategory;
 import com.minecraft.core.punish.PunishType;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.packet.ServerPayload;
+import com.minecraft.core.translation.Language;
 import com.minecraft.core.util.StringTimeUtils;
 import com.minecraft.core.util.anticheat.AntiCheatAlert;
 import com.minecraft.core.util.anticheat.information.Information;
@@ -194,6 +195,17 @@ public class PluginMessageListener implements Listener, ProxyInterface {
                 BungeeCord.getInstance().getPluginManager().callEvent(new PunishAssignEvent(account, punish));
 
                 System.out.println("Automatic ban applied for " + account.getUsername());
+
+                Constants.getAccountStorage().getAccounts().stream().filter(staff -> staff.hasPermission(Rank.PARTNER_PLUS) && staff.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
+
+                    ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(acc.getUniqueId());
+
+                    if (proxiedPlayer == null)
+                        return;
+
+                    proxiedPlayer.sendMessage("§e[STAFF]§r §b§lBOB§e: §eJogador §6" + account.getUsername() + "§e foi banido.");
+
+                });
 
                 DataResolver.getInstance().getData(punish.getAddress()).setBanned(true);
             } catch (Exception e) {

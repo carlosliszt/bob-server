@@ -75,6 +75,11 @@ public class BasicListener implements Listener {
             p.setVelocity(v);
             p.playSound(p.getLocation(), Sound.FIREWORK_LAUNCH, 2.5F, 2.5F);
         }
+
+        if (e.getTo().getY() <= 24) {
+            e.setTo(User.fetch(p.getUniqueId()).getHall().getSpawn());
+            return;
+        }
     }
 
     @EventHandler

@@ -19,10 +19,7 @@ import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.database.mojang.MojangAPI;
 import com.minecraft.core.database.redis.Redis;
-import com.minecraft.core.enums.Clantag;
-import com.minecraft.core.enums.Medal;
-import com.minecraft.core.enums.Rank;
-import com.minecraft.core.enums.Tag;
+import com.minecraft.core.enums.*;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.punish.Punish;
 import com.minecraft.core.punish.PunishCategory;
@@ -209,6 +206,94 @@ public class AccountCommand implements ProxyInterface {
                 context.sendMessage("§cUso do /account:");
                 context.sendMessage("§c* /account <user> rank <rank> [time]");
             }
+        }),
+
+        PLUSCOLOR("pluscolor", Rank.ASSISTANT_MOD, (account, context) -> {
+
+            String[] args = context.getArgs();
+            String author = (context.isPlayer() ? context.getSender().getName() : "[SERVER]");
+
+            if (args.length >= 3) {
+
+                PlusColor plusColor = PlusColor.fromUniqueCode(args[2]);
+
+                if (plusColor == null || plusColor == PlusColor.GOLDEN) {
+                    context.info("object.not_found", "PlusColor");
+                    return;
+                }
+
+                account.loadPlusColors();
+
+                if (args.length < 4) {
+                    if (account.hasPlusColor(plusColor)) {
+                        PlusColorData plusColorData = account.getPlusColorData(plusColor);
+
+                        if (plusColorData.isPermanent()) {
+                            account.removePlusColor(plusColor);
+                            context.info("command.account.argument.pluscolor.pluscolor_remove", plusColor.getName(), account.getUsername());
+                        } else {
+                            account.removePlusColor(plusColor);
+                            account.givePlusColors(plusColor, -1, author);
+                            context.info("command.account.argument.pluscolor.pluscolor_replace", plusColor.getName(), account.getUsername());
+                        }
+                    } else {
+                        account.givePlusColors(plusColor, -1, author);
+                        context.info("command.account.argument.pluscolor.pluscolor_add", plusColor.getName(), account.getUsername());
+                    }
+                } else {
+
+                    long expiration;
+
+                    try {
+                        expiration = StringTimeUtils.parseDateDiff(args[3], true);
+                    } catch (Exception e) {
+                        context.info("invalid_time", "y,m,d,min,s");
+                        return;
+                    }
+
+                    if (account.hasPlusColor(plusColor)) {
+                        PlusColorData plusColorData = account.getPlusColorData(plusColor);
+
+                        if (plusColorData.isPermanent()) {
+                            context.info("command.account.argument.pluscolor.player_already_have_pluscolor");
+                        } else {
+
+                            expiration = expiration + (plusColorData.getExpiration() - plusColorData.getAddedAt());
+
+                            account.removePlusColor(plusColor);
+                            account.givePlusColors(plusColor, expiration, author);
+                            context.info("command.account.argument.pluscolor.pluscolor_add", plusColor.getName(), account.getUsername());
+                        }
+                    } else {
+                        context.info("command.account.argument.pluscolor.pluscolor_add", plusColor.getName(), account.getUsername());
+                        account.givePlusColors(plusColor, expiration, author);
+                    }
+                }
+
+                account.getPlusColorList().loadPlusColor();
+                account.getData(Columns.PLUSCOLOR).setData(account.getPlusColorList().getHighestPlusColor().getUniqueCode());
+            }
+        }),
+
+        PLUSCOLORS("pluscolors", Rank.PRIMARY_MOD, (account, context) -> {
+            account.loadPlusColors();
+
+            if (account.getPlusColors().size() == 0) {
+                context.sendMessage("§cNenhuma cor de plus encontrada.");
+                return;
+            }
+
+            Account localAccount = context.getAccount();
+            boolean showAddedBy = localAccount.hasPermission(Rank.ADMINISTRATOR);
+
+            account.getPlusColors().stream().sorted((a, b) -> Long.compare(b.getAddedAt(), a.getAddedAt())).forEach(plusColorData -> {
+                context.sendMessage("§aCor de plus: §f" + plusColorData.getPlusColor().getName());
+                context.sendMessage("  §7Adicionada em: " + localAccount.getLanguage().getDateFormat().format(plusColorData.getAddedAt()));
+                if (showAddedBy)
+                    context.sendMessage("  §7Adicionada por: " + plusColorData.getAddedBy());
+                if (!plusColorData.isPermanent())
+                    context.sendMessage("  §7Expira em: " + StringTimeUtils.formatDifference(StringTimeUtils.Type.NORMAL, plusColorData.getExpiration()));
+            });
         }),
 
         TAG("tag", Rank.ASSISTANT_MOD, (account, context) -> {

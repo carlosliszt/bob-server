@@ -18,6 +18,7 @@ import com.minecraft.core.translation.Language;
 import com.minecraft.core.util.DateUtils;
 import com.minecraft.core.util.StringTimeUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,6 +28,7 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.awt.*;
 import java.util.Date;
 
 public class PunishmentListener implements Listener, ProxyInterface {
@@ -75,8 +77,8 @@ public class PunishmentListener implements Listener, ProxyInterface {
                     msg.append("§cFind out more on ").append(Constants.SERVER_WEBSITE);
                 }
 
-                if (punish.getCategory() == PunishCategory.CHEATING) {
-                    broadcast(proxiedPlayer.getServer().getInfo());
+                if (punish.getType() == PunishType.BAN) {
+                    broadcast(proxiedPlayer.getServer().getInfo(), account.getUsername(), punish.getCategory() == PunishCategory.CHEATING);
                 }
 
                 proxiedPlayer.disconnect(TextComponent.fromLegacyText(msg.toString()));
@@ -105,27 +107,36 @@ public class PunishmentListener implements Listener, ProxyInterface {
 
             EmbedBuilder builder = new EmbedBuilder();
 
-            builder.setThumbnail("https://crafatar.com/avatars/" + account.getUniqueId() + "?size=256");
-            builder.setTimestamp(new Date(punish.getApplyDate()).toInstant());
-            builder.setTitle("Punição #" + punish.getCode() + " aplicada! (ID #" + event.getAccount().count(punish.getType()) + ")");
-            builder.addField("Alvo", account.getUsername(), true);
-            builder.addField("Tipo", punish.getType().getName(), true);
-            builder.addField("Autor", punish.getApplier(), true);
-            builder.addField("Categoria", punish.getCategory().getDisplay(Language.PORTUGUESE), true);
-            builder.addField("Motivo", punish.getReason(), true);
+            switch (punish.getType()) {
+                case BAN:
+                    builder.setColor(Color.RED);
+                    builder.setTitle(":hammer: BANIDO" + (punish.getCategory() == PunishCategory.CHEATING ? (event.getAccount().count(punish.getType()) >= 3 ? " :x:" : "") : ""));
+                    builder.setDescription(account.getUsername());
+                    builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE) + " (#" + event.getAccount().count(punish.getType()) + ")", false));
+                    if (!punish.isPermanent())
+                        builder.addField(":stopwatch: Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), false);
+                    builder.setThumbnail("https://mineskin.eu/helm/" + account.getUsername() + "/256");
+                    break;
 
-            if (!punish.isPermanent()) {
-                builder.addField("Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), true);
+                case MUTE:
+                    builder.setColor(Color.YELLOW);
+                    builder.setTitle(":mute: MUTADO");
+                    builder.setDescription(account.getUsername());
+                    builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE), false));
+                    if (!punish.isPermanent())
+                        builder.addField(":stopwatch: Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), false);
+                    builder.setThumbnail("https://mineskin.eu/helm/" + account.getUsername() + "/256");
+                    break;
             }
 
-            TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("850799516499443742");
+            TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1261563759806382082");
 
-            if (textChannel != null)
+            if (textChannel != null && punish.getType() == PunishType.BAN || punish.getType() == PunishType.MUTE)
                 textChannel.sendMessage(builder.build()).queue();
         });
     }
 
-    protected void broadcast(ServerInfo server) {
+    protected void broadcast(ServerInfo server, String username, boolean cheating) {
         for (ProxiedPlayer proxiedPlayer : BungeeCord.getInstance().getPlayers()) {
 
             Server playerServer = proxiedPlayer.getServer();
@@ -137,7 +148,10 @@ public class PunishmentListener implements Listener, ProxyInterface {
                 Account account = Account.fetch(proxiedPlayer.getUniqueId());
                 if (account == null)
                     continue;
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText(account.getLanguage().translate("commnad.punish.cheating_broadcast")));
+                if (cheating)
+                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText(account.getLanguage().translate("commnad.punish.cheating_broadcast", username)));
+                else
+                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText(account.getLanguage().translate("command.punish.community_broadcast")));
             }
         }
     }

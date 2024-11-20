@@ -57,7 +57,7 @@ public class TagCommand implements BukkitInterface {
 
                 String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")) + account.getDisplayName() + "\n\n§eClique para selecionar!";
 
-                TextComponent component = createTextComponent(tag.getColor() + tag.getName().replace("+", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/tag " + tag.getName());
+                TextComponent component = createTextComponent(tag.getColor() + tag.getName().replace("+3", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()).replace("+2", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()).replace("+1", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()).replace("+", tag == Tag.PARTNER_PLUS ? "+" : account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/tag " + tag.getName());
                 textComponents[i] = component;
                 i -= 1;
             }
@@ -89,7 +89,7 @@ public class TagCommand implements BukkitInterface {
             account.setProperty("account_tag", tag);
             account.getData(Columns.TAG).setData(tag.getUniqueCode());
 
-            context.info("command.tag.tag_change", tag.getColor() + tag.getName());
+            context.info("command.tag.tag_change", tag.getColor() + tag.getName().replace("+3", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()).replace("+2", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()).replace("+1", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()).replace("+", tag == Tag.PARTNER_PLUS ? "+" : account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+" + tag.getColor()));
 
             PlayerUpdateTablistEvent event = new PlayerUpdateTablistEvent(account, tag, account.getProperty("account_prefix_type").getAs(PrefixType.class));
             Bukkit.getPluginManager().callEvent(event);

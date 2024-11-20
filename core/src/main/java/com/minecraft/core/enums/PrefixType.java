@@ -52,7 +52,7 @@ public enum PrefixType {
 
     private static String formatTagName(String name, Tag tag) {
         if (tag != Tag.PARTNER_PLUS) {
-            return name.replace("+", "#");
+            return name.replace("+", "#").replace("#1", "#").replace("#2", "#").replace("#3", "#");
         }
         return name;
     }
