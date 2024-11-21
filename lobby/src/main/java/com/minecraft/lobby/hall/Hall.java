@@ -123,6 +123,15 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
         if (isPeriodic(20)) {
             getUsers().forEach(this::handleSidebar);
             sync(this::updateLobbiesSelectors);
+
+            for (User user : users) {
+                if (user.isParkourMode()) {
+                    user.setParkourTime(user.getParkourTime() + 1);
+                }
+                if (user.isPlateDelay())
+                    user.setPlateDelay(false);
+            }
+
         }
     }
 

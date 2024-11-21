@@ -29,6 +29,8 @@ import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
 import com.minecraft.lobby.Lobby;
+import com.minecraft.lobby.feature.parkour.Checkpoint;
+import com.minecraft.lobby.feature.parkour.Parkour;
 import com.minecraft.lobby.hall.Hall;
 import com.minecraft.lobby.user.User;
 import com.mojang.authlib.properties.Property;
@@ -50,6 +52,10 @@ public class Main extends Hall {
     private final Leaderboard mutesLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_MUTES, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
 
     private final Location bansLocation, mutesLocation;
+    private final Location parkourStart, parkourEnd;
+    private final Checkpoint[] parkourCheckpoints;
+
+    private final Parkour parkour;
 
     public Main(Lobby lobby) {
         super(lobby, "Main Lobby", "lobby", "JOGANDO NO BOBMC.COM");
@@ -61,8 +67,19 @@ public class Main extends Hall {
         worldBorder.setCenter(getSpawn());
         worldBorder.setSize(550);
 
+        this.parkourCheckpoints = new Checkpoint[]{
+                new Checkpoint(1, new Location(Bukkit.getWorld("world"), -72.5, 63.0, 16.5)),
+                new Checkpoint(2, new Location(Bukkit.getWorld("world"), -64.5, 66.0, -84.5)),
+                new Checkpoint(3, new Location(Bukkit.getWorld("world"), -1.5, 71.0, -115.5)),
+                new Checkpoint(4, new Location(Bukkit.getWorld("world"), 65.5, 64.0, -73.5))
+        };
+
+        this.parkourStart = new Location(Bukkit.getWorld("world"), -30.5, 60.0, -0.5);
+        this.parkourEnd = new Location(Bukkit.getWorld("world"), 51.5, 60.0, 8.5);
+
         this.bansLocation = new Location(Bukkit.getWorld("world"), -3, 65, -19);
         this.mutesLocation = new Location(Bukkit.getWorld("world"), 3, 65, -19);
+        this.parkour = new Parkour(lobby, parkourStart, parkourEnd, parkourCheckpoints);
     }
 
     @Override
@@ -101,12 +118,15 @@ public class Main extends Hall {
                 leaderboardHologram7.show();
             }
 
-            new Hologram(player, location, "§6§LPARKOUR", "§eSiga em frente.").show();
+            new Hologram(player, parkourStart.add(0, 2, 0), "§b§LPARKOUR", "§aInício.").show();
+            new Hologram(player, parkourEnd.add(0, 2, 0), "§b§LPARKOUR", "§cFim.").show();
+
+            for (Checkpoint checkpoint : parkourCheckpoints) {
+                new Hologram(player, checkpoint.getLocation().add(0, 2, 0), "§b§lPARKOUR", "§eCheckpoint §a#" + checkpoint.getId()).show();
+            }
 
         }, (user.getAccount().getVersion() >= 47 ? 0 : 5));
     }
-
-    protected final Location location = new Location(getWorld(), -30.5, 61, -0.4);
 
     @Override
     public void quit(User user) {

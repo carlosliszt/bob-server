@@ -87,7 +87,16 @@ public class CommandInfo {
     private Class<?> holder;
 
     public CommandInfo(Command command, Class<?> holder) {
-        this(command.name(), command.aliases(), command.description(), command.usage(), command.rank(), command.platform(), command.async(), holder);
+        this(
+                command.name(),
+                command.aliases(),
+                command.async(),
+                command.description(),
+                command.usage(),
+                command.rank(),
+                command.platform(),
+                holder
+        );
     }
 
 }
