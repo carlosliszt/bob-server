@@ -27,13 +27,18 @@ import com.minecraft.core.translation.Language;
 import com.minecraft.core.util.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReportCommand implements ProxyInterface {
@@ -156,6 +161,21 @@ public class ReportCommand implements ProxyInterface {
                 player.sendMessage(TextComponent.fromLegacyText(" "));
 
                 player.sendMessage(component);
+
+                EmbedBuilder reportEmbed = new EmbedBuilder();
+                reportEmbed.setColor(Color.RED);
+                reportEmbed.setAuthor("REPORT");
+                reportEmbed.setThumbnail("https://mineskin.eu/helm/" + target.getUniqueId() + "/256");
+                reportEmbed.setTitle(target.getDisplayName());
+                reportEmbed.addField(new MessageEmbed.Field("Motivo", message, false));
+                reportEmbed.addField(new MessageEmbed.Field("Servidor", target.getServer().getInfo().getName(), false));
+                reportEmbed.addField(new MessageEmbed.Field("Vítima", accountVictim.getDisplayName(), false));
+
+                TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308862566147297380");
+
+                if (txt != null)
+                    txt.sendMessageEmbeds(reportEmbed.build()).queue();
+
             });
 
         }),

@@ -39,6 +39,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import org.checkerframework.checker.units.qual.C;
 import redis.clients.jedis.Jedis;
 
 import java.awt.*;
@@ -137,38 +138,59 @@ public class PluginMessageListener implements Listener, ProxyInterface {
 
         UUID alertUniqueId = UUID.nameUUIDFromBytes((alert.getDisplayName().toLowerCase()).getBytes(StandardCharsets.UTF_8));
         Account account = Account.fetch(alert.getTarget());
-        String opening = "§7AntiCheat> §e%sº aviso: §a%s §7falhou no teste de §a%s §8%s";
-        StringBuilder infoBuilder = new StringBuilder("(");
+        String opening = "§c%sº aviso. §a%s Report:§f %s %s"; //String opening = "§c%sº aviso. §eReport §a%s §7falhou no teste de §a%s §8%s";
+        StringBuilder infoBuilder = new StringBuilder("");
+
+        EmbedBuilder acb = new EmbedBuilder();
+
+        acb.addField(new MessageEmbed.Field("Servidor", BungeeCord.getInstance().getPlayer(account.getUniqueId()).getServer().getInfo().getName(), false));
+
 
         Iterator<Information> informationIterator = alert.getInformations().iterator();
 
         if (!informationIterator.hasNext()) {
             PlayerPingHistory pingHistory = account.getProperty("pings", new PlayerPingHistory()).getAs(PlayerPingHistory.class);
-            infoBuilder.append(", ping=").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum());
+            infoBuilder.append("\n§eInfo: {§6ping§e=§b").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum()).append("§e}");
+            acb.addField(new MessageEmbed.Field("Ping", pingHistory.getMinimum() + "/" + pingHistory.getAverage() + "/" + pingHistory.getMaximum(), false));
         }
 
         while (informationIterator.hasNext()) {
             Information information = informationIterator.next();
-            infoBuilder.append(information.getDisplayName()).append("=").append(information.getValue());
+            infoBuilder.append("\n§eInfo: {§6" + information.getDisplayName()).append("§e=").append("§b" + information.getValue());
+            acb.addField(new MessageEmbed.Field(information.getDisplayName(), information.getValue(), false));
 
             if (informationIterator.hasNext())
-                infoBuilder.append(", ");
+                infoBuilder.append("§e, ");
             else {
                 PlayerPingHistory pingHistory = account.getProperty("pings", new PlayerPingHistory()).getAs(PlayerPingHistory.class);
-                infoBuilder.append(", ping=").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum());
+                infoBuilder.append("§e, §6ping§e=§b").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum()).append("§e}");
+                acb.addField(new MessageEmbed.Field("Ping", pingHistory.getMinimum() + "/" + pingHistory.getAverage() + "/" + pingHistory.getMaximum(), false));
             }
         }
 
-        infoBuilder.append(")");
 
         Property alertCount = account.getProperty(alertUniqueId.toString(), 0);
         alertCount.setValue(alertCount.getAsInt() + 1);
 
         int count = alertCount.getAsInt();
 
-        TextComponent component = new TextComponent(TextComponent.fromLegacyText(String.format(opening, count, account.getUsername(), alert.getDisplayName(), infoBuilder)));
-        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Clique para ir!")));
-        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/go " + account.getDisplayName()));
+        TextComponent component = new TextComponent(TextComponent.fromLegacyText(String.format(opening, count, alert.getDisplayName(), account.getUsername(), infoBuilder) + "\n§eClique "));
+        TextComponent component2 = new TextComponent("§b§lAQUI");
+        TextComponent component3 = new TextComponent("§e para se teleportar.");
+        component2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§eClique para se teleportar.")));
+        component2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/go " + account.getUsername()));
+
+        acb.setColor(Color.RED);
+        acb.setAuthor(account.getUsername());
+        acb.setTitle("**" + alert.getDisplayName() + "**: __" + count + "º__ aviso");
+        acb.setDescription("```/go " + account.getUsername() + "```");
+        acb.setThumbnail("https://mineskin.eu/helm/" + account.getUniqueId() + "/256");
+
+
+        TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1309216967563149403");
+
+        if (txt != null)
+            txt.sendMessageEmbeds(acb.build()).queue();
 
         Constants.getAccountStorage().getAccounts().forEach(acc -> {
 
@@ -178,7 +200,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
                 return;
 
             if (acc.hasPermission(Rank.TRIAL_MODERATOR) && acc.getPreference(Preference.ANTICHEAT)) {
-                proxiedPlayer.sendMessage(component);
+                proxiedPlayer.sendMessage(component, component2, component3);
             }
         });
 
@@ -186,7 +208,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
             try {
                 Punish punish = new Punish();
                 punish.setApplier("[ANTICHEAT]");
-                punish.setReason("20x " + alert.getDisplayName() + " anticheat reports " + infoBuilder);
+                punish.setReason(alert.getDisplayName() + " anticheat " + infoBuilder);
                 punish.setActive(true);
                 punish.setTime(StringTimeUtils.parseDateDiff("30d", true));
                 punish.setAddress(account.getData(Columns.ADDRESS).getAsString());
@@ -216,7 +238,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
 
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.RED);
-                builder.setAuthor("🔨 ANTI-CHEAT " + (account.count(punish.getType()) >= 3 ? " :x:" : ""));
+                builder.setAuthor("🔨 ANTI-CHEAT " + (punish.isInexcusable() ? " ❌" : ""));
                 builder.setTitle(account.getUsername());
                 builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getReason() + " (#" + account.count(punish.getType()) + ")", false));
                 if (!punish.isPermanent())

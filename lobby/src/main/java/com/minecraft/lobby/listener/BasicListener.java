@@ -69,6 +69,7 @@ public class BasicListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onSlimeMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
+        User user = User.fetch(p.getUniqueId());
         Location loc = Lobby.getLobby().getHall().getSpawn().clone();
         if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
             Vector v = loc.getDirection().multiply(2.9).setY(0.66);
@@ -76,8 +77,18 @@ public class BasicListener implements Listener {
             p.playSound(p.getLocation(), Sound.FIREWORK_LAUNCH, 2.5F, 2.5F);
         }
 
+        if (user.isPlateKillSwitch()) {
+            user.setPlateKillSwitch(false);
+        }
+
         if (e.getTo().getY() <= 24) {
-            e.setTo(User.fetch(p.getUniqueId()).getHall().getSpawn());
+            if (user.isParkourMode()) {
+                e.setTo(user.getHighestCheckpoint().getLocation());
+                p.sendMessage("§b§lPARKOUR§a Você foi teleportado para o checkpoint #" + user.getHighestCheckpoint().getId() + "!");
+                user.setPlateKillSwitch(true);
+            } else {
+                e.setTo(user.getHall().getSpawn());
+            }
             return;
         }
     }

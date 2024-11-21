@@ -76,6 +76,7 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
 
     private int room;
 
+
     public Hall(Lobby lobby, String displayName, String connectionName, String bossbar) {
         this.lobby = lobby;
         this.displayName = displayName;

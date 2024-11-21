@@ -100,7 +100,7 @@ public class LeaderboardHologram extends Hologram {
 
                     }
 
-                    text = "§e" + i + ". " + currentRank.getDefaultTag().getFormattedColor() + data.getName() + " §7- §e" + data.getStatistic().getAsInteger();
+                    text = "§e" + i + ". " + currentRank.getDefaultTag().getFormattedColor() + data.getName() + " §7- §e" + data.getStatistic().getAsObject();
                 }
 
                 hologram.updateText(x, text);

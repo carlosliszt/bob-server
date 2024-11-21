@@ -112,6 +112,98 @@ public class Leaderboard implements Listener, BukkitInterface {
         BukkitGame.getEngine().getBukkitFrame().unregisterCommand("reload" + statistic.getField().toLowerCase());
     }
 
+    public Leaderboard reverseQuery() {
+
+        System.out.println("Updating reverse statistics for " + this + ".");
+
+        if (Bukkit.isPrimaryThread()) {
+            BukkitGame.getEngine().getLogger().info(this + " is running on the primary thread, its may affect server performance.");
+        }
+
+        try {
+            String s = reverseInternalQuery();
+
+            PreparedStatement preparedStatement = Constants.getMySQL().getConnection().prepareStatement(s);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<LeaderboardData> dataList = new ArrayList<>();
+
+            while (resultSet.next()) {
+
+                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+
+                LeaderboardData leaderboardData = new LeaderboardData(uuid, statistic);
+
+                Object rawValue = DataStorage.loadData(statistic, resultSet, "statistic");
+
+                String formattedTime = formatTime((Integer) rawValue);
+
+                leaderboardData.setValue(statistic, formattedTime);
+
+                for (Columns columns : load) {
+                    leaderboardData.setValue(columns, DataStorage.loadData(columns, resultSet, columns.getField()));
+                }
+
+                dataList.add(leaderboardData);
+            }
+
+            values().clear();
+            this.values = dataList;
+
+            if (handler != null) {
+                sync(handler::onUpdate);
+            }
+
+            preparedStatement.close();
+            resultSet.close();
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Exception while updating smallest statistics for " + this, e);
+        }
+
+        return this;
+    }
+
+
+    protected String reverseInternalQuery() {
+        StringBuilder query = new StringBuilder();
+
+        query.append("SELECT ").append("t.").append("unique_id as uuid, ");
+        query.append("t.").append(statistic.getField()).append(" as statistic");
+
+        if (load.length != 0) {
+
+            List<Tables> tablesList = removeDuplicates(Arrays.stream(load)
+                    .map(Columns::getTable)
+                    .filter(c -> c != statistic.getTable())
+                    .collect(Collectors.toList()));
+
+            Iterator<Columns> iterator = Arrays.stream(load).iterator();
+
+            while (iterator.hasNext()) {
+                Columns columns = iterator.next();
+                query.append(", ").append((columns.getTable() == statistic.getTable() ? "t" : columns.getTable().getName()))
+                        .append(".").append(columns.getField());
+            }
+
+            query.append(" FROM ").append(statistic.getTable().getName()).append(" AS t");
+
+            for (Tables table : tablesList) {
+                query.append(" INNER JOIN ").append(table.getName())
+                        .append(" ON t.unique_id = ").append(table.getName()).append(".unique_id ");
+            }
+        }
+
+        query.append(" WHERE").append(" banned IS NULL AND ").append(statistic.getField()).append(" IS NOT NULL AND ")
+                .append(statistic.getField()).append(" != '").append(statistic.getDefaultValue().toString()).append("' OR ")
+                .append(" banned != 'true' AND ").append(statistic.getField()).append(" IS NOT NULL AND ")
+                .append(statistic.getField()).append(" != '").append(statistic.getDefaultValue()).append("'");
+
+        query.append(" ORDER BY statistic ASC LIMIT ").append(limit).append(";");
+
+        return query.toString();
+    }
+
     protected String internalQuery() {
         StringBuilder query = new StringBuilder();
 
@@ -170,4 +262,11 @@ public class Leaderboard implements Listener, BukkitInterface {
         this.handler = handler;
         return this;
     }
+
+    private String formatTime(int totalSeconds) {
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
 }

@@ -21,6 +21,11 @@ public class FlyCommand {
         Player sender = context.getSender();
         User user = User.fetch(sender.getUniqueId());
 
+        if (user.isParkourMode()) {
+            context.sendMessage("§b§lPARKOUR§c Você não pode voar enquanto estiver no parkour.");
+            return;
+        }
+
         boolean bool = !user.getAccount().getProperty("lobby.fly", false).getAsBoolean();
         user.getAccount().setProperty("lobby.fly", bool);
 

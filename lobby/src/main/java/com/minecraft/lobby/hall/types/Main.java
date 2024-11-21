@@ -44,12 +44,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Main extends Hall {
 
     private final Leaderboard bansLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_BANS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
     private final Leaderboard mutesLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_MUTES, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
+    private final Leaderboard parkourLeaderboard = new Leaderboard(Columns.MAIN_LOBBY_PARKOUR_RECORD, LeaderboardUpdate.MINUTE, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).reverseQuery();
+    @Getter
+    private Hologram bestTime;
 
     private final Location bansLocation, mutesLocation;
     private final Location parkourStart, parkourEnd;
@@ -68,13 +72,13 @@ public class Main extends Hall {
         worldBorder.setSize(550);
 
         this.parkourCheckpoints = new Checkpoint[]{
-                new Checkpoint(1, new Location(Bukkit.getWorld("world"), -72.5, 63.0, 16.5)),
-                new Checkpoint(2, new Location(Bukkit.getWorld("world"), -64.5, 66.0, -84.5)),
-                new Checkpoint(3, new Location(Bukkit.getWorld("world"), -1.5, 71.0, -115.5)),
-                new Checkpoint(4, new Location(Bukkit.getWorld("world"), 65.5, 64.0, -73.5))
+                new Checkpoint(1, new Location(Bukkit.getWorld("world"), -72.5, 63.0, 16.5, 140, 0)),
+                new Checkpoint(2, new Location(Bukkit.getWorld("world"), -64.5, 66.0, -84.5, -126, 0)),
+                new Checkpoint(3, new Location(Bukkit.getWorld("world"), -1.5, 71.0, -115.5, -109, 0)),
+                new Checkpoint(4, new Location(Bukkit.getWorld("world"), 65.5, 64.0, -73.5, -30, 0))
         };
 
-        this.parkourStart = new Location(Bukkit.getWorld("world"), -30.5, 60.0, -0.5);
+        this.parkourStart = new Location(Bukkit.getWorld("world"), -30.5, 60.0, -0.5, 50, 0);
         this.parkourEnd = new Location(Bukkit.getWorld("world"), 51.5, 60.0, 8.5);
 
         this.bansLocation = new Location(Bukkit.getWorld("world"), -3, 65, -19);
@@ -118,11 +122,22 @@ public class Main extends Hall {
                 leaderboardHologram7.show();
             }
 
-            new Hologram(player, parkourStart.add(0, 2, 0), "§b§LPARKOUR", "§aInício.").show();
-            new Hologram(player, parkourEnd.add(0, 2, 0), "§b§LPARKOUR", "§cFim.").show();
+            LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 10 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), -32, 63.5, -5));
+            leaderboardHologram8.show();
+
+            user.getAccount().getDataStorage().loadColumns(Collections.singletonList(Columns.MAIN_LOBBY_PARKOUR_RECORD));
+            Hologram startHologram = new Hologram(player, parkourStart.clone().add(0, 2, 0), "§b§LPARKOUR", "§aInício.");
+            startHologram.show();
+
+            bestTime = new Hologram(player, parkourStart.clone().add(0, 1, 0), "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong()));
+            bestTime.show();
+
+            Hologram endHologram = new Hologram(player, parkourEnd.clone().add(0, 2, 0), "§b§LPARKOUR", "§cFim.");
+            endHologram.show();
 
             for (Checkpoint checkpoint : parkourCheckpoints) {
-                new Hologram(player, checkpoint.getLocation().add(0, 2, 0), "§b§lPARKOUR", "§eCheckpoint §a#" + checkpoint.getId()).show();
+                Hologram checkpointHologram = new Hologram(player, checkpoint.getLocation().clone().add(0, 2, 0), "§b§lPARKOUR", "§eCheckpoint §a#" + checkpoint.getId());
+                checkpointHologram.show();
             }
 
         }, (user.getAccount().getVersion() >= 47 ? 0 : 5));

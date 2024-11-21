@@ -51,7 +51,7 @@ public class User {
 
     @Getter
     @Setter
-    private boolean plateDelay = false;
+    private boolean plateDelay, plateKillSwitch;
 
     public User(Account account) {
         this.account = account;
@@ -62,6 +62,8 @@ public class User {
         this.checkpoints = new HashMap<>();
         this.parkourMode = false;
         this.parkourTime = 0;
+        this.plateDelay = false;
+        this.plateDelay = plateKillSwitch;
     }
 
     public Player getPlayer() {
@@ -89,6 +91,10 @@ public class User {
 
     public void addCheckpoint(Checkpoint checkpoint, int id) {
         checkpoints.put(id, checkpoint);
+    }
+
+    public Checkpoint getHighestCheckpoint() {
+        return checkpoints.get(checkpoints.size());
     }
 
 }

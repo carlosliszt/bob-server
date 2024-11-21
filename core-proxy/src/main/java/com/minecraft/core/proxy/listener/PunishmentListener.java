@@ -104,7 +104,7 @@ public class PunishmentListener implements Listener, ProxyInterface {
             switch (punish.getType()) {
                 case BAN:
                     builder.setColor(Color.RED);
-                    builder.setAuthor("🔨 BANIDO" + (punish.getCategory() == PunishCategory.CHEATING ? (event.getAccount().count(punish.getType()) >= 3 ? " :x:" : "") : ""));
+                    builder.setAuthor("🔨 BANIDO" + (punish.isInexcusable() ? " ❌" : ""));
                     builder.setTitle(account.getUsername());
                     builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE) + " (#" + event.getAccount().count(punish.getType()) + ")", false));
                     if (!punish.isPermanent())
@@ -114,7 +114,7 @@ public class PunishmentListener implements Listener, ProxyInterface {
 
                 case MUTE:
                     builder.setColor(Color.YELLOW);
-                    builder.setAuthor("🔇 MUTADO");
+                    builder.setAuthor("🔇 MUTADO" + (punish.isInexcusable() ? " ❌" : ""));
                     builder.setTitle(account.getUsername());
                     builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE), false));
                     if (!punish.isPermanent())

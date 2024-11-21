@@ -191,7 +191,15 @@ public enum Columns {
 
     STAFF_LIFETIME_BANS(0, "Int", "lifetime_bans", "INT(100)"),
     STAFF_LIFETIME_MUTES(0, "Int", "lifetime_mutes", "INT(100)"),
-    STAFF_LIFETIME_EVENTS(0, "Int", "lifetime_events", "INT(100)");
+    STAFF_LIFETIME_EVENTS(0, "Int", "lifetime_events", "INT(100)"),
+
+    MAIN_LOBBY_PARKOUR_RECORD(0, "Int", "main_parkour_record", "INT(100)"),
+    DUELS_LOBBY_PARKOUR_RECORD(0, "Int", "duels_parkour_record", "INT(100)"),
+    HUNGERGAMES_LOBBY_PARKOUR_RECORD(0, "Int", "hg_parkour_record", "INT(100)"),
+    PVP_LOBBY_PARKOUR_RECORD(0, "Int", "pvp_parkour_record", "INT(100)"),
+    THE_BRIDGE_LOBBY_PARKOUR_RECORD(0, "Int", "bridge_parkour_record", "INT(100)"),
+
+    ;
 
     private final Object defaultValue;
     private final String classExpected, field, columnType;

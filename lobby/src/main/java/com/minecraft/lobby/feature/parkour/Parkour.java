@@ -1,26 +1,81 @@
 package com.minecraft.lobby.feature.parkour;
 
+import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
+import com.minecraft.core.bukkit.util.hologram.Hologram;
+import com.minecraft.core.bukkit.util.item.InteractableItem;
+import com.minecraft.core.bukkit.util.item.ItemFactory;
+import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.database.enums.Tables;
 import com.minecraft.lobby.Lobby;
+import com.minecraft.lobby.hall.types.Main;
 import com.minecraft.lobby.user.User;
 import lombok.Getter;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
-public class Parkour implements Listener {
+public class Parkour implements Listener, BukkitInterface {
 
     private final Location startLocation, endLocation;
     private final List<Checkpoint> checkpoints = new ArrayList<>();
+
+    InteractableItem resetParkour = new InteractableItem(new ItemFactory().setType(Material.RECORD_7).setName("§aReiniciar o Parkour").getStack(), new InteractableItem.Interact() {
+        public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+            User user = User.fetch(player.getUniqueId());
+            if (user.isParkourMode()) {
+                user.resetCheckPoints();
+                user.setParkourTime(0);
+                user.getPlayer().teleport(startLocation);
+                return true;
+            }
+            return false;
+        }
+    });
+
+    InteractableItem lastCheckpoint = new InteractableItem(new ItemFactory().setType(Material.GOLD_PLATE).setName("§aÚltimo checkpoint").getStack(), new InteractableItem.Interact() {
+        public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+            User user = User.fetch(player.getUniqueId());
+            if (user.isParkourMode()) {
+                if (user.getHighestCheckpoint() != null) {
+                    player.teleport(user.getHighestCheckpoint().getLocation());
+                    player.sendMessage("§b§lPARKOUR§a Teleportado para o último checkpoint!");
+                    return true;
+                } else {
+                    player.teleport(startLocation);
+                    player.sendMessage("§b§lPARKOUR§a Teleportado para o início do parkour!");
+                    return true;
+                }
+            }
+            return false;
+        }
+    });
+
+    InteractableItem stopParkour = new InteractableItem(new ItemFactory().setType(Material.REDSTONE).setName("§aParar o Parkour").getStack(), new InteractableItem.Interact() {
+        public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+            User user = User.fetch(player.getUniqueId());
+            if (user.isParkourMode()) {
+                resetParkour(player, user);
+
+                player.sendMessage("§b§lPARKOUR§c Parkour parado!");
+                return true;
+            }
+            return false;
+        }
+    });
 
     public Parkour(Lobby lobby, final Location startLocation, final Location endLocation, Checkpoint... checkpoints) {
         this.startLocation = startLocation;
@@ -50,7 +105,7 @@ public class Parkour implements Listener {
 
                     if (user.getCheckpoints().size() == checkpoint.getId() - 1) {
                         user.addCheckpoint(checkpoint, checkpoint.getId());
-                        player.sendMessage("§b§lPARKOUR§a Checkpoint " + checkpoint.getId() + " alcançado!");
+                        player.sendMessage("§b§lPARKOUR§a Você completou o §echeckpoint #" + checkpoint.getId() + "§a em §7" + formatSeconds(user.getParkourTime()) + "§a!");
                     } else {
                         player.sendMessage("§b§lPARKOUR§c Você não passou pelo checkpoint anterior!");
                     }
@@ -65,10 +120,20 @@ public class Parkour implements Listener {
             if (!user.isParkourMode()) {
                 player.sendMessage("§b§lPARKOUR§a Iniciado!");
                 user.setParkourMode(true);
+                user.getPlayer().setAllowFlight(false);
+                user.getPlayer().setFlying(false);
+
+                player.getInventory().setItem(3, resetParkour.getItemStack());
+                player.getInventory().setItem(4, lastCheckpoint.getItemStack());
+                player.getInventory().setItem(5, stopParkour.getItemStack());
+
             } else {
                 player.sendMessage("§b§lPARKOUR§a Temporizador reiniciado!");
+
                 user.resetCheckPoints();
                 user.setParkourTime(0);
+                user.getPlayer().setAllowFlight(false);
+                user.getPlayer().setFlying(false);
             }
         }
 
@@ -76,9 +141,14 @@ public class Parkour implements Listener {
             if (user.isParkourMode()) {
                 if (user.getCheckpoints().values().containsAll(checkpoints)) {
                     player.sendMessage("§b§lPARKOUR§a Parabéns, você completou o parkour em " + formatSeconds(user.getParkourTime()) + "!");
-                    user.setParkourMode(false);
-                    user.resetCheckPoints();
-                    user.setParkourTime(0);
+                    Main main = (Main) user.getHall();
+                    main.getBestTime().updateText(0, "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getParkourTime()));
+                    user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).setData(user.getParkourTime());
+                    async(() -> {
+                        user.getAccount().getDataStorage().saveTable(Tables.LOBBY_PARKOUR);
+                    });
+                    resetParkour(player, user);
+
                 } else {
                     player.sendMessage("§b§lPARKOUR§c Você não completou o parkour corretamente!");
                     user.setParkourMode(false);
@@ -89,18 +159,36 @@ public class Parkour implements Listener {
         }
     }
 
+    private void resetParkour(Player player, User user) {
+        user.setParkourMode(false);
+        user.resetCheckPoints();
+        user.setParkourTime(0);
+
+        InteractableItem collectibles = new InteractableItem(new ItemFactory().setType(Material.CHEST).setName("§aColetáveis").getStack(), new InteractableItem.Interact() {
+            public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+                player.sendMessage("§cEm breve!");
+                return false;
+            }
+        });
+
+        player.getInventory().setItem(3, new ItemStack(Material.AIR));
+        player.getInventory().setItem(4, collectibles.getItemStack());
+        player.getInventory().setItem(5, new ItemStack(Material.AIR));
+
+        if (user.getAccount().getProperty("lobby.fly", false).getAsBoolean()) {
+            player.setAllowFlight(true);
+        }
+    }
+
     @EventHandler
     public void onCheck(PlayerInteractEvent event) {
         if (event.getAction() != Action.PHYSICAL) return;
 
         if (event.getPlayer().getLocation().getBlock().getType() == Material.GOLD_PLATE) {
-            if (!User.fetch(event.getPlayer().getUniqueId()).isPlateDelay()) {
+            if (!User.fetch(event.getPlayer().getUniqueId()).isPlateDelay() && !User.fetch(event.getPlayer().getUniqueId()).isPlateKillSwitch()) {
                 User.fetch(event.getPlayer().getUniqueId()).setPlateDelay(true);
+                //User.fetch(event.getPlayer().getUniqueId()).setPlateKillSwitch(true);
                 verifyStart(event.getPlayer());
-            }
-        } else if (event.getPlayer().getLocation().getBlock().getType() == Material.IRON_PLATE) {
-            if (!User.fetch(event.getPlayer().getUniqueId()).isPlateDelay()) {
-                User.fetch(event.getPlayer().getUniqueId()).setPlateDelay(true);
                 verifyCheckpoint(event.getPlayer());
             }
         }
