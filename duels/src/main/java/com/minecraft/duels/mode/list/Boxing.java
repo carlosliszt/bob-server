@@ -26,7 +26,7 @@ import java.util.List;
 public class Boxing extends Mode {
 
     public Boxing() {
-        super(30, DuelType.BOXING_1V1, DuelType.BOXING_2V2);
+        super(10, DuelType.BOXING_1V1, DuelType.BOXING_2V2);
         setWins(Columns.DUELS_BOXING_WINS);
         setLoses(Columns.DUELS_BOXING_LOSSES);
         setWinstreak(Columns.DUELS_BOXING_WINSTREAK);

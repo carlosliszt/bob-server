@@ -25,6 +25,7 @@
         <module name="server-backend.duels.main" />
         <module name="server-backend.lobby.main" />
         <module name="server-backend.auth.main" />
+        <module name="server-backend.build-world.main" />
         <module name="server-backend.bedwars.main" />
         <module name="server-backend.thebridge.main" />
       </profile>

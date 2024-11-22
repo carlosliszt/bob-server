@@ -11,6 +11,7 @@ import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
+import com.minecraft.core.enums.Rank;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
@@ -29,7 +30,11 @@ public class LobbyCommand implements BukkitInterface {
         }
 
         if (lobbyType == Constants.getServerType()) {
-            context.sendMessage("§cVocê já está conectado neste servidor.");
+            if (context.getAccount().hasPermission(Rank.ADMINISTRATOR)) {
+                context.sendMessage("§cVocê já está conectado neste servidor, idiota.");
+            } else {
+                context.sendMessage("§cVocê já está conectado neste servidor.");
+            }
             return;
         }
 

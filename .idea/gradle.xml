@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/arcade-pvp" />
             <option value="$PROJECT_DIR$/auth" />
             <option value="$PROJECT_DIR$/bedwars" />
+            <option value="$PROJECT_DIR$/build-world" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core-bukkit" />
             <option value="$PROJECT_DIR$/core-proxy" />
@@ -21,7 +22,6 @@
             <option value="$PROJECT_DIR$/hungergames" />
             <option value="$PROJECT_DIR$/limbo-afk" />
             <option value="$PROJECT_DIR$/lobby" />
-            <option value="$PROJECT_DIR$/lobbyhost" />
             <option value="$PROJECT_DIR$/pvp" />
             <option value="$PROJECT_DIR$/skywars" />
             <option value="$PROJECT_DIR$/terrain-generator" />

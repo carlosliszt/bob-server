@@ -16,6 +16,7 @@ import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Medal;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.ProxyGame;
+import com.minecraft.core.proxy.staff.Staffer;
 import com.minecraft.core.proxy.util.antibot.list.AddressLimit;
 import com.minecraft.core.proxy.util.antibot.list.CountryBlocker;
 import com.minecraft.core.proxy.util.antibot.list.NameBlocker;
@@ -320,6 +321,11 @@ public class AccountLoader implements Listener {
                 account.getDataStorage().saveTable(ACCOUNT);
                 account.getDataStorage().saveTable(OTHER);
                 Constants.getAccountStorage().store(uniqueId, account);
+
+                if (account.hasPermission(Rank.PARTNER_PLUS)) {
+                    Staffer user = new Staffer(account);
+                    ProxyGame.getInstance().getStaffStorage().store(account.getUniqueId(), user);
+                }
             } else {
                 loginEvent.setCancelled(true);
                 loginEvent.setCancelReason(TextComponent.fromLegacyText(Language.PORTUGUESE.translate("unexpected_error")));
@@ -389,6 +395,7 @@ public class AccountLoader implements Listener {
             SkinData skinData = account.getSkinData();
             SkinChanger.getInstance().changeTexture(player.getPendingConnection(), skinData.getValue(), skinData.getSignature());
         }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -53,7 +53,7 @@ public class PlayCommand implements ProxyInterface {
             ServerInfo proxyServer = ProxyServer.getInstance().getServerInfo(server.getName());
 
             if (context.getSender().getServer().getInfo().equals(proxyServer)) {
-                if(context.getAccount().getRank().getId() > Rank.ADMINISTRATOR.getId()) {
+                if (context.getAccount().hasPermission(Rank.ADMINISTRATOR)) {
                     context.info("already_connected_admin");
                 } else {
                     context.info("already_connected");

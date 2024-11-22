@@ -36,8 +36,8 @@ public class Limbo extends BukkitGame {
         getServer().getScheduler().runTaskAsynchronously(this, new RedisPubSub(new BukkitRedisPubSub(), Redis.SERVER_COMMUNICATION_CHANNEL));
 
         WorldBorder worldBorder = Bukkit.getWorlds().get(0).getWorldBorder();
-        worldBorder.setCenter(new Location(Bukkit.getWorlds().get(0), 0.5, 70, 0.5));
-        worldBorder.setSize(25);
+        worldBorder.setCenter(new Location(Bukkit.getWorlds().get(0), 0, 28, 0));
+        worldBorder.setSize(40);
     }
 
     @Override

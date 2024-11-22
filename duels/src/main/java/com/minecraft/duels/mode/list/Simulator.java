@@ -14,7 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class Simulator extends Mode {
 
     public Simulator() {
-        super(30, DuelType.SIMULATOR_1V1, DuelType.SIMULATOR_2V2);
+        super(10, DuelType.SIMULATOR_1V1, DuelType.SIMULATOR_2V2);
         setWins(Columns.DUELS_SIMULATOR_WINS);
         setLoses(Columns.DUELS_SIMULATOR_LOSSES);
         setWinstreak(Columns.DUELS_SIMULATOR_WINSTREAK);

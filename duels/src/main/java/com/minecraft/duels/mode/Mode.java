@@ -8,6 +8,10 @@ import com.minecraft.core.bukkit.server.duels.DuelType;
 import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.compression.WinRAR;
+import com.minecraft.core.bukkit.util.leaderboard.Leaderboard;
+import com.minecraft.core.bukkit.util.leaderboard.hologram.LeaderboardHologram;
+import com.minecraft.core.bukkit.util.leaderboard.libs.LeaderboardType;
+import com.minecraft.core.bukkit.util.leaderboard.libs.LeaderboardUpdate;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.database.enums.Columns;
@@ -57,6 +61,11 @@ public abstract class Mode implements BukkitInterface, Listener {
     private World world;
     @Setter
     private Columns wins, loses, winstreak, winstreakRecord, games, rating;
+
+    Leaderboard winLeaderboard;
+    Leaderboard winstreakLeaderboard;
+
+    private ArrayList<LeaderboardHologram> leaderboardHolograms = new ArrayList<>();
 
     public void load() {
 
@@ -161,6 +170,9 @@ public abstract class Mode implements BukkitInterface, Listener {
             plugin.getRoomStorage().register(room);
 
             plugin.getLogger().info("Loaded " + room.getCode() + " for " + name);
+
+            winLeaderboard = new Leaderboard(wins, LeaderboardUpdate.MINUTE, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
+            winstreakLeaderboard = new Leaderboard(winstreak, LeaderboardUpdate.MINUTE, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
         }
     }
 
@@ -273,6 +285,12 @@ public abstract class Mode implements BukkitInterface, Listener {
         player.setLevel(0);
         player.setExp(0);
 
+        LeaderboardHologram leaderboardHologram1 = new LeaderboardHologram(winLeaderboard, "§e§lTOP 20 §b§l" + name + " WINS §7(%s/%s)", player, user.getRoom().getMapConfiguration().getSpawnPoint().clone().add(-2, 2.5, 0));
+        LeaderboardHologram leaderboardHologram2 = new LeaderboardHologram(winstreakLeaderboard, "§e§lTOP 20 §b§l" + name + " WINSTREAK §7(%s/%s)", player, user.getRoom().getMapConfiguration().getSpawnPoint().clone().add(2, 2.5, 0));
+
+        leaderboardHolograms.add(leaderboardHologram1);
+        leaderboardHolograms.add(leaderboardHologram2);
+
         if (playMode == PlayMode.PLAYER) {
             player.setGameMode(GameMode.SURVIVAL);
             player.spigot().setCollidesWithEntities(true);
@@ -281,6 +299,9 @@ public abstract class Mode implements BukkitInterface, Listener {
 
             if (Vanish.getInstance().isVanished(player.getUniqueId()))
                 Vanish.getInstance().setVanished(player, null);
+
+            leaderboardHologram1.show();
+            leaderboardHologram2.show();
 
         } else {
             Account account = Account.fetch(player.getUniqueId());
@@ -295,6 +316,12 @@ public abstract class Mode implements BukkitInterface, Listener {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 2, false, false), true);
             }
 
+            if (!leaderboardHologram1.isHidden()) {
+                leaderboardHologram1.hide();
+            }
+            if (!leaderboardHologram2.isHidden()) {
+                leaderboardHologram2.hide();
+            }
             Items.find(account.getLanguage()).build(player);
         }
 
@@ -304,6 +331,7 @@ public abstract class Mode implements BukkitInterface, Listener {
 
         if (((CraftPlayer) player).getHandle().playerConnection != null)
             player.getInventory().setHeldItemSlot(2);
+
     }
 
     public void quit(User user) {
@@ -331,7 +359,14 @@ public abstract class Mode implements BukkitInterface, Listener {
     }
 
     public void start(Room room) {
-        room.getAlivePlayers().forEach(user -> user.setBoxingHits(0));
+        room.getAlivePlayers().forEach(user -> {
+            user.setBoxingHits(0);
+        });
+
+        for (LeaderboardHologram leaderboardHologram : leaderboardHolograms) {
+            System.out.println("Hiding hologram: " + leaderboardHologram);
+            leaderboardHologram.hide();
+        }
     }
 
     public void handleSidebar(User user) {

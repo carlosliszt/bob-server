@@ -20,7 +20,7 @@ public class UHC extends Mode {
     protected final ItemStack HEAD = new ItemFactory().setSkullURL("f9878853654c3bb26fd33e80f8ed3cdf03ab3247f73678464e06da143dbd0c17").setAmount(3).setName("§6Golden Head").getStack();
 
     public UHC() {
-        super(15, DuelType.UHC_1V1, DuelType.UHC_2V2);
+        super(10, DuelType.UHC_1V1, DuelType.UHC_2V2);
         setWins(Columns.DUELS_UHC_WINS);
         setLoses(Columns.DUELS_UHC_LOSSES);
         setWinstreak(Columns.DUELS_UHC_WINSTREAK);

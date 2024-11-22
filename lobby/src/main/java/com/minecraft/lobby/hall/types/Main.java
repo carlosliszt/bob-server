@@ -178,7 +178,7 @@ public class Main extends Hall {
                 leaderboardHologram7.show();
             }
 
-            LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 10 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), -32, 63.5, -5));
+            LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 20 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), -32, 63.5, -5));
             leaderboardHologram8.show();
 
             user.getAccount().getDataStorage().loadColumns(Collections.singletonList(Columns.MAIN_LOBBY_PARKOUR_RECORD));

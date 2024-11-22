@@ -43,7 +43,7 @@ public class Auth extends BukkitGame {
         new AlertScheduler().start();
 
         WorldBorder worldBorder = Bukkit.getWorlds().get(0).getWorldBorder();
-        worldBorder.setCenter(new Location(Bukkit.getWorlds().get(0), 0.5, 70, 0.5));
+        worldBorder.setCenter(new Location(Bukkit.getWorlds().get(0), 0, 28, 0));
         worldBorder.setSize(150);
     }
 

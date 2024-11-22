@@ -162,21 +162,22 @@ public class ReportCommand implements ProxyInterface {
 
                 player.sendMessage(component);
 
-                EmbedBuilder reportEmbed = new EmbedBuilder();
-                reportEmbed.setColor(Color.RED);
-                reportEmbed.setAuthor("REPORT");
-                reportEmbed.setThumbnail("https://mineskin.eu/helm/" + target.getUniqueId() + "/256");
-                reportEmbed.setTitle(target.getDisplayName());
-                reportEmbed.addField(new MessageEmbed.Field("Motivo", message, false));
-                reportEmbed.addField(new MessageEmbed.Field("Servidor", target.getServer().getInfo().getName(), false));
-                reportEmbed.addField(new MessageEmbed.Field("Vítima", accountVictim.getDisplayName(), false));
-
-                TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308862566147297380");
-
-                if (txt != null)
-                    txt.sendMessageEmbeds(reportEmbed.build()).queue();
 
             });
+
+            EmbedBuilder reportEmbed = new EmbedBuilder();
+            reportEmbed.setColor(Color.RED);
+            reportEmbed.setAuthor("REPORT");
+            reportEmbed.setThumbnail("https://mineskin.eu/helm/" + target.getUniqueId() + "/256");
+            reportEmbed.setTitle(target.getDisplayName());
+            reportEmbed.addField(new MessageEmbed.Field("Motivo", message, false));
+            reportEmbed.addField(new MessageEmbed.Field("Servidor", target.getServer().getInfo().getName(), false));
+            reportEmbed.addField(new MessageEmbed.Field("Vítima", accountVictim.getDisplayName(), false));
+
+            TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308862566147297380");
+
+            if (txt != null)
+                txt.sendMessageEmbeds(reportEmbed.build()).queue();
 
         }),
 

@@ -14,7 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class Scrim extends Mode {
 
     public Scrim() {
-        super(20, DuelType.SCRIM_1V1, DuelType.SCRIM_2V2);
+        super(10, DuelType.SCRIM_1V1, DuelType.SCRIM_2V2);
         setWins(Columns.DUELS_SCRIM_WINS);
         setLoses(Columns.DUELS_SCRIM_LOSSES);
         setWinstreak(Columns.DUELS_SCRIM_WINSTREAK);

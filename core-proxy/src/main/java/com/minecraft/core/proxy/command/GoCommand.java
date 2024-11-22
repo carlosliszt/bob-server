@@ -15,6 +15,7 @@ import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.ProxyGame;
+import com.minecraft.core.proxy.staff.Staffer;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.proxy.util.server.ServerAPI;
 import net.md_5.bungee.BungeeCord;
@@ -27,6 +28,7 @@ import net.md_5.bungee.event.EventHandler;
 import redis.clients.jedis.Jedis;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -67,13 +69,87 @@ public class GoCommand implements Listener, ProxyInterface {
                 jedis.setex("route:" + context.getUniqueId(), 10, target.getUniqueId().toString());
             }
 
-            if (sender.getServer().getInfo() == player.getServer().getInfo())
+            Staffer staff = Staffer.fetch(account.getUniqueId());
+
+            if (staff.getCurrent() == null) {
+                staff.setCurrent(player.getName());
+            }
+
+            String temp = staff.getCurrent();
+            staff.setCurrent(staff.getLastGo());
+            staff.setLastGo(temp);
+
+            if (sender.getServer().getInfo() == player.getServer().getInfo()) {
                 sender.chat("/tp " + target.getUniqueId().toString());
-            else {
+            } else {
                 account.setProperty("command.go.platform", target.getUniqueId());
                 sender.connect(player.getServer().getInfo());
             }
         }));
+    }
+
+    @Command(name = "backtrack", rank = Rank.PARTNER_PLUS, platform = Platform.PLAYER, aliases = {"backt", "bct", "ffakillermax"})
+    public void handleCommand(Context<ProxiedPlayer> context) {
+
+        Staffer staffer = Staffer.fetch(context.getUniqueId());
+
+        if (staffer.getCurrent() == null || staffer.getLastGo() == null) {
+            context.sendMessage("§cVocê precisa ter um ido até alguém primeiro para usar este comando.");
+            return;
+        }
+
+
+        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "go " + staffer.getCurrent());
+
+    }
+
+    @Command(name = "gotica", rank = Rank.PARTNER_PLUS, platform = Platform.PLAYER, aliases = {"julia"})
+    public void handleGotica(Context<ProxiedPlayer> context) {
+        ProxiedPlayer sender = context.getSender();
+        Account account = Account.fetch(sender.getUniqueId());
+        Staffer staffer = Staffer.fetch(context.getUniqueId());
+
+        if (staffer.getLastGo() == null) {
+            context.sendMessage("§cVocê precisa ter um ido até alguém primeiro para usar este comando.");
+            return;
+        }
+
+        async(() -> search(context, staffer.getLastGo(), target -> {
+
+            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(target.getUniqueId());
+
+            if (player == null) {
+                context.info("target.not_found");
+                return;
+            }
+
+            if (ServerAPI.getInstance().hasPendingConnection(player)) {
+                context.info("command.go.target.pending_connection");
+                return;
+            }
+
+            if (target.getRank().getCategory().getImportance() > account.getRank().getCategory().getImportance()) {
+                context.info("target.not_found");
+                return;
+            }
+
+            if (account.hasProperty("command.go.platform")) {
+                context.info("command.go.pending_teleport");
+                return;
+            }
+
+            try (Jedis jedis = Constants.getRedis().getResource()) {
+                jedis.setex("route:" + context.getUniqueId(), 10, target.getUniqueId().toString());
+            }
+
+            if (sender.getServer().getInfo() == player.getServer().getInfo()) {
+                sender.chat("/tp " + target.getUniqueId().toString());
+            } else {
+                account.setProperty("command.go.platform", target.getUniqueId());
+                sender.connect(player.getServer().getInfo());
+            }
+        }));
+
     }
 
     private ProxiedPlayer fetch(String text) {

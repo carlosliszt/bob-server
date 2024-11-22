@@ -17,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class Soup extends Mode {
 
     public Soup() {
-        super(20, DuelType.SOUP_1V1, DuelType.SOUP_2V2);
+        super(10, DuelType.SOUP_1V1, DuelType.SOUP_2V2);
         setWins(Columns.DUELS_SOUP_WINS);
         setLoses(Columns.DUELS_SOUP_LOSSES);
         setWinstreak(Columns.DUELS_SOUP_WINSTREAK);

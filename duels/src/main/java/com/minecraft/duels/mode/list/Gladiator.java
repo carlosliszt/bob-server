@@ -27,7 +27,7 @@ public class Gladiator extends Mode implements VariableStorage {
     public int witherDelay = 180;
 
     public Gladiator() {
-        super(40, DuelType.GLADIATOR_1V1, DuelType.GLADIATOR_2V2);
+        super(10, DuelType.GLADIATOR_1V1, DuelType.GLADIATOR_2V2);
         loadVariables();
         setWins(Columns.DUELS_GLADIATOR_WINS);
         setLoses(Columns.DUELS_GLADIATOR_LOSSES);

@@ -12,7 +12,7 @@ public class GobuildCommand {
 
     @Command(name = "gobuild", platform = Platform.PLAYER, rank = Rank.BUILDER)
     public void onCommand(Context<ProxiedPlayer> context) {
-        ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo("Build");
+        ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo("build");
 
         if (serverInfo == null) {
             context.info("server.not_found");

@@ -25,6 +25,7 @@ import com.minecraft.core.proxy.redis.ProxyRedisPubSub;
 import com.minecraft.core.proxy.scheduler.CountWatchScheduler;
 import com.minecraft.core.proxy.scheduler.LogScheduler;
 import com.minecraft.core.proxy.server.ProxyServerStorage;
+import com.minecraft.core.proxy.staff.StaffStorage;
 import com.minecraft.core.proxy.util.command.ProxyFrame;
 import com.minecraft.core.proxy.util.language.ProxyTranslationExecutor;
 import com.minecraft.core.proxy.util.reward.storage.GiftCodeStorage;
@@ -63,6 +64,7 @@ public class ProxyGame extends Plugin {
     private ServerListPacket serverListPacket;
     private CountWatchScheduler countWatchScheduler;
     private GiftCodeStorage giftCodeStorage;
+    private StaffStorage staffStorage;
     private long startTime;
 
     private final Queue<LogData> logQueue = new ConcurrentLinkedQueue<>();
@@ -81,6 +83,7 @@ public class ProxyGame extends Plugin {
 
         this.pluginUpdater = new PluginUpdater(super.getFile());
         this.giftCodeStorage = new GiftCodeStorage();
+        this.staffStorage = new StaffStorage();
 
         if (pluginUpdater.verify(ProxyServer.getInstance()::stop))
             return;
@@ -102,7 +105,7 @@ public class ProxyGame extends Plugin {
 
             countWatchScheduler = new CountWatchScheduler();
 
-            getProxyFrame().registerCommands(new ClanCommand(), new BungeeVersionCommand(), new AuthLogCommand(), new RewardCommand(), new SetplayerlimitCommand(), new StreamCommand(), new DataServiceCommand(), new GobuildCommand(), new TournamentCommand(), new LatencyCommand(), new ProxyTicksPerSecondCommand(), new PlayCommand(), new BroadcastCommand(), new PasteCommand(), new ClanxClanCommand(), new EventCommand(), new ScrimCommand(), new CacheuuidCommand(), new SetmotdCommand(), new StafflistCommand(), new CreatorlistCommand(), new PlayerlistCommand(), new ChangepasswordCommand(), new LoginCommand(), new RegisterCommand(), new PlayerFinderCommand(), new StaffchatCommand(), new PunishCommand(), new AccountCommand(), new KickCommand(), new ReportCommand(), new ServerCommand(), new MotherboardCommand(), new GoCommand());
+            getProxyFrame().registerCommands(new ClanCommand(), new RestartCommand(), new BungeeVersionCommand(), new AuthLogCommand(), new RewardCommand(), new SetplayerlimitCommand(), new StreamCommand(), new DataServiceCommand(), new GobuildCommand(), new TournamentCommand(), new LatencyCommand(), new ProxyTicksPerSecondCommand(), new PlayCommand(), new BroadcastCommand(), new PasteCommand(), new ClanxClanCommand(), new EventCommand(), new ScrimCommand(), new CacheuuidCommand(), new SetmotdCommand(), new StafflistCommand(), new CreatorlistCommand(), new PlayerlistCommand(), new ChangepasswordCommand(), new LoginCommand(), new RegisterCommand(), new PlayerFinderCommand(), new StaffchatCommand(), new PunishCommand(), new AccountCommand(), new KickCommand(), new ReportCommand(), new ServerCommand(), new MotherboardCommand(), new GoCommand());
 
             getProxy().getPluginManager().registerListener(this, new AccountLoader());
             getProxy().getPluginManager().registerListener(this, new ServerListener());

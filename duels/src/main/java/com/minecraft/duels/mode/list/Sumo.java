@@ -20,7 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 public class Sumo extends Mode {
 
     public Sumo() {
-        super(15, DuelType.SUMO_1V1, DuelType.SUMO_2V2);
+        super(10, DuelType.SUMO_1V1, DuelType.SUMO_2V2);
         setWins(Columns.DUELS_SUMO_WINS);
         setLoses(Columns.DUELS_SUMO_LOSSES);
         setWinstreak(Columns.DUELS_SUMO_WINSTREAK);

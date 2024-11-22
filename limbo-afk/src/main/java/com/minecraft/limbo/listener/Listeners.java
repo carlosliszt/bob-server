@@ -121,7 +121,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onPlayerInitialSpawnEvent(PlayerInitialSpawnEvent event) {
-        event.setSpawnLocation(new Location(Bukkit.getWorlds().get(0), 0.5, 70, 0.5));
+        event.setSpawnLocation(new Location(Bukkit.getWorlds().get(0), 0, 28, 0));
     }
 
     @EventHandler
