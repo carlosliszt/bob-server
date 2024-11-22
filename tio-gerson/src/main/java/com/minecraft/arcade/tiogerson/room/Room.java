@@ -61,13 +61,13 @@ public class Room implements BukkitInterface {
     public Room(int id, Mode mode, World world) {
         this.mode = mode;
         this.code = generateRoomCode() + id;
-        this.tioGerson = new Team(ChatColor.RED, this, 1);
-        this.enzo = new Team(ChatColor.BLUE, this, 7);
+        this.tioGerson = new Team(ChatColor.RED, this, mode.getMaxTioGerson());
+        this.enzo = new Team(ChatColor.BLUE, this, mode.getMaxPlayers() - mode.getMaxTioGerson());
         this.spectators = new HashSet<>();
         this.alivePlayers = new HashSet<>();
         this.rollback = new HashSet<>();
         this.stage = RoomStage.WAITING;
-        this.maxPlayers = 8;
+        this.maxPlayers = mode.getMaxPlayers();
         this.time = -1;
         this.win = -1;
         this.countStats = true;
@@ -152,6 +152,16 @@ public class Room implements BukkitInterface {
                 } else {
                     getEnzo().getMembers().add(user);
                 }
+            }
+        }
+
+        while (getTioGerson().getMembers().size() < mode.getMaxTioGerson()) { //workaround
+            if (!getEnzo().getMembers().isEmpty()) {
+                User user = getEnzo().getMembers().iterator().next();
+                getEnzo().getMembers().remove(user);
+                getTioGerson().getMembers().add(user);
+            } else {
+                break;
             }
         }
 

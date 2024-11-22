@@ -49,7 +49,7 @@ public class ArcadeMain extends BukkitGame {
         roomStorage.start();
 
         Constants.setServerType(ServerType.TIOGERSON);
-        Constants.setLobbyType(ServerType.MAIN_LOBBY);
+        Constants.setLobbyType(ServerType.PROTOTYPE);
 
         new Normal().load();
 
@@ -63,7 +63,7 @@ public class ArcadeMain extends BukkitGame {
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new DamageListener(), this);
 
-        getServerStorage().listen(ServerType.MAIN_LOBBY);
+        getServerStorage().listen(ServerType.MAIN_LOBBY, ServerType.PROTOTYPE);
 
         getBukkitFrame().registerCommands(new InfoCommand<>(User.class, str -> User.fetch(UUID.fromString(str))));
 

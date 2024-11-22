@@ -258,13 +258,6 @@ public abstract class Mode implements BukkitInterface, Listener {
 
         int size = room.getMapConfiguration().getSize();
 
-        for (int x = -size; x <= size; x += 16) {
-            for (int z = -size; z <= size; z += 16) {
-                Chunk chunk = world.getChunkAt(x >> 4, z >> 4);
-                chunk.load(false);
-            }
-        }
-
         world.getEntities().forEach(Entity::remove);
     }
 

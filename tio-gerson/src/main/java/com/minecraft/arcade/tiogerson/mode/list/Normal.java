@@ -36,6 +36,9 @@ public class Normal extends Mode {
         setWins(Columns.TIOGERSON_WINS);
         setWinstreak(Columns.TIOGERSON_WINSTREAK);
         setWinstreakRecord(Columns.TIOGERSON_MAX_WINSTREAK);
+        setMaxPlayers(8);
+        setMaxTioGerson(1);
+        setMinTioGerson(1);
     }
 
     ItemStack kbStick = new ItemFactory(Material.STICK).setName("§aSAII FORA!").setDescription("§7SAI TITIO!!!").addEnchantment(Enchantment.KNOCKBACK, 4).setUnbreakable().addItemFlag(ItemFlag.HIDE_ATTRIBUTES).getStack();

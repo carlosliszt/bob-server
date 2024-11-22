@@ -32,7 +32,6 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.github.paperspigot.Title;
@@ -54,6 +53,9 @@ public abstract class Mode implements BukkitInterface, Listener {
     private World world;
     @Setter
     private Columns wins, loses, winstreak, winstreakRecord, games;
+
+    @Setter
+    private int maxPlayers, minTioGerson, maxTioGerson;
 
     private int tioGersonDelay = 5;
 
@@ -252,7 +254,7 @@ public abstract class Mode implements BukkitInterface, Listener {
                 room.rollback();
             } else if (room.getWin() + 6 == time) {
 
-                Server server = ServerCategory.LOBBY.getServerFinder().getBestServer(ServerType.MAIN_LOBBY);
+                Server server = ServerCategory.LOBBY.getServerFinder().getBestServer(ServerType.PROTOTYPE);
 
                 room.getWorld().getPlayers().forEach(player -> {
 

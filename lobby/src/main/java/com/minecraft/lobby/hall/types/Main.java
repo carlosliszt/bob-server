@@ -8,10 +8,7 @@ package com.minecraft.lobby.hall.types;
 
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
-import com.minecraft.core.bukkit.server.duels.DuelType;
 import com.minecraft.core.bukkit.server.hologram.InfoHologram;
-import com.minecraft.core.bukkit.server.route.GameRouteContext;
-import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
 import com.minecraft.core.bukkit.util.hologram.Hologram;
 import com.minecraft.core.bukkit.util.leaderboard.Leaderboard;
@@ -21,10 +18,8 @@ import com.minecraft.core.bukkit.util.leaderboard.libs.LeaderboardUpdate;
 import com.minecraft.core.bukkit.util.npc.NPC;
 import com.minecraft.core.bukkit.util.scoreboard.AnimatedString;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
-import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Tag;
-import com.minecraft.core.payload.ServerRedirect;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
@@ -91,57 +86,27 @@ public class Main extends Hall {
         super.join(user);
     }
 
-    @Override
-    public void handleNPCs(User user) {
-        Player player = user.getPlayer();
-        boolean staffer = user.getAccount().getRank().isStaffer();
+    private final NPC PROTOTYPE = NPC.builder().equipment(NPC.Equipment.builder().hand(new ItemStack(Material.STICK)).build()).location(new Location(Bukkit.getWorld("world"), -5.5, 60.0, 9.5, 180, 0)).property(new Property("textures", "ewogICJ0aW1lc3RhbXAiIDogMTczMjIzMzA2MjAyNywKICAicHJvZmlsZUlkIiA6ICJlM2Y1MDJmNDQ5OTU0NDgzYmE1NGRlYWMyMzRkMTg1NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJzb3JpZW5jYWl4YWRhZ3VhIiwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzFmZjA4MWRkZjM0YWRkY2I4MmY5MTAzOTE4ODNjODg0ZWI5OTNlZDI0Njk0MDNhYzA4NjUxMzUyYjk2MjJjMWYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfSwKICAgICJDQVBFIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZmQ1NTNiMzkzNThhMjRlZGZlM2I4YTlhOTM5ZmE1ZmE0ZmFhNGQ5YTljM2Q2YWY4ZWFmYjM3N2ZhMDVjMmJiIgogICAgfQogIH0KfQ==")).interactExecutor((player, npc, type) -> {
+        if (isConnectionCooldown(player.getUniqueId())) {
+            Account account = Account.fetch(player.getUniqueId());
+            Cooldown cooldown = this.getCooldown(player.getUniqueId());
 
-        Bukkit.getScheduler().runTaskLater(getLobby(), () -> {
+            player.sendMessage(account.getLanguage().translate("wait_to_connect", Constants.SIMPLE_DECIMAL_FORMAT.format(cooldown.getRemaining())));
+            return;
+        }
 
-            HG.clone(player).spawn(true);
-            PVP.clone(player).spawn(true);
-            DUELS.clone(player).spawn(true);
+        addCooldown(player.getUniqueId());
 
-            InfoHologram pvp = new InfoHologram(player, PVP.getLocation().clone().add(0, 2.1, 0), null, "§bPvP", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.PVP_LOBBY, ServerType.PVP));
-            pvp.setInteract(interact);
-            pvp.show();
+        Account account = Account.fetch(player.getUniqueId());
+        Server server = ServerCategory.LOBBY.getServerFinder().getBestServer(ServerType.PROTOTYPE);
 
-            InfoHologram duels = new InfoHologram(player, DUELS.getLocation().clone().add(0, 2.1, 0), null, "§bDuels", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.DUELS, ServerType.DUELS_LOBBY));
-            duels.setInteract(interact);
-            duels.show();
+        if (server == null) {
+            player.sendMessage(account.getLanguage().translate("no_server_available", "tiogerson"));
+            return;
+        }
 
-            InfoHologram hg = new InfoHologram(player, HG.getLocation().clone().add(0, 2.1, 0), null, "§BHardcore Games", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.HG_LOBBY, ServerType.HGMIX, ServerType.TOURNAMENT, ServerType.CLANXCLAN, ServerType.SCRIM, ServerType.EVENT));
-            hg.setInteract(interact);
-            hg.show();
-
-            if (staffer) {
-                LeaderboardHologram leaderboardHologram6 = new LeaderboardHologram(bansLeaderboard, "§e§lTOP 20 §b§lBANS MENSAL §7(%s/%s)", player, bansLocation);
-                leaderboardHologram6.show();
-
-                LeaderboardHologram leaderboardHologram7 = new LeaderboardHologram(mutesLeaderboard, "§e§lTOP 20 §b§lMUTES MENSAL §7(%s/%s)", player, mutesLocation);
-                leaderboardHologram7.show();
-            }
-
-            LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 10 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), -32, 63.5, -5));
-            leaderboardHologram8.show();
-
-            user.getAccount().getDataStorage().loadColumns(Collections.singletonList(Columns.MAIN_LOBBY_PARKOUR_RECORD));
-            Hologram startHologram = new Hologram(player, parkourStart.clone().add(0, 2, 0), "§b§LPARKOUR", "§aInício.");
-            startHologram.show();
-
-            bestTime = new Hologram(player, parkourStart.clone().add(0, 1, 0), "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong()));
-            bestTime.show();
-
-            Hologram endHologram = new Hologram(player, parkourEnd.clone().add(0, 2, 0), "§b§LPARKOUR", "§cFim.");
-            endHologram.show();
-
-            for (Checkpoint checkpoint : parkourCheckpoints) {
-                Hologram checkpointHologram = new Hologram(player, checkpoint.getLocation().clone().add(0, 2, 0), "§b§lPARKOUR", "§eCheckpoint §a#" + checkpoint.getId());
-                checkpointHologram.show();
-            }
-
-        }, (user.getAccount().getVersion() >= 47 ? 0 : 5));
-    }
+        account.connect(server);
+    }).build();
 
     @Override
     public void quit(User user) {
@@ -174,6 +139,64 @@ public class Main extends Hall {
 
             gameScoreboard.updateLines(scores);
         }
+    }
+
+    @Override
+    public void handleNPCs(User user) {
+        Player player = user.getPlayer();
+        boolean staffer = user.getAccount().getRank().isStaffer();
+
+        Bukkit.getScheduler().runTaskLater(getLobby(), () -> {
+
+            HG.clone(player).spawn(true);
+            PVP.clone(player).spawn(true);
+            DUELS.clone(player).spawn(true);
+            PROTOTYPE.clone(player).spawn(true);
+
+            InfoHologram pvp = new InfoHologram(player, PVP.getLocation().clone().add(0, 2.1, 0), null, "§bPvP", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.PVP_LOBBY, ServerType.PVP));
+            pvp.setInteract(interact);
+            pvp.show();
+
+            InfoHologram duels = new InfoHologram(player, DUELS.getLocation().clone().add(0, 2.1, 0), null, "§bDuels", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.DUELS, ServerType.DUELS_LOBBY));
+            duels.setInteract(interact);
+            duels.show();
+
+            InfoHologram hg = new InfoHologram(player, HG.getLocation().clone().add(0, 2.1, 0), null, "§BHardcore Games", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.HG_LOBBY, ServerType.HGMIX, ServerType.TOURNAMENT, ServerType.CLANXCLAN, ServerType.SCRIM, ServerType.EVENT));
+            hg.setInteract(interact);
+            hg.show();
+
+            InfoHologram prototype = new InfoHologram(player, PROTOTYPE.getLocation().clone().add(0, 2.1, 0), null, "§bProtótipos", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.TIOGERSON, ServerType.PROTOTYPE));
+            prototype.setInteract(interact);
+            prototype.show();
+
+
+            if (staffer) {
+                LeaderboardHologram leaderboardHologram6 = new LeaderboardHologram(bansLeaderboard, "§e§lTOP 20 §b§lBANS MENSAL §7(%s/%s)", player, bansLocation);
+                leaderboardHologram6.show();
+
+                LeaderboardHologram leaderboardHologram7 = new LeaderboardHologram(mutesLeaderboard, "§e§lTOP 20 §b§lMUTES MENSAL §7(%s/%s)", player, mutesLocation);
+                leaderboardHologram7.show();
+            }
+
+            LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 10 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), -32, 63.5, -5));
+            leaderboardHologram8.show();
+
+            user.getAccount().getDataStorage().loadColumns(Collections.singletonList(Columns.MAIN_LOBBY_PARKOUR_RECORD));
+            Hologram startHologram = new Hologram(player, parkourStart.clone().add(0, 2, 0), "§b§LPARKOUR", "§aInício.");
+            startHologram.show();
+
+            bestTime = new Hologram(player, parkourStart.clone().add(0, 1, 0), "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong()));
+            bestTime.show();
+
+            Hologram endHologram = new Hologram(player, parkourEnd.clone().add(0, 2, 0), "§b§LPARKOUR", "§cFim.");
+            endHologram.show();
+
+            for (Checkpoint checkpoint : parkourCheckpoints) {
+                Hologram checkpointHologram = new Hologram(player, checkpoint.getLocation().clone().add(0, 2, 0), "§b§lPARKOUR", "§eCheckpoint §a#" + checkpoint.getId());
+                checkpointHologram.show();
+            }
+
+        }, (user.getAccount().getVersion() >= 47 ? 0 : 5));
     }
 
     private final NPC HG = NPC.builder().equipment(NPC.Equipment.builder().hand(new ItemStack(Material.MUSHROOM_SOUP)).build()).location(new Location(getSpawn().getWorld(), 0.4, 60, 10.5, 180, 0)).property(new Property("textures", "ewogICJ0aW1lc3RhbXAiIDogMTYzNjE5NjA3ODk1NiwKICAicHJvZmlsZUlkIiA6ICI2NDU4Mjc0MjEyNDg0MDY0YTRkMDBlNDdjZWM4ZjcyZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaDNtMXMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzJmMjNiMGQ1NjkyNWEwYTI5YmU0ZDUzMDExODAzODFjMGIxODdmZDRmNTJkOTAyOTA4ODY1MDQxNDdmY2VmZCIKICAgIH0KICB9Cn0=", "Q+M5kRV6Vsl0tgFl08yeulUhJdVN1j8NpaH88w7sQ3qShBvgzwixn0HZN6+Uh9fTLXkmypE8LLXmXQDioXtDBlFfDlIxo1VjfszLsDAP6l2UHrCA67Qeg0N0zVn2NlqapoTIKuL4loa/VnY1BStTIdoKZBLpKMYwY0XBlFwnGIjGVlyLAGNINfrUpH53gf0ugBZi4MtQJzxQkGqQuTOzt30mPWMgR5lhqLj5J5emgiXXFxZQOXOXpkC2S3Q9zk9uPKM31+ekMnvNILlreEA1hV5rU1jlnT3ujVT+5EZqXjmd32QBrWNgm2i7MHc0P5Rd30urH0na7hoB8LzfrbNXj7rHnmxTROC6Ktpnz6S08RE9Z4RvdqA2Z4mlxFvT5pirXCWjEAY0goHXR2HBewTsep6WJNNNyCERH46cNOfQ/oGrFuYujZoyEGr71YacNcbOE84QEz2aIe+a1b937+JHg0Opd65ef/cVLEidgC4bmYyqUk673vEf6Xf6z59WwmFWMgpJedUx6JaWmdCtXKkCT/mxleMlJ72OoZ30xF5Avq0WfWBlaYW3ZNsDugHX5i+JzuNfh0VAyF4ReQDsWMeT3pTeaoZB46eVwDC7REeRkeNH00R4Xr81dda6LD9YTFrUlDHts3tGXPFWWZflEBlSmqcCvXfgBT0vme31DJeYld0=")).interactExecutor((player, npc, type) -> {
