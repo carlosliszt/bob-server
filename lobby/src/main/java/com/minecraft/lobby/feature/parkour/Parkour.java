@@ -142,11 +142,16 @@ public class Parkour implements Listener, BukkitInterface {
                 if (user.getCheckpoints().values().containsAll(checkpoints)) {
                     player.sendMessage("§b§lPARKOUR§a Parabéns, você completou o parkour em " + formatSeconds(user.getParkourTime()) + "!");
                     Main main = (Main) user.getHall();
-                    main.getBestTime().updateText(0, "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getParkourTime()));
-                    user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).setData(user.getParkourTime());
-                    async(() -> {
-                        user.getAccount().getDataStorage().saveTable(Tables.LOBBY_PARKOUR);
-                    });
+                    if (user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong() > user.getParkourTime() || user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong() == 0) {
+                        player.sendMessage("§b§lPARKOUR§a Você bateu o recorde pessoal por " + (user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong() - user.getParkourTime()) + " segundos!");
+                        main.getBestTime().updateText(0, "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getParkourTime()));
+                        user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).setData(user.getParkourTime());
+                        async(() -> {
+                            user.getAccount().getDataStorage().saveTable(Tables.LOBBY_PARKOUR);
+                        });
+                    } else {
+                        player.sendMessage("§b§lPARKOUR§a Seu tempo foi de " + (user.getParkourTime() - user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong()) + " segundos a mais que o recorde pessoal!");
+                    }
                     resetParkour(player, user);
 
                 } else {

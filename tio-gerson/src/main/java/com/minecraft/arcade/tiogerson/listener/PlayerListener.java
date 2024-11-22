@@ -17,6 +17,10 @@ import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.enums.PlusColor;
+import com.minecraft.core.enums.PrefixType;
+import com.minecraft.core.enums.Tag;
+import com.minecraft.core.translation.Language;
 import net.minecraft.server.v1_8_R3.PacketPlayInTabComplete;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +42,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.NameTagVisibility;
+
+import java.util.Set;
 
 public class PlayerListener implements Listener {
 

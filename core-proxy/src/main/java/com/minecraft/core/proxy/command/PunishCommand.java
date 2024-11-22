@@ -145,7 +145,7 @@ public class PunishCommand implements ProxyInterface {
         }));
     }
 
-    @Command(name = "unpunish", rank = Rank.ASSISTANT_MOD, usage = "unpunish <target> <code|type> [force]")
+    @Command(name = "unpunish", rank = Rank.ASSISTANT_MOD, usage = "unpunish <target> <code|type> [force]", aliases = {"pardon"})
     public void unbanCommand(Context<CommandSender> context, String target, String code) {
 
         if (context.getAccount().getFlag(Flag.UNPUNISH)) {

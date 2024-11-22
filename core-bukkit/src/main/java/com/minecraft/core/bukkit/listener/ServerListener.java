@@ -347,7 +347,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
             String playersTeamOrder = "tag:" + playersTag.getOrder() + accounts.getRanking().getOrder() + players.getEntityId();
             playersTeamOrder = playersTeamOrder + Constants.KEY(16 - playersTeamOrder.length(), true);
 
-            PlayerTeamAssignEvent teamAssignEvent = (PlayerTeamAssignEvent) new PlayerTeamAssignEvent(accounts, player, createTeamIfNotExists(player, players.getName(), playersTeamOrder, (playersTag == Tag.MEMBER ? playersTag.getMemberSetting(playerPrefixtype) : playerPrefixtype.getFormatter().format(playersTag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")), "")).fire();
+            PlayerTeamAssignEvent teamAssignEvent = (PlayerTeamAssignEvent) new PlayerTeamAssignEvent(accounts, player, createTeamIfNotExists(player, players.getName(), playersTeamOrder, (playersTag == Tag.MEMBER ? playersTag.getMemberSetting(playerPrefixtype) : playerPrefixtype.getFormatter().format(playersTag).replace("#", accounts.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")), "")).fire();
             Team to = teamAssignEvent.getTeam();
 
             for (Team old2 : player.getScoreboard().getTeams()) {
@@ -411,9 +411,11 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(tablistPacket);
 
+        /**
         final Knockback knockback = BukkitGame.getEngine().getKnockbackService().getKnockbackByName("vanilla");
         if (knockback != null)
             BukkitGame.getEngine().getKnockbackService().setKnockback(player, BukkitGame.getEngine().getKnockbackService().getKnockbackByName("vanilla"));
+         **/
 
         Vanish.getInstance().getPlayerVanish().forEach((uuid, vanishRank) -> {
 

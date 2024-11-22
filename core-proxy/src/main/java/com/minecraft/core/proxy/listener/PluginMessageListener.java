@@ -140,6 +140,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
         Account account = Account.fetch(alert.getTarget());
         String opening = "§c%sº aviso. §a%s Report:§f %s %s"; //String opening = "§c%sº aviso. §eReport §a%s §7falhou no teste de §a%s §8%s";
         StringBuilder infoBuilder = new StringBuilder("");
+        StringBuilder reason = new StringBuilder(alert.getDisplayName() + " ");
 
         EmbedBuilder acb = new EmbedBuilder();
 
@@ -150,19 +151,23 @@ public class PluginMessageListener implements Listener, ProxyInterface {
 
         if (!informationIterator.hasNext()) {
             PlayerPingHistory pingHistory = account.getProperty("pings", new PlayerPingHistory()).getAs(PlayerPingHistory.class);
+            reason.append("ping=").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum());
             infoBuilder.append("\n§eInfo: {§6ping§e=§b").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum()).append("§e}");
             acb.addField(new MessageEmbed.Field("Ping", pingHistory.getMinimum() + "/" + pingHistory.getAverage() + "/" + pingHistory.getMaximum(), false));
         }
 
         while (informationIterator.hasNext()) {
             Information information = informationIterator.next();
+            reason.append(information.getDisplayName()).append("=").append(information.getValue());
             infoBuilder.append("\n§eInfo: {§6" + information.getDisplayName()).append("§e=").append("§b" + information.getValue());
             acb.addField(new MessageEmbed.Field(information.getDisplayName(), information.getValue(), false));
 
-            if (informationIterator.hasNext())
+            if (informationIterator.hasNext()) {
+                reason.append(", ");
                 infoBuilder.append("§e, ");
-            else {
+            } else {
                 PlayerPingHistory pingHistory = account.getProperty("pings", new PlayerPingHistory()).getAs(PlayerPingHistory.class);
+                reason.append(", ping=").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum());
                 infoBuilder.append("§e, §6ping§e=§b").append(pingHistory.getMinimum()).append("/").append(pingHistory.getAverage()).append("/").append(pingHistory.getMaximum()).append("§e}");
                 acb.addField(new MessageEmbed.Field("Ping", pingHistory.getMinimum() + "/" + pingHistory.getAverage() + "/" + pingHistory.getMaximum(), false));
             }
@@ -208,7 +213,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
             try {
                 Punish punish = new Punish();
                 punish.setApplier("[ANTICHEAT]");
-                punish.setReason(alert.getDisplayName() + " anticheat " + infoBuilder);
+                punish.setReason("" + reason);
                 punish.setActive(true);
                 punish.setTime(StringTimeUtils.parseDateDiff("30d", true));
                 punish.setAddress(account.getData(Columns.ADDRESS).getAsString());

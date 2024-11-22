@@ -3,10 +3,7 @@ package com.minecraft.arcade.tiogerson;
 import com.minecraft.arcade.tiogerson.command.DemandCommand;
 import com.minecraft.arcade.tiogerson.command.FindRoomCommand;
 import com.minecraft.arcade.tiogerson.command.ForceStartCommand;
-import com.minecraft.arcade.tiogerson.listener.DamageListener;
-import com.minecraft.arcade.tiogerson.listener.PlayerListener;
-import com.minecraft.arcade.tiogerson.listener.ServerListener;
-import com.minecraft.arcade.tiogerson.listener.WorldListener;
+import com.minecraft.arcade.tiogerson.listener.*;
 import com.minecraft.arcade.tiogerson.mode.list.Normal;
 import com.minecraft.arcade.tiogerson.room.storage.RoomStorage;
 import com.minecraft.arcade.tiogerson.user.User;
@@ -61,6 +58,7 @@ public class ArcadeMain extends BukkitGame {
         getServer().getPluginManager().registerEvents(new WorldListener(this), this);
         getServer().getPluginManager().registerEvents(new ServerListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new SpectatorListener(), this);
         getServer().getPluginManager().registerEvents(new DamageListener(), this);
 
         getServerStorage().listen(ServerType.MAIN_LOBBY, ServerType.PROTOTYPE);

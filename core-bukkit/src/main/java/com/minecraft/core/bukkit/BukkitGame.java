@@ -42,12 +42,18 @@ import com.minecraft.core.util.updater.PluginUpdater;
 import dev.imanity.knockback.api.KnockbackService;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.github.paperspigot.PaperSpigotConfig;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Getter
 public class BukkitGame extends JavaPlugin {
@@ -118,8 +124,12 @@ public class BukkitGame extends JavaPlugin {
                         "arrombado", "macaco", "gorila", "carniça", "flame", "mush", "hylex", "doente", "vsfd", "vadia", "vagabundo", "vagabunda",
                         "vsf", "fodase", "nerdola", "nerd", "retardado", "viado", "bixa", "corno", "chifrudo", "doente", "mongol", "nazismo", "ku klux klan", "kukluxklan");
 
+
+        getServer().getScheduler().runTaskLater(this, () -> unregisterCommands("op", "deop", "scoreboard",
+                "me", "say", "reload", "rl", "ban", "ban-ip", "ban-list", "pardon",
+                "pardon-ip", "xp", "minecraft:kick", "minecraft:gamemode"), 2L);
+
         bukkitFrame.registerCommands(new StatisticsCommand(), new PlusColorCommand(), new NickBookCommand(), new TpsCommand(), new ForceskinCommand(), new ReportsCommand(), new ArcadeDevCommand(), new ExportInventoryCommand(), new ParticleCommand(), new PckgstatCommand(), new GetlogsCommand(), new PacketFilterCommand(), new AlertCommand(), new PreferencesCommand(), new CensorCheckCommand(), new TeleportallCommand(), new ClanTagCommand(), new MedalCommand(), new LobbyCommand(), new VariableCommand(), new ChatCommand(), new StafflogCommand(), new GetlocationCommand(), new VanishCommand(), new WhitelistCommand(), new SpeedCommand(), new LanguageCommand(), new ProfileCommand(), new CrashCommand(), new SudoCommand(), new SmiteCommand(), new WhisperCommand(), new FollowCommand(), new EffectsCommand(), new InventoryCommand(), new LoopCommand(), new NickCommand(), new TagCommand(), new PrefixtypeCommand(), new WorldEditCommand(), new TeleportCommand(), new GamemodeCommand(), new MydragonCommand());
-        bukkitFrame.unregisterCommands("ban", "minecraft:ban", "pardon", "minecraft:pardon");
 
         PluginManager pluginManager = getServer().getPluginManager();
 
@@ -208,6 +218,38 @@ public class BukkitGame extends JavaPlugin {
         }
         if (file.exists())
             file.delete();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void unregisterCommands(String... commands) {
+        try {
+            Field firstField = getServer().getClass().getDeclaredField("commandMap");
+            firstField.setAccessible(true);
+            CommandMap commandMap = (CommandMap) firstField.get(getServer());
+            Field secondField = commandMap.getClass().getDeclaredField("knownCommands");
+            secondField.setAccessible(true);
+            HashMap<String, Command> knownCommands = (HashMap<String, Command>) secondField.get(commandMap);
+            for (String command : commands) {
+                if (knownCommands.containsKey(command)) {
+                    knownCommands.remove(command);
+                    List<String> aliases = new ArrayList<>();
+                    for (String key : knownCommands.keySet()) {
+                        if (!key.contains(":"))
+                            continue;
+
+                        String substr = key.substring(key.indexOf(":") + 1);
+                        if (substr.equalsIgnoreCase(command)) {
+                            aliases.add(key);
+                        }
+                    }
+                    for (String alias : aliases) {
+                        knownCommands.remove(alias);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
