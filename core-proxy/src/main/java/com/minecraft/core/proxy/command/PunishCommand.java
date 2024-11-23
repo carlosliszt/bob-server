@@ -14,10 +14,15 @@ import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.message.MessageType;
+import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.event.PunishAssignEvent;
+import com.minecraft.core.proxy.staff.Shortcut;
+import com.minecraft.core.proxy.staff.ShortcutRepository;
+import com.minecraft.core.proxy.staff.Staffer;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.punish.Punish;
 import com.minecraft.core.punish.PunishCategory;
@@ -132,7 +137,7 @@ public class PunishCommand implements ProxyInterface {
 
             });
 
-            context.info("command.punish.punished_succesful", type.name().toLowerCase(), category.getName().toLowerCase(), account.getUsername());
+            context.info("command.punish.punished_succesful", type.name().toLowerCase(), category.getName().toLowerCase(), account.getUsername(), reason);
 
             if (punish.getType() == PunishType.BAN) {
                 DataResolver.getInstance().getData(punish.getAddress()).setBanned(true);
@@ -190,6 +195,43 @@ public class PunishCommand implements ProxyInterface {
             } else
                 context.info("command.unpunish.failed_to_unpunish");
         }));
+    }
+
+    @Command(name = "fastban", rank = Rank.SECONDARY_MOD, usage = "fb <shortcut>", aliases = {"fb"}, platform = Platform.PLAYER)
+    public void fbCommand(Context<ProxiedPlayer> context) {
+
+        ShortcutRepository shortcutRepository = ProxyGame.getInstance().getShortcutRepository();
+        Staffer staffer = Staffer.fetch(context.getSender().getUniqueId());
+
+        if (context.getAccount().getFlag(Flag.PUNISH)) {
+            context.info("flag.locked");
+            return;
+        }
+
+        if (context.argsCount() < 1) {
+            context.info(MessageType.INCORRECT_USAGE.getMessageKey(), "/fb <shortcut>");
+            for (Shortcut shortcut : shortcutRepository.getShortcuts()) {
+                context.sendMessage("§c/fb " + shortcut.getShortcut() + " - " + shortcut.getName());
+            }
+            return;
+        }
+
+        if (staffer.getLastGo() == null) {
+            context.sendMessage("§cVocê não tem um alvo.");
+            return;
+        }
+
+        String shortcut = context.getArg(0);
+
+        if (!shortcutRepository.hasShortcut(shortcut)) {
+            context.info("object.not_found", "Shortcut");
+            return;
+        }
+
+        String fullCommand = shortcutRepository.getShortcut(shortcut).getFullCommand();
+        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), fullCommand.replace("{0}", staffer.getCurrent()));
+
+
     }
 
     @Command(name = "cban", rank = Rank.PARTNER_PLUS, usage = "cban <target> <reason>")
@@ -281,6 +323,11 @@ public class PunishCommand implements ProxyInterface {
     @Completer(name = "badbuild")
     public List<String> badBuildComplete(Context<CommandSender> context) {
         return getOnlineNicknames(context);
+    }
+
+    @Completer(name = "fastban")
+    public List<String> fastBanComplete(Context<ProxiedPlayer> context) {
+        return ProxyGame.getInstance().getShortcutRepository().getShortcuts().stream().map(Shortcut::getShortcut).collect(Collectors.toList());
     }
 
     @Completer(name = "extremism")

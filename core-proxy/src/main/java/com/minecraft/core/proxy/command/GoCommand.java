@@ -75,9 +75,9 @@ public class GoCommand implements Listener, ProxyInterface {
                 staff.setCurrent(player.getName());
             }
 
-            String temp = staff.getCurrent();
-            staff.setCurrent(staff.getLastGo());
-            staff.setLastGo(temp);
+            String temp = staff.getLastGo();
+            staff.setLastGo(staff.getCurrent());
+            staff.setCurrent(temp);
 
             if (sender.getServer().getInfo() == player.getServer().getInfo()) {
                 sender.chat("/tp " + target.getUniqueId().toString());
@@ -94,12 +94,11 @@ public class GoCommand implements Listener, ProxyInterface {
         Staffer staffer = Staffer.fetch(context.getUniqueId());
 
         if (staffer.getCurrent() == null || staffer.getLastGo() == null) {
-            context.sendMessage("§cVocê precisa ter um ido até alguém primeiro para usar este comando.");
+            context.sendMessage("§cVocê não tem alvo.");
             return;
         }
 
-
-        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "go " + staffer.getCurrent());
+        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "go " + staffer.getLastGo());
 
     }
 
@@ -109,12 +108,12 @@ public class GoCommand implements Listener, ProxyInterface {
         Account account = Account.fetch(sender.getUniqueId());
         Staffer staffer = Staffer.fetch(context.getUniqueId());
 
-        if (staffer.getLastGo() == null) {
-            context.sendMessage("§cVocê precisa ter um ido até alguém primeiro para usar este comando.");
+        if (staffer.getCurrent() == null) {
+            context.sendMessage("§cVocê não tem alvo.");
             return;
         }
 
-        async(() -> search(context, staffer.getLastGo(), target -> {
+        async(() -> search(context, staffer.getCurrent(), target -> {
 
             ProxiedPlayer player = BungeeCord.getInstance().getPlayer(target.getUniqueId());
 
@@ -141,6 +140,7 @@ public class GoCommand implements Listener, ProxyInterface {
             try (Jedis jedis = Constants.getRedis().getResource()) {
                 jedis.setex("route:" + context.getUniqueId(), 10, target.getUniqueId().toString());
             }
+
 
             if (sender.getServer().getInfo() == player.getServer().getInfo()) {
                 sender.chat("/tp " + target.getUniqueId().toString());

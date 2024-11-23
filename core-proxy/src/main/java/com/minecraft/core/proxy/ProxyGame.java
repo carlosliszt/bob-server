@@ -25,6 +25,7 @@ import com.minecraft.core.proxy.redis.ProxyRedisPubSub;
 import com.minecraft.core.proxy.scheduler.CountWatchScheduler;
 import com.minecraft.core.proxy.scheduler.LogScheduler;
 import com.minecraft.core.proxy.server.ProxyServerStorage;
+import com.minecraft.core.proxy.staff.ShortcutRepository;
 import com.minecraft.core.proxy.staff.StaffStorage;
 import com.minecraft.core.proxy.util.command.ProxyFrame;
 import com.minecraft.core.proxy.util.language.ProxyTranslationExecutor;
@@ -65,6 +66,7 @@ public class ProxyGame extends Plugin {
     private CountWatchScheduler countWatchScheduler;
     private GiftCodeStorage giftCodeStorage;
     private StaffStorage staffStorage;
+    private ShortcutRepository shortcutRepository;
     private long startTime;
 
     private final Queue<LogData> logQueue = new ConcurrentLinkedQueue<>();
@@ -84,6 +86,7 @@ public class ProxyGame extends Plugin {
         this.pluginUpdater = new PluginUpdater(super.getFile());
         this.giftCodeStorage = new GiftCodeStorage();
         this.staffStorage = new StaffStorage();
+        this.shortcutRepository = new ShortcutRepository();
 
         if (pluginUpdater.verify(ProxyServer.getInstance()::stop))
             return;
