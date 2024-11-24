@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -16,6 +16,34 @@ public class StringTimeUtils {
 
     public enum Type {
         SIMPLIFIED, NORMAL
+    }
+
+    public static long getMonthsFromTimeString(String timeString) {
+        long totalMonths = 0;
+
+        // Define patterns for years, months, and days
+        Pattern pattern = Pattern.compile("(\\d+)([yYmMdD])");
+        Matcher matcher = pattern.matcher(timeString);
+
+        // Parse the timeString
+        while (matcher.find()) {
+            int value = Integer.parseInt(matcher.group(1));
+            char unit = Character.toLowerCase(matcher.group(2).charAt(0));
+
+            switch (unit) {
+                case 'y':
+                    totalMonths += value * 12;
+                    break;
+                case 'm':
+                    totalMonths += value;
+                    break;
+                case 'd':
+                    totalMonths += value / 30;
+                    break;
+            }
+        }
+
+        return totalMonths;
     }
 
     public static String toMillis(final double d) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -14,6 +14,7 @@ import com.minecraft.core.bukkit.util.disguise.PlayerDisguise;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
@@ -56,6 +57,38 @@ public class BukkitRedisPubSub extends JedisPubSub {
 
             account.loadRanks();
             account.getTagList().loadTags();
+
+            account.loadPlusColors();
+            account.getPlusColorList().loadPlusColor();
+
+            account.loadPlusColors();
+            account.getPlusColorList().loadPlusColor();
+
+            for (PlusColor plusColor : PlusColor.values()) {
+                if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= plusColor.getMonths()) {
+                    if (!account.hasPlusColor(plusColor)) {
+                        account.givePlusColors(plusColor, -1, "[SERVER]");
+                    }
+                }
+            }
+
+            if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 1) {
+                if (!account.hasTag(Tag.ULTRA_PLUS_1)) {
+                    account.giveTag(Tag.ULTRA_PLUS_1, -1, "[SERVER]");
+                }
+            }
+
+            if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 6) {
+                if (!account.hasTag(Tag.ULTRA_PLUS_2)) {
+                    account.giveTag(Tag.ULTRA_PLUS_2, -1, "[SERVER]");
+                }
+            }
+
+            if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 12) {
+                if (!account.hasTag(Tag.ULTRA_PLUS_3)) {
+                    account.giveTag(Tag.ULTRA_PLUS_3, -1, "[SERVER]");
+                }
+            }
 
             account.setProperty("account_tag", account.getTagList().getHighestTag());
 

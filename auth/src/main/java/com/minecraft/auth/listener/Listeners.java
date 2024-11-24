@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -53,7 +53,7 @@ public class Listeners implements Listener {
 
         GameScoreboard scoreboard = new GameScoreboard(player);
         scoreboard.updateTitle("§b§lAUTH");
-        scoreboard.updateLines("", "§fAguardando...", "", "§ewww.bobmc.com");
+        scoreboard.updateLines("", "§fAguardando...", "", "§ewww.blazemc.com.br");
 
         Bukkit.getOnlinePlayers().forEach(other -> {
             player.hidePlayer(other);

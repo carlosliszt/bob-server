@@ -26,7 +26,7 @@ public class Default extends Lobby {
 
         setAnimatedString(new AnimatedString(Constants.SERVER_NAME.toUpperCase(), "§e§l", "§f§l", "§b§l"));
 
-        setBossbar("§b§lJOGANDO NO BOBMC.COM");
+        setBossbar("§b§lJOGANDO NO BLAZEMC.COM.BR");
     }
 
     @Override

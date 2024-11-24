@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -123,7 +123,7 @@ public class PunishmentListener implements Listener, ProxyInterface {
                     break;
             }
 
-            TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308641060741709917");
+            TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1310230187400761374");
 
             if (textChannel != null && punish.getType() == PunishType.BAN || punish.getType() == PunishType.MUTE)
                 textChannel.sendMessageEmbeds(builder.build()).queue();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -174,7 +174,7 @@ public class ReportCommand implements ProxyInterface {
             reportEmbed.addField(new MessageEmbed.Field("Servidor", target.getServer().getInfo().getName(), false));
             reportEmbed.addField(new MessageEmbed.Field("Vítima", accountVictim.getDisplayName(), false));
 
-            TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308862566147297380");
+            TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1310230221278023750");
 
             if (txt != null)
                 txt.sendMessageEmbeds(reportEmbed.build()).queue();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -61,7 +61,7 @@ public class HungerGames extends Hall {
     private final Location loc1, loc2, loc3;
 
     public HungerGames(Lobby lobby) {
-        super(lobby, "HG Lobby", "hglobby", "HG NO BOBMC.COM");
+        super(lobby, "HG Lobby", "hglobby", "HG NO BLAZEMC.COM.BR");
 
         setSpawn(new Location(getWorld(), 0.5, 62.2, -21.5));
         getLobby().getAccountLoader().addColumns(Columns.HG_WINS, Columns.HG_KILLS, Columns.SCRIM_WINS, Columns.SCRIM_KILLS, Columns.HG_COINS);

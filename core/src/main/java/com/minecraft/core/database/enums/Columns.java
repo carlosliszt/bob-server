@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
@@ -48,6 +48,7 @@ public enum Columns {
     PREFERENCES(0, "Int", "preferences", "INT(100)"),
     SKIN("{}", "JsonObject", "skin", "longtext"),
     BLOCKEDS("[]", "JsonArray", "blocks", "longtext"),
+    ULTRA_PLUS_MONTHS(0, "Int", "ultra_plus_months", "INT(100)"),
 
     HG_KILLS(0, "Int", "hg_kills", "INT(100)"),
     HG_DEATHS(0, "Int", "hg_deaths", "INT(100)"),

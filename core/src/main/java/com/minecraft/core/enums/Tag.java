@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -14,32 +14,32 @@ import java.util.Arrays;
 public enum Tag {
 
     ROSA(100, "0", "§d", false, "r0s4", "Rosa", "Pink"),
-    ADMINISTRATOR(22, "A", "§4", false, "IzPLp", "Admin", "administrator"),
-    REPORTER(21, "B", "§c", true, "uwu12", "Reporter"),
-    PRIMARY_MOD(20, "C", "§5", false, "CYrov", "Mod+", "moderator+"),
-    SECONDARY_MOD(19, "D", "§5", false, "dyOYO", "Mod", "moderator"),
-    TRIAL_MODERATOR(18, "E", "§5", false, "XGyAp", "Trial", "trialmoderator", "trialmod"),
-    PARTNER_PLUS(17, "F", "§3", false, "vAjST", "Partner+", "Partnermais"),
-    HELPER(16, "G", "§9", false, "b3761", "Helper", "Ajudante"),
-    BUILDER(15, "H", "§3", false, "VvNPg", "Builder", "constructor"),
-    PARTNER(14, "I", "§b", false, "OBFGf", "Partner"),
-    YOUTUBER(13, "J", "§b", false, "lMFIR", "YT", "youtuber"),
-    STREAMER(12, "K", "§b", false, "OMFaf", "Stream", "Streamer'"),
-    CHAMPION(11, "L", "§6", true, "c7x3b", "Champion", "Vencedor"),
-    BETA(10, "M", "§1", false, "DxmFd", "Beta"),
-    ULTRA_PLUS_3(9, "N", "§6", true, "m8An3", "Ultra+3", "Ultramais3"),
-    ULTRA_PLUS_2(9, "N", "§b", true, "m8An2", "Ultra+2", "Ultramais2"),
-    ULTRA_PLUS_1(9, "N", "§5", true, "m8An1", "Ultra+1", "Ultramais1"),
-    ULTRA_PLUS(9, "N", "§d", false, "m8AnE", "Ultra+", "Ultramais"),
-    CARNAVAL(8, "O", "§6", true, "carnv", "Carnaval"),
-    NATAL(7, "P", "§c", true, "xma21", "Natal", "Christmas"),
-    FERIAS(6, "Q", "§a", true, "vc021", "Férias", "Vacation"),
-    ENDERLORE(5, "R", "§5", true, "hlw21", "Enderlore"),
-    ULTRA(4, "S", "§d", false, "y7t2a", "Ultra"),
-    PRO(3, "T", "§6", false, "QHGIn", "Pro"),
-    MVP(2, "U", "§9", false, "ytw22", "MVP"),
-    VIP(1, "V", "§a", false, "yDTiT", "VIP"),
-    MEMBER(0, "W", "§7", false, "EalNl", "Membro", "member", "normal", "default", "none", "null");
+    ADMINISTRATOR(25, "1", "§4", false, "IzPLp", "Admin", "administrator"),
+    REPORTER(24, "A", "§c", true, "uwu12", "Reporter"),
+    PRIMARY_MOD(23, "B", "§5", false, "CYrov", "Mod+", "moderator+"),
+    SECONDARY_MOD(22, "C", "§5", false, "dyOYO", "Mod", "moderator"),
+    TRIAL_MODERATOR(21, "D", "§5", false, "XGyAp", "Trial", "trialmoderator", "trialmod"),
+    PARTNER_PLUS(20, "E", "§3", false, "vAjST", "Partner+", "Partnermais"),
+    HELPER(19, "F", "§9", false, "b3761", "Helper", "Ajudante"),
+    BUILDER(18, "G", "§3", false, "VvNPg", "Builder", "constructor"),
+    PARTNER(17, "H", "§b", false, "OBFGf", "Partner"),
+    YOUTUBER(16, "I", "§b", false, "lMFIR", "YT", "youtuber"),
+    STREAMER(15, "J", "§b", false, "OMFaf", "Stream", "Streamer'"),
+    CHAMPION(14, "K", "§6", true, "c7x3b", "Champion", "Vencedor"),
+    BETA(13, "L", "§1", false, "DxmFd", "Beta"),
+    ULTRA_PLUS_3(12, "M", "§6", true, "m8An3", "Ultra+3", "Ultramais3"),
+    ULTRA_PLUS_2(11, "N", "§b", true, "m8An2", "Ultra+2", "Ultramais2"),
+    ULTRA_PLUS_1(10, "O", "§5", true, "m8An1", "Ultra+1", "Ultramais1"),
+    ULTRA_PLUS(9, "P", "§d", false, "m8AnE", "Ultra+", "Ultramais"),
+    CARNAVAL(8, "Q", "§6", true, "carnv", "Carnaval"),
+    NATAL(7, "R", "§c", true, "xma21", "Natal", "Christmas"),
+    FERIAS(6, "S", "§a", true, "vc021", "Férias", "Vacation"),
+    ENDERLORE(5, "T", "§5", true, "hlw21", "Enderlore"),
+    ULTRA(4, "U", "§d", false, "y7t2a", "Ultra"),
+    PRO(3, "V", "§6", false, "QHGIn", "Pro"),
+    MVP(2, "W", "§9", false, "ytw22", "MVP"),
+    VIP(1, "X", "§a", false, "yDTiT", "VIP"),
+    MEMBER(0, "Y", "§7", false, "EalNl", "Membro", "member", "normal", "default", "none", "null");
 
     private final int id;
     private final String order;

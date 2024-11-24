@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -14,7 +14,9 @@ import com.minecraft.core.clan.Clan;
 import com.minecraft.core.clan.member.Member;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Medal;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.enums.Tag;
 import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.staff.Staffer;
 import com.minecraft.core.proxy.util.antibot.list.AddressLimit;
@@ -65,7 +67,7 @@ public class AccountLoader implements Listener {
             "Africa", "North Africa", "Pakistan", "Angola", "Bangladesh", "Iraq",
             "Italy", "Croatia", "Taiwan", "Poland", "Hungary");
 
-    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
+    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.ULTRA_PLUS_MONTHS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
 
     @EventHandler
     public void onConnectionInit(ClientConnectEvent event) {
@@ -318,8 +320,30 @@ public class AccountLoader implements Listener {
                     account.getDataStorage().load(STAFF);
                 }
 
+                account.loadPlusColors();
+                account.getPlusColorList().loadPlusColor();
+
+                if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 1) {
+                    if (!account.hasTag(Tag.ULTRA_PLUS_1)) {
+                        account.giveTag(Tag.ULTRA_PLUS_1, -1, "[SERVER]");
+                    }
+                }
+
+                if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 6) {
+                    if (!account.hasTag(Tag.ULTRA_PLUS_2)) {
+                        account.giveTag(Tag.ULTRA_PLUS_2, -1, "[SERVER]");
+                    }
+                }
+
+                if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 12) {
+                    if (!account.hasTag(Tag.ULTRA_PLUS_3)) {
+                        account.giveTag(Tag.ULTRA_PLUS_3, -1, "[SERVER]");
+                    }
+                }
+
                 account.getDataStorage().saveTable(ACCOUNT);
                 account.getDataStorage().saveTable(OTHER);
+
                 Constants.getAccountStorage().store(uniqueId, account);
 
                 if (account.hasPermission(Rank.PARTNER_PLUS)) {

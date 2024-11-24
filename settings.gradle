@@ -4,4 +4,6 @@ include 'arcade-duels'
 include 'arcade-pvp'
 include 'tio-gerson'
 include 'build-world'
+include 'bob-anticheat'
+include 'bob-anticheat'
 

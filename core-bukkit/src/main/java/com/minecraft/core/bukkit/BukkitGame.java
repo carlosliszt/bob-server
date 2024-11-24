@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
@@ -7,8 +7,7 @@
 package com.minecraft.core.bukkit;
 
 import com.minecraft.core.Constants;
-import com.minecraft.core.bukkit.anticheat.AntiCheat;
-import com.minecraft.core.bukkit.anticheat.modules.list.AutoClick;
+
 import com.minecraft.core.bukkit.command.*;
 import com.minecraft.core.bukkit.listener.AccountLoader;
 import com.minecraft.core.bukkit.listener.AntiDamageIndicator;
@@ -60,7 +59,6 @@ public class BukkitGame extends JavaPlugin {
 
     private static BukkitGame engine;
 
-    private AntiCheat antiCheat;
     private BukkitFrame bukkitFrame;
     private NPCProvider NPCProvider;
     private HologramProvider hologramProvider;
@@ -81,7 +79,6 @@ public class BukkitGame extends JavaPlugin {
     public void onLoad() {
 
         engine = this;
-
         this.pluginUpdater = new PluginUpdater(super.getFile());
 
         if (pluginUpdater.verify(Bukkit::shutdown))
@@ -112,7 +109,6 @@ public class BukkitGame extends JavaPlugin {
         this.whitelist = Whitelist.load();
         this.variableLoader = new VariableLoader();
         this.knockbackService = Bukkit.imanity().getKnockbackService();
-        this.antiCheat = new AntiCheat().enable(AutoClick.class);
 
         getServer().imanity().registerPacketHandler(this, new AntiDamageIndicator());
 

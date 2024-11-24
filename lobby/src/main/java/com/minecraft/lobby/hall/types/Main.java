@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -57,7 +57,7 @@ public class Main extends Hall {
     private final Parkour parkour;
 
     public Main(Lobby lobby) {
-        super(lobby, "Main Lobby", "lobby", "JOGANDO NO BOBMC.COM");
+        super(lobby, "Main Lobby", "lobby", "JOGANDO NO BLAZEMC.COM.BR");
 
         Constants.setServerType(ServerType.MAIN_LOBBY);
         Constants.setLobbyType(ServerType.MAIN_LOBBY);

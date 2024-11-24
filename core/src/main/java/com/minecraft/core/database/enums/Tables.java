@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  */
@@ -10,7 +10,7 @@ public enum Tables {
 
     ACCOUNT("accounts", Columns.USERNAME, Columns.NICK_OBJECTS, Columns.RANKS, Columns.PERMISSIONS, Columns.TAGS, Columns.PLUSCOLORS, Columns.CLANTAGS, Columns.MEDALS, Columns.PUNISHMENTS, Columns.CLAN, Columns.FLAGS, Columns.PREMIUM, Columns.FIRST_LOGIN, Columns.LAST_LOGIN, Columns.ADDRESS, Columns.BANNED, Columns.MUTED),
     AUTH("auth", Columns.PASSWORD, Columns.SESSION_ADDRESS, Columns.SESSION_EXPIRES_AT, Columns.REGISTERED_AT, Columns.PASSWORD_LAST_UPDATE),
-    OTHER("other", Columns.NICK, Columns.LAST_NICK, Columns.TAG, Columns.CLANTAG, Columns.LANGUAGE, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.MEDAL, Columns.PREFERENCES, Columns.SKIN, Columns.BLOCKEDS),
+    OTHER("other", Columns.NICK, Columns.LAST_NICK, Columns.ULTRA_PLUS_MONTHS, Columns.TAG, Columns.CLANTAG, Columns.LANGUAGE, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.MEDAL, Columns.PREFERENCES, Columns.SKIN, Columns.BLOCKEDS),
     LOBBY_PARKOUR("parkour", Columns.MAIN_LOBBY_PARKOUR_RECORD, Columns.THE_BRIDGE_LOBBY_PARKOUR_RECORD, Columns.DUELS_LOBBY_PARKOUR_RECORD, Columns.HUNGERGAMES_LOBBY_PARKOUR_RECORD, Columns.PVP_LOBBY_PARKOUR_RECORD),
     HUNGERGAMES("hungergames", Columns.HG_KILLS, Columns.HG_DEATHS, Columns.HG_WINS, Columns.HG_GAMES, Columns.HG_MAX_GAME_KILLS, Columns.SCRIM_KILLS, Columns.SCRIM_DEATHS, Columns.SCRIM_WINS, Columns.SCRIM_GAMES, Columns.SCRIM_MAX_GAME_KILLS, Columns.HG_RANK, Columns.HG_RANK_EXP, Columns.SCRIM_RANK, Columns.SCRIM_RANK_EXP, Columns.HG_COINS, Columns.HG_KITS, Columns.HG_DAILY_KITS),
     PVP("pvp", Columns.PVP_ARENA_KILLS, Columns.PVP_ARENA_DEATHS, Columns.PVP_ARENA_KILLSTREAK, Columns.PVP_ARENA_MAX_KILLSTREAK, Columns.PVP_FPS_KILLS, Columns.PVP_FPS_DEATHS, Columns.PVP_FPS_KILLSTREAK, Columns.PVP_FPS_MAX_KILLSTREAK, Columns.PVP_DAMAGE_SETTINGS, Columns.PVP_RANK, Columns.PVP_RANK_EXP, Columns.PVP_COINS, Columns.PVP_KITS, Columns.PVP_DAMAGE_EASY, Columns.PVP_DAMAGE_MEDIUM, Columns.PVP_DAMAGE_HARD, Columns.PVP_DAMAGE_EXTREME),

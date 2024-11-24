@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -54,7 +54,7 @@ import java.util.List;
 public class Duels extends Hall {
 
     public Duels(Lobby lobby) {
-        super(lobby, "Duels Lobby", "duelslobby", "DUELS NO BOBMC.COM");
+        super(lobby, "Duels Lobby", "duelslobby", "DUELS NO BLAZEMC.COM.BR");
 
         setSpawn(new Location(Bukkit.getWorld("world"), 100.5, 50.0, 100.5, 0, 0));
         getLobby().getAccountLoader().addColumns(Columns.DUELS_SIMULATOR_WINS, Columns.DUELS_SIMULATOR_WINSTREAK, Columns.DUELS_GLADIATOR_WINS, Columns.DUELS_GLADIATOR_WINSTREAK);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -198,7 +198,7 @@ public class RoomListener implements Listener, Assistance, BukkitInterface, Vari
 
         Bossbar bossbar = user.getBossbar();
 
-        bossbar.setMessage("§b§l" + getGame().getDisplay().toUpperCase() + " NO BOBMC.COM");
+        bossbar.setMessage("§b§l" + getGame().getDisplay().toUpperCase() + " NO BLAZEMC.COM.BR");
         bossbar.setPercentage(1F);
 
         if (hasStarted()) {

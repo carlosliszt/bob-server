@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -115,9 +115,9 @@ public class PlayingListener implements Listener, Assistance, BukkitInterface, V
             if (remaining <= 300 && remaining > 0)
                 bossbar.setMessage("§e§lARENA FINAL EM §b§l" + format(remaining));
             else
-                bossbar.setMessage("§b§l" + getGame().getDisplay().toUpperCase() + " NO BOBMC.COM");
+                bossbar.setMessage("§b§l" + getGame().getDisplay().toUpperCase() + " NO BLAZEMC.COM.BR");
         } else
-            bossbar.setMessage("§b§l" + getGame().getDisplay().toUpperCase() + " NO BOBMC.COM");
+            bossbar.setMessage("§b§l" + getGame().getDisplay().toUpperCase() + " NO BLAZEMC.COM.BR");
     }
 
     @EventHandler

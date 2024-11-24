@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -526,7 +526,7 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
         event.setCancelled(true);
     }
 
-    private final PacketPlayOutPlayerListHeaderFooter tablistPacket = buildPacket("\n§b§lBOBMC\n", "\n§fVisite nosso site: §a" + Constants.SERVER_WEBSITE + "\n");
+    private final PacketPlayOutPlayerListHeaderFooter tablistPacket = buildPacket("\n§b§lBLAZEMC\n", "\n§fVisite nosso site: §a" + Constants.SERVER_WEBSITE + "\n");
 
     public PacketPlayOutPlayerListHeaderFooter buildPacket(String head, String foot) {
         IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{'color':'', 'text':'" + head + "'}");

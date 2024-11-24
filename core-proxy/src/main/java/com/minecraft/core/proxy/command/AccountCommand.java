@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -151,12 +151,20 @@ public class AccountCommand implements ProxyInterface {
                             account.giveRank(rank, -1, author);
                             context.info("command.account.argument.rank.rank_replace", rank.getName(), account.getUsername());
 
+                            if (rank == Rank.ULTRA_PLUS) {
+                                account.addInt(20, Columns.ULTRA_PLUS_MONTHS);
+                            }
+
                             AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, System.currentTimeMillis(), System.currentTimeMillis(), -1, author, AccountRankUpdateData.Action.REPLACE);
                             Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
                         }
                     } else {
                         account.giveRank(rank, -1, author);
                         context.info("command.account.argument.rank.rank_add", rank.getName(), account.getUsername());
+
+                        if (rank == Rank.ULTRA_PLUS) {
+                            account.addInt(20, Columns.ULTRA_PLUS_MONTHS);
+                        }
 
                         AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, System.currentTimeMillis(), -1, -1, author, AccountRankUpdateData.Action.ADD);
                         Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
@@ -187,16 +195,30 @@ public class AccountCommand implements ProxyInterface {
 
                             AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, rankData.getAddedAt(), System.currentTimeMillis(), expiration, author, AccountRankUpdateData.Action.REPLACE);
                             Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
+
+                            if (rank == Rank.ULTRA_PLUS) {
+                                long months = StringTimeUtils.getMonthsFromTimeString(args[3]);
+                                account.addInt((int) months, Columns.ULTRA_PLUS_MONTHS);
+                                context.info("command.account.argument.rank.ultra_plus_updated", rank.getName(), months, account.getUsername());
+                            }
+
                         }
                     } else {
                         context.info("command.account.argument.rank.rank_add", rank.getName(), account.getUsername());
                         account.giveRank(rank, expiration, author);
+
+                        if (rank == Rank.ULTRA_PLUS) {
+                            long months = StringTimeUtils.getMonthsFromTimeString(args[3]);
+                            account.addInt((int) months, Columns.ULTRA_PLUS_MONTHS);
+                            context.info("command.account.argument.rank.ultra_plus_updated", rank.getName(), months, account.getUsername());
+                        }
 
                         AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, System.currentTimeMillis(), -1, expiration, author, AccountRankUpdateData.Action.ADD);
                         Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
 
                     }
                 }
+
 
                 account.getTagList().loadTags();
                 account.getData(Columns.TAG).setData(account.getTagList().getHighestTag().getUniqueCode());

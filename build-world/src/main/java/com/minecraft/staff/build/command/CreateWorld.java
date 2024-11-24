@@ -5,6 +5,8 @@ import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
+import com.minecraft.staff.build.Build;
+import com.minecraft.staff.build.util.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -25,6 +27,17 @@ public class CreateWorld implements BukkitInterface {
             wc.type(WorldType.FLAT);
             wc.generatorSettings("2;0;1;");
             wc.createWorld();
+            World world = wc.createWorld();
+            world.setGameRuleValue("doMobSpawning", "false");
+            world.setGameRuleValue("doDaylightCycle", "false");
+            world.setGameRuleValue("naturalRegeneration", "false");
+            world.setGameRuleValue("sendCommandFeedback", "true");
+            world.setGameRuleValue("logAdminCommands", "true");
+
+            world.setStorm(false);
+            world.setThundering(false);
+            world.setWeatherDuration(Integer.MIN_VALUE);
+            world.setThunderDuration(Integer.MIN_VALUE);
 
             context.getSender().sendMessage("§eMundo §b" + worldName + "§e criado com sucesso");
             if (context.isPlayer()) {
@@ -51,7 +64,7 @@ public class CreateWorld implements BukkitInterface {
         player.sendMessage("§eTeleportado para o mundo §b" + worldName);
     }
 
-    @Command(name = "worldinfo", platform = Platform.PLAYER, usage = "/worldinfo")
+    @Command(name = "worldinfo", platform = Platform.PLAYER, usage = "worldinfo")
     public void handleWorldInfo(Context<Player> context) {
         Player player = context.getSender();
         World world = player.getWorld();
@@ -61,7 +74,7 @@ public class CreateWorld implements BukkitInterface {
         player.sendMessage("§eSpawn: §bX" + world.getSpawnLocation().getX() + " Y" + world.getSpawnLocation().getY() + " Z" + world.getSpawnLocation().getZ());
     }
 
-    @Command(name = "worldlist", platform = Platform.PLAYER, usage = "/worldlist")
+    @Command(name = "worldlist", platform = Platform.PLAYER, usage = "worldlist")
     public void handleWorldList(Context<Player> context) {
         Player player = context.getSender();
         player.sendMessage("§eMundos carregados:");

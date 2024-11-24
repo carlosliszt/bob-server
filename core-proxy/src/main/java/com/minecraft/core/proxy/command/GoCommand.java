@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -71,13 +71,9 @@ public class GoCommand implements Listener, ProxyInterface {
 
             Staffer staff = Staffer.fetch(account.getUniqueId());
 
-            if (staff.getCurrent() == null) {
-                staff.setCurrent(player.getName());
-            }
-
-            String temp = staff.getLastGo();
-            staff.setLastGo(staff.getCurrent());
-            staff.setCurrent(temp);
+            String temp = staff.getCurrent();
+            staff.setCurrent(player.getName());
+            staff.setLastGo(temp);
 
             if (sender.getServer().getInfo() == player.getServer().getInfo()) {
                 sender.chat("/tp " + target.getUniqueId().toString());
@@ -98,7 +94,56 @@ public class GoCommand implements Listener, ProxyInterface {
             return;
         }
 
-        BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "go " + staffer.getLastGo());
+
+        ProxiedPlayer sender = context.getSender();
+        Account account = Account.fetch(sender.getUniqueId());
+
+        async(() -> search(context, staffer.getLastGo(), target -> {
+
+            ProxiedPlayer player = BungeeCord.getInstance().getPlayer(target.getUniqueId());
+
+            if (player == null) {
+                context.info("target.not_found");
+                return;
+            }
+
+            if (ServerAPI.getInstance().hasPendingConnection(player)) {
+                context.info("command.go.target.pending_connection");
+                return;
+            }
+
+            if (target.getRank().getCategory().getImportance() > account.getRank().getCategory().getImportance()) {
+                context.info("target.not_found");
+                return;
+            }
+
+            if (account.hasProperty("command.go.platform")) {
+                context.info("command.go.pending_teleport");
+                return;
+            }
+
+            try (Jedis jedis = Constants.getRedis().getResource()) {
+                jedis.setex("route:" + context.getUniqueId(), 10, target.getUniqueId().toString());
+            }
+
+            Staffer staff = Staffer.fetch(account.getUniqueId());
+
+            if (staff.getCurrent() == null) {
+                staff.setCurrent(player.getName());
+            }
+
+            String temp = staff.getCurrent();
+            staff.setCurrent(staff.getLastGo());
+            staff.setLastGo(temp);
+
+            if (sender.getServer().getInfo() == player.getServer().getInfo()) {
+                sender.chat("/tp " + target.getUniqueId().toString());
+            } else {
+                account.setProperty("command.go.platform", target.getUniqueId());
+                sender.connect(player.getServer().getInfo());
+            }
+        }));
+
 
     }
 
@@ -109,8 +154,13 @@ public class GoCommand implements Listener, ProxyInterface {
         Staffer staffer = Staffer.fetch(context.getUniqueId());
 
         if (staffer.getCurrent() == null) {
-            context.sendMessage("§cVocê não tem alvo.");
-            return;
+            if (staffer.getLastGo() != null) {
+                staffer.setCurrent(staffer.getLastGo());
+                staffer.setLastGo(null);
+            } else {
+                context.sendMessage("§cVocê não tem alvo.");
+                return;
+            }
         }
 
         async(() -> search(context, staffer.getCurrent(), target -> {

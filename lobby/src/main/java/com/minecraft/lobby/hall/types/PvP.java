@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -63,7 +63,7 @@ public class PvP extends Hall {
     private final Location loc1, loc2, loc3;
 
     public PvP(Lobby lobby) {
-        super(lobby, "PvP Lobby", "pvplobby", "PVP NO BOBMC.COM");
+        super(lobby, "PvP Lobby", "pvplobby", "PVP NO BLAZEMC.COM.BR");
 
         setSpawn(new Location(getWorld(), 0.5, 70, 0.5));
         getLobby().getAccountLoader().addColumns(Columns.PVP_ARENA_KILLS, Columns.PVP_ARENA_KILLSTREAK, Columns.PVP_FPS_KILLS, Columns.PVP_FPS_KILLSTREAK, Columns.PVP_KITS, Columns.PVP_COINS);

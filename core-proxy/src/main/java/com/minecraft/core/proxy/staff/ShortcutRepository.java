@@ -1,5 +1,6 @@
 package com.minecraft.core.proxy.staff;
 
+import com.minecraft.core.punish.PunishType;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -37,18 +38,27 @@ public class ShortcutRepository {
 
     public void loadShortcuts() {
         shortcuts.clear();
-        addShortcut(new Shortcut("ka", "KillAura", "p ban cheating n {0} Kill Aura"));
-        addShortcut(new Shortcut("vl", "Velocity", "p ban cheating n {0} Velocity"));
-        addShortcut(new Shortcut("sc", "Scaffold", "p ban cheating n {0} Scaffold"));
-        addShortcut(new Shortcut("sp", "Speed", "p ban cheating n {0} Speed"));
-        addShortcut(new Shortcut("fl", "Flight", "p ban cheating n {0} Fly"));
-        addShortcut(new Shortcut("bh", "BHop", "p ban cheating n {0} BHop"));
-        addShortcut(new Shortcut("tm", "Timer", "p ban cheating n {0} Timer"));
-        addShortcut(new Shortcut("am", "AutoArmor", "p ban cheating n {0} AutoArmor"));
-        addShortcut(new Shortcut("iv", "InvMove", "p ban cheating n {0} InvMove"));
-        addShortcut(new Shortcut("ch", "Chest Stealer", "p ban cheating n {0} Chest Stealer"));
-        addShortcut(new Shortcut("sf", "Safe Walk", "p ban cheating n {0} Safe-Walk"));
-        addShortcut(new Shortcut("ff", "Force-Field", "p ban cheating n {0} Force-Field"));
+        addShortcut(new Shortcut(PunishType.BAN, "ka", "KillAura", "p ban cheating n {0} Kill Aura"));
+        addShortcut(new Shortcut(PunishType.BAN, "vl", "Velocity", "p ban cheating n {0} Velocity"));
+        addShortcut(new Shortcut(PunishType.BAN, "sc", "Scaffold", "p ban cheating n {0} Scaffold"));
+        addShortcut(new Shortcut(PunishType.BAN, "sp", "Speed", "p ban cheating n {0} Speed"));
+        addShortcut(new Shortcut(PunishType.BAN, "fl", "Flight", "p ban cheating n {0} Fly"));
+        addShortcut(new Shortcut(PunishType.BAN, "bh", "BHop", "p ban cheating n {0} BHop"));
+        addShortcut(new Shortcut(PunishType.BAN, "tm", "Timer", "p ban cheating n {0} Timer"));
+        addShortcut(new Shortcut(PunishType.BAN, "am", "AutoArmor", "p ban cheating n {0} AutoArmor"));
+        addShortcut(new Shortcut(PunishType.BAN, "iv", "InvMove", "p ban cheating n {0} InvMove"));
+        addShortcut(new Shortcut(PunishType.BAN, "ch", "Chest Stealer", "p ban cheating n {0} Chest Stealer"));
+        addShortcut(new Shortcut(PunishType.BAN, "sf", "Safe Walk", "p ban cheating n {0} Safe-Walk"));
+        addShortcut(new Shortcut(PunishType.BAN, "ff", "Force-Field", "p ban cheating n {0} Force-Field"));
+        addShortcut(new Shortcut(PunishType.BAN, "rh", "Reach", "p ban cheating n {0} Reach"));
+
+        addShortcut(new Shortcut(PunishType.MUTE, "ofensa", "Ofensa", "p mute community 1d {0} Ofensa {1}"));
+        addShortcut(new Shortcut(PunishType.MUTE, "spam", "Spam", "p mute community 4h {0} Spam {1}"));
+        addShortcut(new Shortcut(PunishType.MUTE, "racismo", "Racismo", "p mute community n {0} Racismo {1}"));
+        addShortcut(new Shortcut(PunishType.MUTE, "homofobia", "Homofobia", "p mute community n {0} Homofobia {1}"));
+        addShortcut(new Shortcut(PunishType.MUTE, "machismo", "Machismo", "p mute community n {0} Machismo {1}"));
+        addShortcut(new Shortcut(PunishType.MUTE, "senso", "Falta de bom senso", "p mute community 7d {0} Falta de bom senso {1}"));
+
 
     }
 

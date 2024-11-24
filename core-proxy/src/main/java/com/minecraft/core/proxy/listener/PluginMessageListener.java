@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -146,7 +146,6 @@ public class PluginMessageListener implements Listener, ProxyInterface {
 
         acb.addField(new MessageEmbed.Field("Servidor", BungeeCord.getInstance().getPlayer(account.getUniqueId()).getServer().getInfo().getName(), false));
 
-
         Iterator<Information> informationIterator = alert.getInformations().iterator();
 
         if (!informationIterator.hasNext()) {
@@ -192,7 +191,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
         acb.setThumbnail("https://mineskin.eu/helm/" + account.getUniqueId() + "/256");
 
 
-        TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1309216967563149403");
+        TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1310230220162207834");
 
         if (txt != null)
             txt.sendMessageEmbeds(acb.build()).queue();
@@ -250,7 +249,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
                     builder.addField(":stopwatch: Expira em", StringTimeUtils.formatDifference(StringTimeUtils.Type.SIMPLIFIED, (punish.getTime() + 1000)), false);
                 builder.setThumbnail("https://mineskin.eu/helm/" + account.getUniqueId() + "/256");
 
-                TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1308862548132495402");
+                TextChannel textChannel = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1310230218665099294");
 
                 if (textChannel != null)
                     textChannel.sendMessageEmbeds(builder.build()).queue();

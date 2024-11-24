@@ -92,7 +92,7 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
     public void hook(Account account, String message) {
         async(() -> {
             try {
-                WebhookClient webhookClient = getWebhook(discord.getJDA().getTextChannelById("1308642016095371325"), account);
+                WebhookClient webhookClient = getWebhook(discord.getJDA().getTextChannelById("1310230206732304446"), account);
                 String avatarUrl = "https://mineskin.eu/helm/" + account.getUniqueId() + "/256";
 
                 if (webhookClient == null)
@@ -142,7 +142,7 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
         if (event.getMessage().getContentRaw().isEmpty())
             return;
 
-        String ID = "1308642016095371325";
+        String ID = "1310230206732304446";
         if (event.getChannel().getId().equals(ID)) {
 
             String msg = fixMessage(event);

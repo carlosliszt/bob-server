@@ -9,19 +9,18 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum PlusColor {
 
-    GOLDEN(0, "Dourado", "§6", "a3ajc"),
-    YELLOW(1, "Amarelo", "§e", "axcjc"),
-    RED(2, "Vermelho", "§c", "a3ijx"),
-    DARK_RED(3, "Vermelho Escuro", "§4", "ad23z"),
-    BLUE(4, "Azul", "§9", "a432c"),
-    DARK_BLUE(5, "Azul Escuro", "§1", "x2a2c"),
-    GREEN(6, "Verde", "§a", "r3j4a"),
-    DARK_GREEN(7, "Verde Escuro", "§2", "a23dx"),
-    AQUA(8, "Ciano", "§b", "29ej2"),
-    DARK_AQUA(9, "Ciano Escuro", "§3", "a2d3c"),
-    WHITE(10, "Branco", "§f", "s2xc2"),
-    BLACK(11, "Preto", "§0", "c2fv2"),
-    ;
+    GOLDEN(0, 1, "Dourado", "§6", "a3ajc"),
+    YELLOW(1, 2, "Amarelo", "§e", "axcjc"),
+    RED(2, 3, "Vermelho", "§c", "a3ijx"),
+    DARK_RED(3, 4, "Vermelho Escuro", "§4", "ad23z"),
+    BLUE(4, 5, "Azul", "§9", "a432c"),
+    DARK_BLUE(5, 6, "Azul Escuro", "§1", "x2a2c"),
+    GREEN(6, 7, "Verde", "§a", "r3j4a"),
+    DARK_GREEN(7, 8, "Verde Escuro", "§2", "a23dx"),
+    AQUA(8, 9, "Ciano", "§b", "29ej2"),
+    DARK_AQUA(9, 10, "Ciano Escuro", "§3", "a2d3c"),
+    WHITE(10, 11, "Branco", "§f", "s2xc2"),
+    BLACK(11, 12, "Preto", "§0", "c2fv2");
 
     @Getter
     private static final PlusColor[] values;
@@ -30,7 +29,7 @@ public enum PlusColor {
         values = values();
     }
 
-    private int id;
+    private int id, months;
     private String name, color, uniqueCode;
 
     public static PlusColor fromUniqueCode(String code) {

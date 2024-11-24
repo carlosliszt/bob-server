@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -99,6 +99,33 @@ public class AccountLoader implements Listener, VariableStorage {
             account.loadPlusColors();
             account.getPlusColorList().loadPlusColor();
 
+
+            for (PlusColor plusColor : PlusColor.values()) {
+                if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= plusColor.getMonths()) {
+                    if (!account.hasPlusColor(plusColor)) {
+                        account.givePlusColors(plusColor, -1, "[SERVER]");
+                    }
+                }
+            }
+
+            if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 1) {
+                if (!account.hasTag(Tag.ULTRA_PLUS_1)) {
+                    account.giveTag(Tag.ULTRA_PLUS_1, -1, "[SERVER]");
+                }
+            }
+
+            if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 6) {
+                if (!account.hasTag(Tag.ULTRA_PLUS_2)) {
+                    account.giveTag(Tag.ULTRA_PLUS_2, -1, "[SERVER]");
+                }
+            }
+
+            if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 12) {
+                if (!account.hasTag(Tag.ULTRA_PLUS_3)) {
+                    account.giveTag(Tag.ULTRA_PLUS_3, -1, "[SERVER]");
+                }
+            }
+
             if (account.hasClan()) {
                 Clan clan = account.getClan();
 
@@ -183,7 +210,6 @@ public class AccountLoader implements Listener, VariableStorage {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Constants.getAccountStorage().forget(event.getPlayer().getUniqueId());
-        BukkitGame.getEngine().getAntiCheat().removeSuspect(event.getPlayer().getUniqueId());
     }
 
     public void addColumns(Columns... columns) {

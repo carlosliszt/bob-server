@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BobMC, All Rights Reserved
+ * Copyright (C) BlazeMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -211,7 +211,8 @@ public class PunishCommand implements ProxyInterface {
         if (context.argsCount() < 1) {
             context.info(MessageType.INCORRECT_USAGE.getMessageKey(), "/fb <shortcut>");
             for (Shortcut shortcut : shortcutRepository.getShortcuts()) {
-                context.sendMessage("§c/fb " + shortcut.getShortcut() + " - " + shortcut.getName());
+                if (shortcut.getPunishType() == PunishType.BAN)
+                    context.sendMessage("§c/fb " + shortcut.getShortcut() + " - " + shortcut.getName());
             }
             return;
         }
@@ -231,6 +232,7 @@ public class PunishCommand implements ProxyInterface {
         String fullCommand = shortcutRepository.getShortcut(shortcut).getFullCommand();
         BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), fullCommand.replace("{0}", staffer.getCurrent()));
 
+        staffer.setCurrent(null);
 
     }
 
@@ -249,6 +251,45 @@ public class PunishCommand implements ProxyInterface {
 
         String reason = createArgs(1, context.getArgs(), "...", false);
         BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "punish ban cheating n " + target + " " + reason);
+    }
+
+    @Command(name = "mute", rank = Rank.HELPER, usage = "mute <target> <shortcut> <proof>", aliases = {"m"})
+    public void muteCommand(Context<CommandSender> context, String target, String shortcut) {
+
+        ShortcutRepository repository = ProxyGame.getInstance().getShortcutRepository();
+
+        if (context.getAccount().getFlag(Flag.PUNISH)) {
+            context.info("flag.locked");
+            return;
+        }
+
+        if (context.argsCount() < 2 && !context.getAccount().getProperty("isAdmin").getAsBoolean()) {
+            context.sendMessage("§c/mute (target) (shortcut) [proof]");
+            for (Shortcut shortcut1 : ProxyGame.getInstance().getShortcutRepository().getShortcuts()) {
+                if (shortcut1.getPunishType() == PunishType.MUTE)
+                    context.sendMessage("§c" + shortcut1.getShortcut() + " - " + shortcut1.getName());
+            }
+            return;
+        }
+
+        if (context.argsCount() >= 3) {
+            String proof = createArgs(2, context.getArgs(), "...", false);
+            if (repository.hasShortcut(shortcut)) {
+                Shortcut s = repository.getShortcut(shortcut);
+                BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), s.getFullCommand().replace("{0}", target).replace("{1}", "(" + proof + ")"));
+            } else {
+                context.info("object.not_found", "Shortcut");
+            }
+        } else {
+            if (repository.hasShortcut(shortcut)) {
+                Shortcut s = repository.getShortcut(shortcut);
+                BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), s.getFullCommand().replace("{0}", target).replace(" {1}", ""));
+            } else {
+                context.info("object.not_found", "Shortcut");
+            }
+        }
+
+
     }
 
     @Command(name = "badbuild", rank = Rank.PARTNER_PLUS, usage = "badbuild <target>", aliases = {"bb"})
@@ -327,7 +368,20 @@ public class PunishCommand implements ProxyInterface {
 
     @Completer(name = "fastban")
     public List<String> fastBanComplete(Context<ProxiedPlayer> context) {
-        return ProxyGame.getInstance().getShortcutRepository().getShortcuts().stream().map(Shortcut::getShortcut).collect(Collectors.toList());
+        return ProxyGame.getInstance().getShortcutRepository().getShortcuts().stream().filter(s -> s.getPunishType() == PunishType.BAN).map(Shortcut::getShortcut).collect(Collectors.toList());
+    }
+
+    @Completer(name = "mute")
+    public List<String> muteComplete(Context<CommandSender> context) {
+
+        if (context.getArgs().length == 1) {
+            return getOnlineNicknames(context);
+        } else if (context.getArgs().length == 2) {
+            return ProxyGame.getInstance().getShortcutRepository().getShortcuts().stream().filter(s -> s.getPunishType() == PunishType.MUTE).map(Shortcut::getShortcut).collect(Collectors.toList());
+        } else {
+            return Collections.singletonList("insira sua prova");
+        }
+
     }
 
     @Completer(name = "extremism")
