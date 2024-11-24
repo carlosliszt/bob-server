@@ -9,6 +9,7 @@ package com.minecraft.core.account.fields;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.enums.Clantag;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.enums.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -25,7 +26,7 @@ public class ClanTagList {
     public void loadClanTags() {
         clanTags.clear();
         for (Clantag clantag : Clantag.getValues()) {
-            if (!clantag.isDedicated() && account.hasPermission(clantag.getRank()) || clantag.isDedicated() && account.hasPermission(Rank.ADMINISTRATOR) || account.hasClanTag(clantag))
+            if (!clantag.isDedicated() && account.hasPermission(clantag.getRank()) || (clantag == Clantag.CHAMPION && account.hasTag(Tag.CHAMPION)) || account.hasClanTag(clantag))
                 clanTags.add(clantag);
         }
     }
