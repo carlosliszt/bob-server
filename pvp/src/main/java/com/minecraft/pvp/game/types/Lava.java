@@ -105,7 +105,7 @@ public class Lava extends Game {
         scores.add(" ");
         scores.add("§fCoins: §6" + user.getAccount().getData(Columns.PVP_COINS).getAsInteger());
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

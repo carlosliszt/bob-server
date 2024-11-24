@@ -449,7 +449,7 @@ public abstract class Mode implements BukkitInterface, Listener {
         scores.add("Winstreak: §70");
 
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

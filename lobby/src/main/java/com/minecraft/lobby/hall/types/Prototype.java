@@ -105,7 +105,7 @@ public class Prototype extends Hall {
         scores.add(" ");
         scores.add("§fPlayers: §a" + (count == -1 ? "..." : count));
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

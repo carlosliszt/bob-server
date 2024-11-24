@@ -236,7 +236,7 @@ public class Game implements BukkitInterface {
         else
             scores.add("Exp: §a" + user.getAccount().getData(Columns.BRIDGE_RANK_EXP).getAsInteger());
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

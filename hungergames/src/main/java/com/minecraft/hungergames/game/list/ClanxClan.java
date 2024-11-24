@@ -338,7 +338,7 @@ public class ClanxClan extends Game {
         }
 
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         scoreboard.updateLines(scores);
     }

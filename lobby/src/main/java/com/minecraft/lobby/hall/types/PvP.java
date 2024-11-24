@@ -197,7 +197,7 @@ public class PvP extends Hall {
         scores.add("§fCoins: §6" + storage.getData(Columns.PVP_COINS).getAsInteger());
         scores.add("§fPlayers: §a" + (count == -1 ? "..." : count));
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

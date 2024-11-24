@@ -200,7 +200,7 @@ public class Scrim extends Event {
         scores.add("§fRanking: " + ranking.getColor() + ranking.getName());
         scores.add("");
 
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
         scoreboard.updateLines(scores);
     }
 

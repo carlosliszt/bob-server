@@ -196,7 +196,7 @@ public class Arena extends Game {
         }
         scores.add("§fKillstreak: §a" + account.getData(Columns.PVP_ARENA_KILLSTREAK).getAsInteger());
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

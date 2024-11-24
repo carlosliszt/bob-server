@@ -94,7 +94,7 @@ public class Fps extends Game {
         scores.add(" ");
         scores.add("§fKillstreak: §a" + account.getData(Columns.PVP_FPS_KILLSTREAK).getAsInteger());
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         gameScoreboard.updateLines(scores);
     }

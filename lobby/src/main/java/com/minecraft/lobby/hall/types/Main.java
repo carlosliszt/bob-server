@@ -115,31 +115,9 @@ public class Main extends Hall {
 
     private final AnimatedString animatedString = new AnimatedString(Constants.SERVER_NAME.toUpperCase(), "§e§l", "§6§l", "§b§l");
 
-    @Override
-    public void handleSidebar(User user) {
-        GameScoreboard gameScoreboard = user.getScoreboard();
-
-        if (gameScoreboard == null)
-            return;
-
-        gameScoreboard.updateTitle(getSidebarName());
-
-        if (isPeriodic(20)) {
-            List<String> scores = new ArrayList<>();
-            Tag tag = user.getAccount().getTagList().getHighestTag();
-            int count = Constants.getServerStorage().count();
-
-            scores.add(" ");
-            scores.add("§fRank: §r" + tag.getColor() + tag.getName());
-            scores.add(" ");
-            scores.add("§fLobby: §7#" + getRoom());
-            scores.add("§fPlayers: §a" + (count == -1 ? "..." : count));
-            scores.add(" ");
-            scores.add("§e" + Constants.SERVER_WEBSITE);
-
-            gameScoreboard.updateLines(scores);
-        }
-    }
+    @Getter
+    @Setter
+    private String sidebarName = "BLAZE";
 
     @Override
     public void handleNPCs(User user) {
@@ -287,9 +265,31 @@ public class Main extends Hall {
         account.connect(server);
     }).build();
 
-    @Getter
-    @Setter
-    private String sidebarName = Constants.SERVER_NAME;
+    @Override
+    public void handleSidebar(User user) {
+        GameScoreboard gameScoreboard = user.getScoreboard();
+
+        if (gameScoreboard == null)
+            return;
+
+        gameScoreboard.updateTitle(getSidebarName());
+
+        if (isPeriodic(20)) {
+            List<String> scores = new ArrayList<>();
+            Tag tag = user.getAccount().getTagList().getHighestTag();
+            int count = Constants.getServerStorage().count();
+
+            scores.add(" ");
+            scores.add("§fRank: §r" + tag.getColor() + tag.getName());
+            scores.add(" ");
+            scores.add("§fLobby: §7#" + getRoom());
+            scores.add("§fPlayers: §a" + (count == -1 ? "..." : count));
+            scores.add(" ");
+            scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
+
+            gameScoreboard.updateLines(scores);
+        }
+    }
 
     @Override
     public void run() {

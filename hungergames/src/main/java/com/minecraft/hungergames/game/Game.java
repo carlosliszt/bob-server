@@ -531,7 +531,7 @@ public abstract class Game extends GameExecutor implements VariableStorage, List
         }
 
         scores.add(" ");
-        scores.add("§e" + Constants.SERVER_WEBSITE);
+        scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 
         scoreboard.updateLines(scores);
     }
