@@ -20,7 +20,8 @@ public enum Clantag {
     PARTNER_PLUS("Partner+", "§3", "hd73b", "DARK_AQUA", Rank.PARTNER_PLUS, true),
     CHAMPION("Campeão", "§6", "27adh", "GOLD", Rank.ADMINISTRATOR, true),
     RED("Admin", "§c", "d3aad", "RED", Rank.ADMINISTRATOR, true),
-    ROSA("Rosa", "§d", "d3a7d", "LIGHT_PURPLE", Rank.ADMINISTRATOR, true),;
+    ROSA("Rosa", "§d", "d3a7d", "LIGHT_PURPLE", Rank.BOB, true),
+    ;
 
     private final String name, color, uniqueCode, chatColor;
     private final Rank rank;
