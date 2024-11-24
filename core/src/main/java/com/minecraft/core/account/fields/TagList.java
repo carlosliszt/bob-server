@@ -26,7 +26,7 @@ public class TagList {
         tags.clear();
 
         for (Tag tag : Tag.getValues()) {
-            if (!tag.isDedicated() && account.hasPermission(tag.getDefaultRank()) || tag.isDedicated() && account.getRank().getDefaultTag().getId() == tag.getId() || tag.isDedicated() && account.hasPermission(Rank.ADMINISTRATOR) || account.hasTag(tag))
+            if (!tag.isDedicated() && account.hasPermission(tag.getDefaultRank()) || (tag == Tag.BUILDER && account.hasRank(Rank.BUILDER)) || (tag == Tag.PARTNER_PLUS && account.hasRank(Rank.PARTNER_PLUS)) || tag.isDedicated() && account.getRank().getDefaultTag().getId() == tag.getId() || tag.isDedicated() && account.hasPermission(Rank.ADMINISTRATOR) || account.hasTag(tag))
                 tags.add(tag);
         }
     }
