@@ -200,6 +200,31 @@ public enum Columns {
     PVP_LOBBY_PARKOUR_RECORD(0, "Int", "pvp_parkour_record", "INT(100)"),
     THE_BRIDGE_LOBBY_PARKOUR_RECORD(0, "Int", "bridge_parkour_record", "INT(100)"),
 
+    BEDWARS_WINS(0, "Int", "wins", "INT(100)"),
+    BEDWARS_LOSSES(0, "Int", "losses", "INT(100)"),
+    BEDWARS_KILLS(0, "Int", "kills", "INT(100)"),
+    BEDWARS_DEATHS(0, "Int", "deaths", "INT(100)"),
+    BEDWARS_FINAL_KILLS(0, "Int", "final_kills", "INT(100)"),
+    BEDWARS_FINAL_DEATHS(0, "Int", "final_deaths", "INT(100)"),
+    BEDWARS_BEDS_BROKEN(0, "Int", "beds_broken", "INT(100)"),
+    BEDWARS_BEDS_LOST(0, "Int", "beds_lost", "INT(100)"),
+    BEDWARS_GAMES(0, "Int", "games_played", "INT(100)"),
+    BEDWARS_WINSTREAK(0, "Int", "winstreak", "INT(100)"),
+    BEDWARS_MAX_WINSTREAK(0, "Int", "max_winstreak", "INT(100)"),
+    BEDWARS_RANK(1, "Int", "rank", "INT(100)"),
+    BEDWARS_RANK_EXP(0, "Int", "rank_exp", "INT(100)"),
+
+    BEDWARS_SOLO_WINS(0, "Int", "solo_wins", "INT(100)"),
+    BEDWARS_SOLO_LOSSES(0, "Int", "solo_losses", "INT(100)"),
+    BEDWARS_SOLO_KILLS(0, "Int", "solo_kills", "INT(100)"),
+    BEDWARS_SOLO_DEATHS(0, "Int", "solo_deaths", "INT(100)"),
+    BEDWARS_SOLO_FINAL_KILLS(0, "Int", "solo_finals", "INT(100)"),
+    BEDWARS_SOLO_FINAL_DEATHS(0, "Int", "solo_final_deaths", "INT(100)"),
+    BEDWARS_SOLO_GAMES(0, "Int", "solo_games_played", "INT(100)"),
+    BEDWARS_SOLO_WINSTREAK(0, "Int", "solo_winstreak", "INT(100)"),
+    BEDWARS_SOLO_MAX_WINSTREAK(0, "Int", "solo_max_winstreak", "INT(100)"),
+    BEDWARS_SOLO_BEDS_BROKEN(0, "Int", "solo_beds_broken", "INT(100)"),
+    BEDWARS_SOLO_BEDS_LOST(0, "Int", "solo_beds_lost", "INT(100)"),
     ;
 
     private final Object defaultValue;

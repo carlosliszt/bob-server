@@ -27,7 +27,18 @@ public enum ServerCategory {
         servers.clear();
         return server;
     }),
-    BEDWARS((type) -> null),
+    BEDWARS((type) -> {
+        List<Server> servers = getServersCopy();
+
+        servers.removeIf(c -> c.getServerType() != type || c.isDead());
+
+        if (servers.isEmpty())
+            return null;
+
+        Server server = servers.get(0);
+        servers.clear();
+        return server;
+    }),
     CTF((type) -> null),
 
     TIOGERSON((type) -> {

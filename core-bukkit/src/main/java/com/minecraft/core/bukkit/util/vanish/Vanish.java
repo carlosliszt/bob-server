@@ -78,7 +78,10 @@ public class Vanish {
 
                 player.setGameMode(GameMode.CREATIVE);
 
-                if (!event.isSilent()) {
+                if (event.getRank().getCategory() == Rank.Category.NONE)
+                    player.sendMessage(account.getLanguage().translate("command.vanish.visible"));
+
+                if (!event.isSilent() && event.getRank().getCategory() != Rank.Category.NONE) {
                     player.sendMessage(account.getLanguage().translate("command.vanish.enable", "vanish"));
                     player.sendMessage(account.getLanguage().translate("command.vanish.enable_info", rank.getCategory().getDisplay()));
                 }

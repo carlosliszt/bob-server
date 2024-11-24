@@ -38,6 +38,8 @@ public enum ServerType {
     AUTH("auth", false, ServerCategory.AUTH),
     PROTOTYPE("prototype", true, ServerCategory.LOBBY),
     TIOGERSON("tiogerson", false, ServerCategory.TIOGERSON),
+    BEDWARS("bedwars", false, ServerCategory.BEDWARS),
+    BEDWARS_LOBBY("bedwars", true, ServerCategory.BEDWARS),
     DUELS("duels", false, ServerCategory.DUELS);
 
     private final String name;
