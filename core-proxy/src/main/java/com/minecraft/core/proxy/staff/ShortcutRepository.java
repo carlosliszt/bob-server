@@ -40,6 +40,7 @@ public class ShortcutRepository {
         shortcuts.clear();
         addShortcut(new Shortcut(PunishType.BAN, "ka", "KillAura", "p ban cheating n {0} Kill Aura"));
         addShortcut(new Shortcut(PunishType.BAN, "vl", "Velocity", "p ban cheating n {0} Velocity"));
+        addShortcut(new Shortcut(PunishType.BAN, "ak", "Anti-KB", "p ban cheating n {0} Anti-KB"));
         addShortcut(new Shortcut(PunishType.BAN, "sc", "Scaffold", "p ban cheating n {0} Scaffold"));
         addShortcut(new Shortcut(PunishType.BAN, "sp", "Speed", "p ban cheating n {0} Speed"));
         addShortcut(new Shortcut(PunishType.BAN, "fl", "Flight", "p ban cheating n {0} Fly"));
@@ -51,6 +52,11 @@ public class ShortcutRepository {
         addShortcut(new Shortcut(PunishType.BAN, "sf", "Safe Walk", "p ban cheating n {0} Safe-Walk"));
         addShortcut(new Shortcut(PunishType.BAN, "ff", "Force-Field", "p ban cheating n {0} Force-Field"));
         addShortcut(new Shortcut(PunishType.BAN, "rh", "Reach", "p ban cheating n {0} Reach"));
+        addShortcut(new Shortcut(PunishType.BAN, "ac", "AutoClicker", "p ban cheating n {0} AutoClicker"));
+        addShortcut(new Shortcut(PunishType.BAN, "nw", "NoSlowdown", "p ban cheating n {0} NoSlowdown"));
+        addShortcut(new Shortcut(PunishType.BAN, "bn", "BedNuker", "p ban cheating n {0} BedNuker"));
+        addShortcut(new Shortcut(PunishType.BAN, "nf", "NoFall", "p ban cheating n {0} NoFall"));
+
 
         addShortcut(new Shortcut(PunishType.MUTE, "ofensa", "Ofensa", "p mute community 1d {0} Ofensa {1}"));
         addShortcut(new Shortcut(PunishType.MUTE, "spam", "Spam", "p mute community 4h {0} Spam {1}"));

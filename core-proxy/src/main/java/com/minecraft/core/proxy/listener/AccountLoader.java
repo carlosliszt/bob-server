@@ -397,16 +397,17 @@ public class AccountLoader implements Listener {
                     return;
                 }
 
-                for (Friend friend : account.getFriends()) {
-                    ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
-                    if (friendPlayer != null) {
-                        friendPlayer.sendMessage("§6[AMIGO]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
-                    }
-                }
-
                 player.connect(BungeeCord.getInstance().getServerInfo(server.getName()));
             }
         }
+
+        for (Friend friend : account.getFriends()) {
+            ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+            if (friendPlayer != null) {
+                friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
+            }
+        }
+
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -448,7 +449,7 @@ public class AccountLoader implements Listener {
         for (Friend friend : account.getFriends()) {
             ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
             if (friendPlayer != null) {
-                friendPlayer.sendMessage("§6[AMIGO]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §esaiu!");
+                friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §esaiu!");
             }
         }
 

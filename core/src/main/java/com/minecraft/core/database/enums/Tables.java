@@ -8,7 +8,7 @@ package com.minecraft.core.database.enums;
 
 public enum Tables {
 
-    ACCOUNT("accounts", Columns.USERNAME, Columns.NICK_OBJECTS, Columns.RANKS, Columns.PERMISSIONS, Columns.TAGS, Columns.PLUSCOLORS, Columns.CLANTAGS, Columns.MEDALS, Columns.PUNISHMENTS, Columns.CLAN, Columns.FLAGS, Columns.PREMIUM, Columns.FIRST_LOGIN, Columns.LAST_LOGIN, Columns.ADDRESS, Columns.BANNED, Columns.MUTED),
+    ACCOUNT("accounts", Columns.USERNAME, Columns.NICK_OBJECTS, Columns.RANKS, Columns.PERMISSIONS, Columns.TAGS, Columns.PLUSCOLORS, Columns.CLANTAGS, Columns.MEDALS, Columns.PUNISHMENTS, Columns.CLAN, Columns.FLAGS, Columns.FRIENDS, Columns.FRIEND_STATUS, Columns.SENT_FRIEND_REQUESTS, Columns.RECEIVED_FRIEND_REQUESTS, Columns.PREMIUM, Columns.FIRST_LOGIN, Columns.LAST_LOGIN, Columns.ADDRESS, Columns.BANNED, Columns.MUTED),
     AUTH("auth", Columns.PASSWORD, Columns.SESSION_ADDRESS, Columns.SESSION_EXPIRES_AT, Columns.REGISTERED_AT, Columns.PASSWORD_LAST_UPDATE),
     OTHER("other", Columns.NICK, Columns.LAST_NICK, Columns.ULTRA_PLUS_MONTHS, Columns.TAG, Columns.CLANTAG, Columns.LANGUAGE, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.MEDAL, Columns.PREFERENCES, Columns.SKIN, Columns.BLOCKEDS),
     LOBBY_PARKOUR("parkour", Columns.MAIN_LOBBY_PARKOUR_RECORD, Columns.THE_BRIDGE_LOBBY_PARKOUR_RECORD, Columns.DUELS_LOBBY_PARKOUR_RECORD, Columns.HUNGERGAMES_LOBBY_PARKOUR_RECORD, Columns.PVP_LOBBY_PARKOUR_RECORD),

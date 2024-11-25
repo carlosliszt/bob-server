@@ -6,20 +6,27 @@ import com.minecraft.core.account.fields.Preference;
 import com.minecraft.core.account.friend.Friend;
 import com.minecraft.core.account.friend.FriendRequest;
 import com.minecraft.core.command.annotation.Command;
+import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.database.mojang.MojangAPI;
 import com.minecraft.core.enums.Tag;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class FriendCommand implements ProxyInterface {
 
@@ -30,11 +37,10 @@ public class FriendCommand implements ProxyInterface {
         if (context.argsCount() == 0) {
             Argument.HELP.execute(context);
         } else {
-
             Argument argument = Argument.fetch(context.getArg(0));
 
             if (argument == null) {
-                Argument.ADD.execute(context);
+                BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "friend add " + context.getArg(0));
                 return;
             }
 
@@ -45,6 +51,18 @@ public class FriendCommand implements ProxyInterface {
             argument.execute(context);
         }
 
+    }
+
+    @Completer(name = "friend")
+    public List<String> handleComplete(Context<CommandSender> context) {
+        List<String> list = new ArrayList<>();
+        if (context.argsCount() == 1) {
+            for (Argument argument : Argument.values()) {
+                list.addAll(List.of(argument.getField()));
+            }
+            return list;
+        }
+        return getOnlineNicknames(context);
     }
 
     @Getter
@@ -61,7 +79,6 @@ public class FriendCommand implements ProxyInterface {
                 }
 
                 search(context, targetName, target -> {
-
                     target.loadSentFriendRequests();
                     target.loadFriends();
                     target.loadReceivedFriendRequests();
@@ -89,7 +106,7 @@ public class FriendCommand implements ProxyInterface {
                         return;
                     }
 
-                    if (target.hasSentFriendRequest(account.getUniqueId())) {
+                    if (target.getPendingFriendRequests().stream().anyMatch(r -> r.getSenderUniqueId().equals(account.getUniqueId()))) {
 
                         FriendRequest request = target.getSentRequests().stream().filter(r -> r.getSenderUniqueId().equals(account.getUniqueId())).findFirst().orElse(null);
 
@@ -111,6 +128,8 @@ public class FriendCommand implements ProxyInterface {
                             targetPlayer.sendMessage("§aSeu pedido de amizade foi aceito por " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + "§a.");
                         }
 
+                        async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
+                        async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
                         return;
                     }
 
@@ -119,7 +138,7 @@ public class FriendCommand implements ProxyInterface {
                         return;
                     }
 
-                    FriendRequest request = new FriendRequest(target.getUsername(), target.getUniqueId(), FriendRequest.Status.PENDING, target.getUsername(), target.getUniqueId());
+                    FriendRequest request = new FriendRequest(target.getUsername(), target.getUniqueId(), FriendRequest.Status.PENDING, account.getUsername(), account.getUniqueId());
 
                     account.addSentFriendRequest(request);
                     target.addReceivedFriendRequest(request);
@@ -143,9 +162,13 @@ public class FriendCommand implements ProxyInterface {
                         targetPlayer.sendMessage(info, accept, divisa, deny);
                     }
 
+                    async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
+                    async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
+
                 });
 
             }
+
         },
         REMOVE(2, "remove", "remover") {
             @Override
@@ -171,11 +194,14 @@ public class FriendCommand implements ProxyInterface {
 
                     context.sendMessage("§aVocê removeu " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a da sua lista de amigos.");
 
+                    async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
+                    async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
+
                 });
 
             }
         },
-        LIST(2, "list", "lista") {
+        LIST(1, "list", "lista") {
             @Override
             public void execute(Context<ProxiedPlayer> context) {
                 ProxiedPlayer player = context.getSender();
@@ -186,7 +212,10 @@ public class FriendCommand implements ProxyInterface {
                     return;
                 }
 
-                int page = context.argsCount() == 1 ? 1 : Integer.parseInt(context.getArg(1));
+                int page = 1;
+                if (context.argsCount() > 1) {
+                    page = Integer.parseInt(context.getArg(1));
+                }
 
                 int maxPage = (int) Math.ceil(account.getFriends().size() / 10.0);
 
@@ -195,18 +224,25 @@ public class FriendCommand implements ProxyInterface {
                     return;
                 }
 
+                List<Friend> friends = new ArrayList<>(account.getFriends());
+                friends.sort((f1, f2) -> {
+                    ProxiedPlayer p1 = BungeeCord.getInstance().getPlayer(f1.getUniqueId());
+                    ProxiedPlayer p2 = BungeeCord.getInstance().getPlayer(f2.getUniqueId());
+                    return Boolean.compare(p2 != null, p1 != null);
+                });
+
                 context.sendMessage("§eSeus amigos §a(" + account.getFriends().size() + "/150) " + " §7(Página " + page + "/" + maxPage + "):");
 
                 for (int i = (page - 1) * 10; i < page * 10; i++) {
-                    if (i >= account.getFriends().size())
+                    if (i >= friends.size())
                         break;
 
-                    Friend friend = account.getFriends().get(i);
+                    Friend friend = friends.get(i);
                     search(context, friend.getName(), target -> {
                         target.loadRanks();
 
                         ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
-                        context.sendMessage(target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + (targetPlayer == null ? " §cEstá offline." : " §eEstá em §b" + Constants.getServerStorage().getServer(targetPlayer.getServer().getInfo().getName()).getServerType().getName() + "§e."));
+                        context.sendMessage(target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + (targetPlayer == null ? " §cestá offline." : " §eestá em §b" + Constants.getServerStorage().getServer(targetPlayer.getServer().getInfo().getName()).getServerType().getName() + "§e."));
                     });
                 }
             }
@@ -258,6 +294,8 @@ public class FriendCommand implements ProxyInterface {
                         targetPlayer.sendMessage("§aSeu pedido de amizade foi aceito por " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + "§a.");
                     }
 
+                    async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
+                    async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
 
                 });
 
@@ -300,41 +338,46 @@ public class FriendCommand implements ProxyInterface {
                     account.addReceivedFriendRequest(request);
 
                     context.sendMessage("§aVocê negou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
+                    async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
+                    async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
 
                 });
 
             }
         },
-        REQUESTS(2, "requests", "pedidos", "pedido") {
+        REQUESTS(1, "requests", "pedidos", "pedido") {
             @Override
             public void execute(Context<ProxiedPlayer> context) {
 
-                //ambos pendentes e enviados
 
                 ProxiedPlayer player = context.getSender();
                 Account account = Account.fetch(player.getUniqueId());
 
-                if (account.getSentRequests().isEmpty() && account.getReceivedRequests().isEmpty()) {
+                if (account.getPendingFriendRequests().isEmpty() && account.getReceivedPendingRequests().isEmpty()) {
                     context.sendMessage("§cVocê não tem pedidos de amizade.");
                     return;
                 }
 
-                int page = context.argsCount() == 1 ? 1 : Integer.parseInt(context.getArg(1));
-                int maxPage = (int) Math.ceil((account.getSentRequests().size() + account.getReceivedRequests().size()) / 10.0);
+                int page = 1;
+                if (context.argsCount() > 1) {
+                    page = Integer.parseInt(context.getArg(1));
+                }
+
+                int maxPage = (int) Math.ceil((account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size()) / 10.0);
 
                 if (page > maxPage) {
                     context.sendMessage("§cPágina inválida.");
                     return;
                 }
 
-                context.sendMessage("§ePedidos de amizade §a(" + (account.getSentRequests().size() + account.getReceivedRequests().size()) + ") §7(Página " + page + "/" + maxPage + "):");
+                context.sendMessage("§ePedidos de amizade §a(" + (account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size()) + ") §7(Página " + page + "/" + maxPage + "):");
 
                 for (int i = (page - 1) * 10; i < page * 10; i++) {
-                    if (i >= account.getSentRequests().size() + account.getReceivedRequests().size())
+                    if (i >= account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size())
                         break;
 
-                    if (i < account.getSentRequests().size()) {
-                        FriendRequest request = account.getSentRequests().get(i);
+                    if (i < account.getPendingFriendRequests().size()) {
+                        FriendRequest request = account.getPendingFriendRequests().get(i);
                         search(context, request.getReceiverName(), target -> {
                             TextComponent info = new TextComponent("§ePedido para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
                             TextComponent cancel = new TextComponent("§c§lCANCELAR");
@@ -344,7 +387,7 @@ public class FriendCommand implements ProxyInterface {
                             context.getSender().sendMessage(info, cancel);
                         });
                     } else {
-                        FriendRequest request = account.getReceivedRequests().get(i - account.getSentRequests().size());
+                        FriendRequest request = account.getReceivedPendingRequests().get(i - account.getSentRequests().size());
                         search(context, request.getSenderName(), target -> {
                             TextComponent info = new TextComponent("§ePedido de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
                             TextComponent accept = new TextComponent("§a§lACEITAR");
@@ -398,6 +441,9 @@ public class FriendCommand implements ProxyInterface {
 
                     context.sendMessage("§aVocê cancelou o pedido de amizade para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
 
+                    async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
+                    async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
+
                 });
 
             }
@@ -410,8 +456,8 @@ public class FriendCommand implements ProxyInterface {
                 context.sendMessage("§e/" + context.getLabel() + " remover <jogador> §e- §bRemove um amigo.");
                 context.sendMessage("§e/" + context.getLabel() + " recusar <jogador> §e- §bRecusar pedido.");
                 context.sendMessage("§e/" + context.getLabel() + " aceitar <jogador> §e- §bAceitar pedido.");
-                context.sendMessage("§e/" + context.getLabel() + " [página] §e- §bVer amigos.");
-                context.sendMessage("§e/" + context.getLabel() + " [página] §e- §bVer pedidos.");
+                context.sendMessage("§e/" + context.getLabel() + " list [página] §e- §bVer amigos.");
+                context.sendMessage("§e/" + context.getLabel() + " pedidos [página] §e- §bVer pedidos.");
                 context.sendMessage("§e/" + context.getLabel() + " cancelar <jogador> §e- §bCancela um pedido.");
             }
         };
@@ -435,8 +481,6 @@ public class FriendCommand implements ProxyInterface {
         }
 
         public abstract void execute(Context<ProxiedPlayer> context);
-
-
     }
 
 }

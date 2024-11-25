@@ -217,7 +217,7 @@ public class PunishCommand implements ProxyInterface {
             return;
         }
 
-        if (staffer.getLastGo() == null) {
+        if (staffer.getCurrent() == null) {
             context.sendMessage("§cVocê não tem um alvo.");
             return;
         }

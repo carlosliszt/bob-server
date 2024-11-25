@@ -712,7 +712,11 @@ public class Account {
     }
 
     public boolean hasReceivedFriendRequest(UUID uniqueId) {
-        return receivedRequests.stream().anyMatch(request -> request.getSenderUniqueId().equals(uniqueId));
+        return getReceivedPendingRequests().stream().anyMatch(request -> request.getSenderUniqueId().equals(uniqueId));
+    }
+
+    public List<FriendRequest> getReceivedPendingRequests() {
+        return receivedRequests.stream().filter(request -> request.getStatus() == FriendRequest.Status.PENDING).collect(Collectors.toList());
     }
 
     public List<FriendRequest> getPendingFriendRequests() {
