@@ -33,6 +33,7 @@ public class Redis implements AutoCloseable {
     public static String CLAN_INTEGRATION_CHANNEL = "l";
     public static String NICK_ADD_CHANNEL = "m";
     public static String CLAN_TAG_UPDATE = "n";
+    public static String FRIEND_UPDATE_CHANNEL = "o";
 
     public static int DATABASE_CACHE = 1;
     public static int SERVER_CACHE = 2;

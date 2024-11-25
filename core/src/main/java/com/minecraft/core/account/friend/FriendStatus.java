@@ -4,6 +4,7 @@ public enum FriendStatus {
 
     ONLINE,
     OFFLINE,
-    VANISHED;
+    VANISHED,
+    SILENTVANISH;
 
 }

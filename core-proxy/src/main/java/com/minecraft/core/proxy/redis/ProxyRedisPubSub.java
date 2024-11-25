@@ -9,13 +9,17 @@ package com.minecraft.core.proxy.redis;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.datas.SkinData;
+import com.minecraft.core.account.friend.Friend;
+import com.minecraft.core.account.friend.status.FriendStatusUpdate;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.clan.service.ClanService;
 import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.event.RedisPubSubEvent;
 import com.minecraft.core.proxy.server.ProxyServerStorage;
+import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.proxy.util.player.SkinChanger;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
@@ -28,12 +32,13 @@ import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import redis.clients.jedis.JedisPubSub;
 
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class ProxyRedisPubSub extends JedisPubSub {
+public class ProxyRedisPubSub extends JedisPubSub implements ProxyInterface {
 
     @Override
     public void onMessage(String channel, String message) {
@@ -58,6 +63,62 @@ public class ProxyRedisPubSub extends JedisPubSub {
 
             if (!proxyserverStorage.getServers().contains(server)) {
                 proxyserverStorage.getServers().add(server);
+            }
+
+        } else if (channel.equals(Redis.FRIEND_UPDATE_CHANNEL)) {
+
+            FriendStatusUpdate update = Constants.GSON.fromJson(message, FriendStatusUpdate.class);
+
+            switch (update.getUpdate()) {
+                case STATUS:
+
+                    Account holderAccount = Account.fetch(update.getHolder().getUniqueId());
+
+                    switch (update.getStatus()) {
+                        case ONLINE:
+                            holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
+                            for (Friend friend : holderAccount.getFriends()) {
+                                ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                                if (proxiedPlayer != null) {
+                                    proxiedPlayer.sendMessage("§6[AMIGOS]§e " + holderAccount.getRank().getDefaultTag().getFormattedColor() + holderAccount.getUsername() + " §eentrou!");
+                                }
+                            }
+
+                            async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
+
+                            break;
+                        case OFFLINE:
+                            holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
+                            for (Friend friend : holderAccount.getFriends()) {
+                                ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                                if (proxiedPlayer != null) {
+                                    proxiedPlayer.sendMessage("§6[AMIGOS]§e " + holderAccount.getRank().getDefaultTag().getFormattedColor() + holderAccount.getUsername() + " §esaiu!");
+                                }
+                            }
+
+                            async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
+
+                            break;
+
+                        case VANISHED:
+                            holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
+                            for (Friend friend : holderAccount.getFriends()) {
+                                ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                                if (proxiedPlayer != null) {
+                                    proxiedPlayer.sendMessage("§6[AMIGOS]§e " + holderAccount.getRank().getDefaultTag().getFormattedColor() + holderAccount.getUsername() + " §esaiu!");
+                                }
+                            }
+                            async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
+                            break;
+                        case SILENTVANISH:
+                            holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
+                            async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
+                            break;
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
         } else if (channel.equals(Redis.CLAN_TAG_UPDATE)) {

@@ -6,11 +6,16 @@
 
 package com.minecraft.core.bukkit.util.vanish;
 
+import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
+import com.minecraft.core.account.friend.Friend;
+import com.minecraft.core.account.friend.FriendStatus;
+import com.minecraft.core.account.friend.status.FriendStatusUpdate;
 import com.minecraft.core.bukkit.event.player.PlayerHideEvent;
 import com.minecraft.core.bukkit.event.player.PlayerShowEvent;
 import com.minecraft.core.bukkit.event.player.PlayerVanishDisableEvent;
 import com.minecraft.core.bukkit.event.player.PlayerVanishEnableEvent;
+import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.Rank;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -78,6 +83,23 @@ public class Vanish {
 
                 player.setGameMode(GameMode.CREATIVE);
 
+                if (silent) {
+                    FriendStatusUpdate friendStatusUpdate = FriendStatusUpdate.builder()
+                            .holder(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()))
+                            .status(FriendStatus.SILENTVANISH)
+                            .update(FriendStatusUpdate.Update.STATUS)
+                            .build();
+                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(friendStatusUpdate));
+
+                } else {
+                    FriendStatusUpdate friendStatusUpdate = FriendStatusUpdate.builder()
+                            .holder(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()))
+                            .status(FriendStatus.VANISHED)
+                            .update(FriendStatusUpdate.Update.STATUS)
+                            .build();
+                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(friendStatusUpdate));
+                }
+
                 if (event.getRank().getCategory() == Rank.Category.NONE)
                     player.sendMessage(account.getLanguage().translate("command.vanish.visible"));
 
@@ -101,6 +123,14 @@ public class Vanish {
                 }
 
                 player.setGameMode(GameMode.SURVIVAL);
+
+                FriendStatusUpdate friendStatusUpdate = FriendStatusUpdate.builder()
+                        .holder(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()))
+                        .status(FriendStatus.ONLINE)
+                        .update(FriendStatusUpdate.Update.STATUS)
+                        .build();
+
+                Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(friendStatusUpdate));
 
                 if (!event.isSilent()) {
                     player.sendMessage(account.getLanguage().translate("command.vanish.disable", "vanish"));

@@ -37,7 +37,7 @@ public class VanishCommand implements BukkitInterface {
             log(context.getAccount(), context.getAccount().getDisplayName() + (!vanished ? " entrou no modo vanish" : " saiu do modo vanish"));
         } else {
             if (context.getArg(0).equalsIgnoreCase("v") || context.getArg(0).equalsIgnoreCase("visible")) {
-                context.getSender().performCommand("/visible");
+                context.getSender().performCommand("visible");
             }
         }
 
@@ -45,7 +45,7 @@ public class VanishCommand implements BukkitInterface {
 
     @Command(name = "visible", platform = Platform.PLAYER, rank = Rank.PARTNER_PLUS)
     public void handleCommandVisible(Context<Player> context) {
-        boolean vanished = vanish.isVanished(context.getUniqueId());
+        boolean vanished = vanish.isVanishedToCategory(context.getUniqueId(), Rank.MEMBER.getCategory());
         if (vanished)
             vanish.setVanished(context.getSender(), Rank.MEMBER, false);
         else

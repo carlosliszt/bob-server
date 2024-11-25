@@ -5,6 +5,8 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.account.fields.Preference;
 import com.minecraft.core.account.friend.Friend;
 import com.minecraft.core.account.friend.FriendRequest;
+import com.minecraft.core.account.friend.FriendStatus;
+import com.minecraft.core.account.friend.status.FriendStatusUpdate;
 import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
@@ -12,6 +14,7 @@ import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.database.mojang.MojangAPI;
+import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.Tag;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import lombok.Getter;
@@ -21,6 +24,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,10 +63,19 @@ public class FriendCommand implements ProxyInterface {
         if (context.argsCount() == 1) {
             for (Argument argument : Argument.values()) {
                 list.addAll(List.of(argument.getField()));
+                list.addAll(getOnlineNicknames(context));
             }
             return list;
         }
+
+        if (context.getArg(2).equalsIgnoreCase("status")) {
+            list.clear();
+            list.addAll(Arrays.asList("online", "offline"));
+            return list;
+        }
+
         return getOnlineNicknames(context);
+
     }
 
     @Getter
@@ -110,8 +123,11 @@ public class FriendCommand implements ProxyInterface {
 
                         FriendRequest request = target.getSentRequests().stream().filter(r -> r.getSenderUniqueId().equals(account.getUniqueId())).findFirst().orElse(null);
 
-                        target.addFriend(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()));
-                        account.addFriend(new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis()));
+                        Friend sender = new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis());
+                        Friend targetFriend = new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis());
+
+                        target.addFriend(sender);
+                        account.addFriend(targetFriend);
                         context.sendMessage("§aVocê aceitou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
 
                         request.setStatus(FriendRequest.Status.ACCEPTED);
@@ -127,6 +143,10 @@ public class FriendCommand implements ProxyInterface {
                         if (targetPlayer != null) {
                             targetPlayer.sendMessage("§aSeu pedido de amizade foi aceito por " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + "§a.");
                         }
+
+                        FriendStatusUpdate update = new FriendStatusUpdate(sender, targetFriend, FriendStatus.ONLINE, FriendStatusUpdate.Update.ADD);
+
+                        Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(update));
 
                         async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
                         async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
@@ -192,6 +212,10 @@ public class FriendCommand implements ProxyInterface {
                     account.removeFriend(friend);
                     target.removeFriend(sender);
 
+                    FriendStatusUpdate update = new FriendStatusUpdate(sender, friend, FriendStatus.ONLINE, FriendStatusUpdate.Update.REMOVE);
+
+                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(update));
+
                     context.sendMessage("§aVocê removeu " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a da sua lista de amigos.");
 
                     async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
@@ -224,12 +248,7 @@ public class FriendCommand implements ProxyInterface {
                     return;
                 }
 
-                List<Friend> friends = new ArrayList<>(account.getFriends());
-                friends.sort((f1, f2) -> {
-                    ProxiedPlayer p1 = BungeeCord.getInstance().getPlayer(f1.getUniqueId());
-                    ProxiedPlayer p2 = BungeeCord.getInstance().getPlayer(f2.getUniqueId());
-                    return Boolean.compare(p2 != null, p1 != null);
-                });
+                List<Friend> friends = getFriends(account);
 
                 context.sendMessage("§eSeus amigos §a(" + account.getFriends().size() + "/150) " + " §7(Página " + page + "/" + maxPage + "):");
 
@@ -241,10 +260,52 @@ public class FriendCommand implements ProxyInterface {
                     search(context, friend.getName(), target -> {
                         target.loadRanks();
 
-                        ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
-                        context.sendMessage(target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + (targetPlayer == null ? " §cestá offline." : " §eestá em §b" + Constants.getServerStorage().getServer(targetPlayer.getServer().getInfo().getName()).getServerType().getName() + "§e."));
+                        context.sendMessage(target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + " " + getStatus(target));
                     });
                 }
+            }
+
+            public String getStatus(Account friend) {
+                ProxiedPlayer target = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                if (target == null) {
+                    return "§cestá offline.";
+                } else {
+                    if (FriendStatus.valueOf(friend.getData(Columns.FRIEND_STATUS).getAsString()) == FriendStatus.ONLINE) {
+                        return "§eestá em §b" + Constants.getServerStorage().getServer(target.getServer().getInfo().getName()).getServerType().getName() + "§e.";
+                    } else {
+                        return "§cestá offline.";
+                    }
+                }
+            }
+
+            @NotNull
+            private List<Friend> getFriends(Account account) {
+                List<Friend> friends = new ArrayList<>(account.getFriends());
+                friends.sort((f1, f2) -> {
+                    ProxiedPlayer p1 = BungeeCord.getInstance().getPlayer(f1.getUniqueId());
+                    ProxiedPlayer p2 = BungeeCord.getInstance().getPlayer(f2.getUniqueId());
+                    FriendStatus status1 = FriendStatus.valueOf(account.getData(Columns.FRIEND_STATUS).getAsString());
+                    FriendStatus status2 = FriendStatus.valueOf(account.getData(Columns.FRIEND_STATUS).getAsString());
+
+                    int onlineComparison = Boolean.compare(p2 != null, p1 != null);
+                    if (onlineComparison != 0) {
+                        return onlineComparison;
+                    }
+
+                    if (p1 != null && p2 != null) {
+                        int statusComparison = status1.compareTo(status2);
+                        if (statusComparison != 0) {
+                            return statusComparison;
+                        }
+                    }
+
+                    if (p1 == null && p2 == null) {
+                        return f1.getName().compareToIgnoreCase(f2.getName());
+                    }
+
+                    return status1.compareTo(status2);
+                });
+                return friends;
             }
         },
         ACCEPT(2, "accept", "aceitar") {
@@ -283,8 +344,15 @@ public class FriendCommand implements ProxyInterface {
                     account.removeReceivedFriendRequest(request);
                     account.addReceivedFriendRequest(request);
 
-                    account.addFriend(new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis()));
-                    target.addFriend(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()));
+                    Friend targetFriend = new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis());
+                    Friend sender = new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis());
+
+                    account.addFriend(targetFriend);
+                    target.addFriend(sender);
+
+                    FriendStatusUpdate update = new FriendStatusUpdate(sender, targetFriend, FriendStatus.ONLINE, FriendStatusUpdate.Update.ADD);
+
+                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(update));
 
                     context.sendMessage("§aVocê aceitou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
 
@@ -407,6 +475,34 @@ public class FriendCommand implements ProxyInterface {
 
             }
         },
+        STATUS(2, "status") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+                ProxiedPlayer player = context.getSender();
+                Account account = Account.fetch(player.getUniqueId());
+
+                String status = context.getArg(1);
+
+                if (status.equalsIgnoreCase("online")) {
+
+                    account.getData(Columns.FRIEND_STATUS).setData(FriendStatus.ONLINE.name());
+                    FriendStatusUpdate update = new FriendStatusUpdate(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()), null, FriendStatus.ONLINE, FriendStatusUpdate.Update.STATUS);
+
+                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(status));
+
+                    context.sendMessage("§aSeu status foi alterado para §aONLINE§a.");
+                } else if (status.equalsIgnoreCase("offline")) {
+                    account.getData(Columns.FRIEND_STATUS).setData(FriendStatus.OFFLINE.name());
+                    FriendStatusUpdate update = new FriendStatusUpdate(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()), null, FriendStatus.OFFLINE, FriendStatusUpdate.Update.STATUS);
+                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(status));
+                    context.sendMessage("§aSeu status foi alterado para §cOFFLINE§a.");
+                } else {
+                    context.sendMessage("§cStatus inválido.");
+                }
+
+                async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
+            }
+        },
         CANCEL(2, "cancel", "cancelar") {
             @Override
             public void execute(Context<ProxiedPlayer> context) {
@@ -456,6 +552,7 @@ public class FriendCommand implements ProxyInterface {
                 context.sendMessage("§e/" + context.getLabel() + " remover <jogador> §e- §bRemove um amigo.");
                 context.sendMessage("§e/" + context.getLabel() + " recusar <jogador> §e- §bRecusar pedido.");
                 context.sendMessage("§e/" + context.getLabel() + " aceitar <jogador> §e- §bAceitar pedido.");
+                context.sendMessage("§e/" + context.getLabel() + " status <status> §e- §bAltera o status de online.");
                 context.sendMessage("§e/" + context.getLabel() + " list [página] §e- §bVer amigos.");
                 context.sendMessage("§e/" + context.getLabel() + " pedidos [página] §e- §bVer pedidos.");
                 context.sendMessage("§e/" + context.getLabel() + " cancelar <jogador> §e- §bCancela um pedido.");
