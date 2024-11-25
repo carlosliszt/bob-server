@@ -46,7 +46,7 @@ public class PunishmentListener implements Listener, ProxyInterface {
                 StringBuilder msg = new StringBuilder();
 
                 if (account.getLanguage() == Language.PORTUGUESE) {
-                    msg.append(punish.isPermanent() ? "§cVocê foi suspenso permanentemente." : "§cVocê está suspenso temporariamente.").append("\n");
+                    msg.append(punish.isPermanent() ? "§cVocê foi banido permanentemente." : "§cVocê foi banido temporariamente.").append("\n");
                     if (punish.getCategory() != PunishCategory.NONE)
                         msg.append("§cMotivo: ").append(punish.getCategory().getDisplay(Language.PORTUGUESE)).append("\n");
 
@@ -56,7 +56,13 @@ public class PunishmentListener implements Listener, ProxyInterface {
                     msg.append("§cPode comprar unban: ").append(punish.isInexcusable() ? "Não" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "Não" : "Sim")).append("\n");
 
                     msg.append("§cID: #").append(punish.getCode()).append("\n\n");
-                    msg.append("§cSaiba mais em ").append(Constants.SERVER_WEBSITE);
+
+                    if (!punish.isInexcusable()) {
+                        msg.append("§eCompre seu unban em: §bblazemc.com.br/unban\n");
+                    }
+
+                    msg.append("§cBanido injustamente? Contate-nos via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
+
                 } else {
                     msg.append(punish.isPermanent() ? "§cYou are permanently banned." : "§cYou are temporarily banned.").append("\n");
                     if (punish.getCategory() != PunishCategory.NONE)
@@ -68,7 +74,11 @@ public class PunishmentListener implements Listener, ProxyInterface {
                     msg.append("§cCan buy unban: ").append(punish.isInexcusable() ? "No" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "No" : "Yes")).append("\n");
 
                     msg.append("§cBan ID: #").append(punish.getCode()).append("\n\n");
-                    msg.append("§cFind out more on ").append(Constants.SERVER_WEBSITE);
+                    if (!punish.isInexcusable()) {
+                        msg.append("§ePurchase your unban in: §bblazemc.com.br/unban\n");
+                    }
+
+                    msg.append("§cUnfairly banned? Contact us via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
                 }
 
                 if (punish.getType() == PunishType.BAN) {
@@ -78,22 +88,11 @@ public class PunishmentListener implements Listener, ProxyInterface {
                 proxiedPlayer.disconnect(TextComponent.fromLegacyText(msg.toString()));
 
             } else if (punish.getType() == PunishType.MUTE && punish.getCategory() == PunishCategory.COMMUNITY) {
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§c§m                                                            "));
                 if (account.getLanguage() == Language.PORTUGUESE) {
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§cVocê foi" + (punish.isPermanent() ? " permanentemente" : " temporariamente") + " silenciado por " + punish.getReason()));
-                    if (!punish.isPermanent())
-                        proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Seu silenciamento expirará em§c " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED)));
-                    proxiedPlayer.sendMessage("");
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Saiba mais em §e" + Constants.SERVER_WEBSITE));
+                    proxiedPlayer.sendMessage("§cA sua conta foi mutada por " + punish.getReason() + (punish.isPermanent() ? "." : " expira em " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED) + "." + (punish.isInexcusable() ? " §c§l(NÃO PODE COMPRAR UNMUTE)" : (account.count(punish.getType(), PunishCategory.COMMUNITY) >= 5 ? " §c§l(NÃO PODE COMPRAR UNMUTE)" : ""))));
                 } else {
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§cYou've been" + (punish.isPermanent() ? " permanently" : " temporarily") + " muted for " + punish.getReason()));
-                    if (!punish.isPermanent())
-                        proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Your mute will expire in§c " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED)));
-                    proxiedPlayer.sendMessage("");
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Find out more on §e" + Constants.SERVER_WEBSITE));
+                    proxiedPlayer.sendMessage("§cYour account has been muted for " + punish.getReason() + (punish.isPermanent() ? "." : " expires in " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED) + "." + (punish.isInexcusable() ? " §c§l(CAN'T BUY UNMUTE)" : (account.count(punish.getType(), PunishCategory.COMMUNITY) >= 5 ? " §c§l(CAN'T BUY UNMUTE)" : ""))));
                 }
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7ID: §f#" + punish.getCode()));
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§c§m                                                            "));
             }
         }
 
@@ -104,7 +103,7 @@ public class PunishmentListener implements Listener, ProxyInterface {
             switch (punish.getType()) {
                 case BAN:
                     builder.setColor(Color.RED);
-                    builder.setAuthor("🔨 BANIDO" + (punish.isInexcusable() ? " ❌" : ""));
+                    builder.setAuthor("🔨 BANIDO" + (punish.isInexcusable() ? " ❌" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? " ❌" : "")));
                     builder.setTitle(account.getUsername());
                     builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE) + " (#" + event.getAccount().count(punish.getType()) + ")", false));
                     if (!punish.isPermanent())
@@ -114,7 +113,7 @@ public class PunishmentListener implements Listener, ProxyInterface {
 
                 case MUTE:
                     builder.setColor(Color.YELLOW);
-                    builder.setAuthor("🔇 MUTADO" + (punish.isInexcusable() ? " ❌" : ""));
+                    builder.setAuthor("🔇 MUTADO" + (punish.isInexcusable() ? " ❌" : (account.count(punish.getType(), PunishCategory.COMMUNITY) >= 5 ? " ❌" : "")));
                     builder.setTitle(account.getUsername());
                     builder.addField(new MessageEmbed.Field(":mega: Motivo", punish.getCategory().getDisplay(Language.PORTUGUESE), false));
                     if (!punish.isPermanent())

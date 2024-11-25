@@ -404,7 +404,9 @@ public class AccountLoader implements Listener {
         for (Friend friend : account.getFriends()) {
             ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
             if (friendPlayer != null) {
-                friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
+                if (account.getData(Columns.FRIEND_STATUS).getAsString().equals("ONLINE")) {
+                    friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
+                }
             }
         }
 
@@ -449,7 +451,9 @@ public class AccountLoader implements Listener {
         for (Friend friend : account.getFriends()) {
             ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
             if (friendPlayer != null) {
-                friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §esaiu!");
+                if (account.getData(Columns.FRIEND_STATUS).getAsString().equals("ONLINE")) {
+                    friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §esaiu!");
+                }
             }
         }
 
@@ -487,7 +491,7 @@ public class AccountLoader implements Listener {
             StringBuilder msg = new StringBuilder();
 
             if (account.getLanguage() == Language.PORTUGUESE) {
-                msg.append(punish.isPermanent() ? "§cVocê foi suspenso permanentemente." : "§cVocê está suspenso temporariamente.").append("\n");
+                msg.append(punish.isPermanent() ? "§cVocê está banido permanentemente." : "§cVocê está banido temporariamente.").append("\n");
                 if (punish.getCategory() != PunishCategory.NONE)
                     msg.append("§cMotivo: ").append(punish.getCategory().getDisplay(Language.PORTUGUESE)).append("\n");
 
@@ -497,7 +501,12 @@ public class AccountLoader implements Listener {
                 msg.append("§cPode comprar unban: ").append(punish.isInexcusable() ? "Não" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "Não" : "Sim")).append("\n");
 
                 msg.append("§cID: #").append(punish.getCode()).append("\n\n");
-                msg.append("§cSaiba mais em ").append(Constants.SERVER_WEBSITE);
+
+                if (!punish.isInexcusable()) {
+                    msg.append("§eCompre seu unban em: §bblazemc.com.br/unban\n");
+                }
+
+                msg.append("§cBanido injustamente? Contate-nos via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
             } else {
                 msg.append(punish.isPermanent() ? "§cYou are permanently banned." : "§cYou are temporarily banned.").append("\n");
                 if (punish.getCategory() != PunishCategory.NONE)
@@ -508,8 +517,12 @@ public class AccountLoader implements Listener {
 
                 msg.append("§cCan buy unban: ").append(punish.isInexcusable() ? "No" : (account.count(punish.getType(), PunishCategory.CHEATING) >= 3 ? "No" : "Yes")).append("\n");
 
-                msg.append("§cID: #").append(punish.getCode()).append("\n\n");
-                msg.append("§cFind out more on ").append(Constants.SERVER_WEBSITE);
+                msg.append("§cBan ID: #").append(punish.getCode()).append("\n\n");
+                if (!punish.isInexcusable()) {
+                    msg.append("§ePurchase your unban in: §bblazemc.com.br/unban\n");
+                }
+
+                msg.append("§cUnfairly banned? Contact us via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
             }
             loginEvent.setCancelled(true);
             loginEvent.setCancelReason(TextComponent.fromLegacyText(msg.toString()));

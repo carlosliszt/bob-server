@@ -122,7 +122,7 @@ public class ProxyGame extends Plugin {
 
             getProxy().getScheduler().schedule(this, this::runGarbageCollector, 5, 5, TimeUnit.MINUTES);
 
-            getProxy().getScheduler().runAsync(this, redisPubSub = new RedisPubSub(new ProxyRedisPubSub(), "proxy.commands", Redis.SERVER_REDIRECT_CHANNEL, Redis.CLAN_TAG_UPDATE, Redis.NICK_ADD_CHANNEL, Redis.OPEN_EVENT_CHANNEL, Redis.SKIN_CHANGE_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
+            getProxy().getScheduler().runAsync(this, redisPubSub = new RedisPubSub(new ProxyRedisPubSub(), "proxy.commands", Redis.FRIEND_UPDATE_CHANNEL, Redis.SERVER_REDIRECT_CHANNEL, Redis.CLAN_TAG_UPDATE, Redis.NICK_ADD_CHANNEL, Redis.OPEN_EVENT_CHANNEL, Redis.SKIN_CHANGE_CHANNEL, Redis.SERVER_COMMUNICATION_CHANNEL, Redis.PROFILE_UPDATE_CHANNEL, Redis.NICK_DISGUISE_CHANNEL, Redis.LANGUAGE_UPDATE_CHANNEL, Redis.RANK_UPDATE_CHANNEL, Redis.FLAG_UPDATE_CHANNEL, Redis.PREFERENCES_UPDATE_CHANNEL));
 
             getProxy().getScheduler().schedule(this, () -> {
                 new LogScheduler().run();
@@ -233,7 +233,7 @@ public class ProxyGame extends Plugin {
 
     public void enableBroadcast() {
         broadcasts.add("§eAltere seu idioma principal usando §b/language");
-        broadcasts.add("§eAcompanhe novidades em nosso Twitter §6@BobGames");
+        broadcasts.add("§eAcompanhe novidades em nosso Twitter §6@BlazeMC_");
         broadcasts.add("§eAcompanhe suas estatísticas usando §b/stats");
         broadcasts.add("§eVenha fazer parte de nossa comunidade! Acesse nosso discord: §b" + Constants.SERVER_DISCORD);
         broadcasts.add("§eAltere sua experiência de jogo usando §b/prefs");

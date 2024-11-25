@@ -91,22 +91,11 @@ public class ReportCommand implements ProxyInterface {
 
                 Punish punish = accountVictim.getPunish(PunishType.MUTE, PunishCategory.REPORT);
 
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§e§m                                                            "));
                 if (accountVictim.getLanguage() == Language.PORTUGUESE) {
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§cSuas denúncias foram" + (punish.isPermanent() ? " permanentemente" : " temporariamente") + " silenciadas por " + punish.getReason()));
-                    if (!punish.isPermanent())
-                        proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Seu silenciamento de denúncias expirará em§c " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED)));
-                    proxiedPlayer.sendMessage("");
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Saiba mais em §e" + Constants.SERVER_WEBSITE));
+                    proxiedPlayer.sendMessage(new TextComponent("§cA sua conta está proibida de reportar por " + punish.getReason() + (punish.isPermanent() ? "" : " expira em " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED)) + "."));
                 } else {
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§cYou've been" + (punish.isPermanent() ? " permanently" : " temporarily") + " report muted for " + punish.getReason()));
-                    if (!punish.isPermanent())
-                        proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Your report mute will expire in§c " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED)));
-                    proxiedPlayer.sendMessage("");
-                    proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7Find out more on §e" + Constants.SERVER_WEBSITE));
+                    proxiedPlayer.sendMessage(new TextComponent("§cYour account is banned from reporting for " + punish.getReason() + (punish.isPermanent() ? "" : " expires in " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED)) + "."));
                 }
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§7ID: §f#" + punish.getCode()));
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText("§e§m                                                            "));
                 return;
             }
 

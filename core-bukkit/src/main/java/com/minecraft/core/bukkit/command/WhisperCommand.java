@@ -140,22 +140,11 @@ public class WhisperCommand implements BukkitInterface {
         if (account.isPunished(PunishType.MUTE, PunishCategory.COMMUNITY)) {
             Punish punish = account.getPunish(PunishType.MUTE, PunishCategory.COMMUNITY);
 
-            context.sendMessage("§c§m                                                            ");
             if (account.getLanguage() == Language.PORTUGUESE) {
-                context.sendMessage("§cVocê foi" + (punish.isPermanent() ? " permanentemente" : " temporariamente") + " silenciado por " + punish.getReason());
-                if (!punish.isPermanent())
-                    context.sendMessage("§7Seu silenciamento expirará em§c " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED));
-                context.sendMessage("");
-                context.sendMessage("§7Saiba mais em §e" + Constants.SERVER_WEBSITE);
+                context.sendMessage("§cA sua conta está mutada por " + punish.getReason() + (punish.isPermanent() ? "." : " expira em " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED) + "." + (punish.isInexcusable() ? " §c§l(NÃO PODE COMPRAR UNMUTE)" : (account.count(punish.getType(), PunishCategory.COMMUNITY) >= 5 ? " §c§l(NÃO PODE COMPRAR UNMUTE)" : ""))));
             } else {
-                context.sendMessage("§cYou've been" + (punish.isPermanent() ? " permanently" : " temporarily") + " muted for " + punish.getReason());
-                if (!punish.isPermanent())
-                    context.sendMessage("§7Your mute will expire in§c " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED));
-                context.sendMessage("");
-                context.sendMessage("§7Find out more on §e" + Constants.SERVER_WEBSITE);
+                context.sendMessage("§cYour account is muted for" + punish.getReason() + (punish.isPermanent() ? "." : " expires in " + DateUtils.formatDifference(punish.getTime(), Language.PORTUGUESE, DateUtils.Style.SIMPLIFIED) + "." + (punish.isInexcusable() ? " §c§l(CAN'T BUY UNMUTE)" : (account.count(punish.getType(), PunishCategory.COMMUNITY) >= 5 ? " §c§l(CAN'T BUY UNMUTE)" : ""))));
             }
-            context.sendMessage("§7ID: §f#" + punish.getCode());
-            context.sendMessage("§c§m                                                            ");
             return true;
         }
         return false;

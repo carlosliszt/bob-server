@@ -21,6 +21,8 @@ public enum PunishCategory {
     EXTREMISM("Extremismo", "Extremism", true, "extremism", Rank.TRIAL_MODERATOR, Collections.singletonList(PunishType.BAN), "Nazismo"),
     BADNICK("Nickname Inapropriado", "Inappropriate Nickname", true, "badnick", Rank.TRIAL_MODERATOR, Collections.singletonList(PunishType.BAN), "Nick Inapropriado"),
     CHEATING("Uso de Trapaças", "Cheating is forbidden.", false, "cheating", Rank.PARTNER_PLUS, Collections.singletonList(PunishType.BAN), "reach", "velocity", "killaura", "forcefield", "fly", "flight", "autosoup", "regen", "antikb", "nofall", "glide", "noslowdown", "highjump", "triggerbot", "aimbot", "criticals", "nuker", "xray", "togglesneak", "bowaimbot", "autoclick", "fastfall", "tpaura", "noclip", "fastbow", "sneak", "spider"),
+    RACISM("Racismo", "Racism", true, "racism", Rank.HELPER, Collections.singletonList(PunishType.MUTE), "Racismo"),
+    HOMOFOBIA("Homofobia", "Homophobia", true, "homofobia", Rank.HELPER, Collections.singletonList(PunishType.MUTE), "Homofobia"),
     COMMUNITY("Violação das Diretrizes da Comunidade", "Violation of Community Guidelines", false, "community", Rank.HELPER, Arrays.asList(PunishType.MUTE, PunishType.BAN), "ofensa", "divulgação"),
     BLACKLIST("Blacklist de eventos", "Event blacklist", false, "blacklist", Rank.SECONDARY_MOD, Collections.singletonList(PunishType.EVENT), "panela", "interferir"),
     REPORT("Mau uso do report", "Bad usage of Report", false, "report", Rank.TRIAL_MODERATOR, Collections.singletonList(PunishType.MUTE)),
