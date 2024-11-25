@@ -94,6 +94,17 @@ public class AccountCommand implements ProxyInterface {
             else if (args.length == 3) {
                 if (args[1].equalsIgnoreCase("rank"))
                     return Arrays.stream(Rank.values()).filter(rank -> rank != Rank.MEMBER && startsWith(rank.getDisplayName(), args[2]) && context.getAccount().hasPermission(rank)).map(r -> r.getDisplayName().toLowerCase()).collect(Collectors.toList());
+                else if (args[1].equalsIgnoreCase("tag"))
+                    return Arrays.stream(Tag.values())
+                            .filter(tag -> tag != Tag.MEMBER && context.getAccount().getTagList().hasTag(tag))
+                            .map(tag -> tag.name().toLowerCase())
+                            .collect(Collectors.toList());
+                else if (args[1].equalsIgnoreCase("medal"))
+                    return Arrays.stream(Medal.values()).filter(medal -> medal != Medal.NONE && context.getAccount().hasPermission(medal.getRank()) && startsWith(medal.getName(), args[2])).map(medal -> medal.name().toLowerCase()).collect(Collectors.toList());
+                else if (args[1].equalsIgnoreCase("clantag"))
+                    return Arrays.stream(Clantag.values()).filter(clantag -> clantag != Clantag.DEFAULT && context.getAccount().hasPermission(clantag.getRank()) && startsWith(clantag.getName(), args[2])).map(clantag -> clantag.name().toLowerCase()).collect(Collectors.toList());
+                else if (args[1].equalsIgnoreCase("pluscolor"))
+                    return Arrays.stream(PlusColor.values()).filter(plusColor -> plusColor != PlusColor.GOLDEN && startsWith(plusColor.getName(), args[2])).map(plusColor -> plusColor.name().toLowerCase()).collect(Collectors.toList());
                 else if (args[1].equalsIgnoreCase("flag"))
                     return Arrays.stream(Flag.values()).filter(flag -> context.getAccount().hasPermission(flag.getRank()) && startsWith(flag.getName(), args[2])).map(flag -> flag.getName().toLowerCase()).collect(Collectors.toList());
             } else if (args.length == 4) {
@@ -237,9 +248,16 @@ public class AccountCommand implements ProxyInterface {
 
             if (args.length >= 3) {
 
-                PlusColor plusColor = PlusColor.fromUniqueCode(args[2]);
+                PlusColor plusColor;
 
-                if (plusColor == null || plusColor == PlusColor.GOLDEN) {
+                try {
+                    plusColor = PlusColor.valueOf(args[2].toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    context.info("object.not_found", "PlusColor");
+                    return;
+                }
+
+                if (plusColor == PlusColor.GOLDEN) {
                     context.info("object.not_found", "PlusColor");
                     return;
                 }
@@ -325,9 +343,16 @@ public class AccountCommand implements ProxyInterface {
 
             if (args.length >= 3) {
 
-                Tag tag = Tag.fromUniqueCode(args[2]);
+                Tag tag;
 
-                if (tag == null || tag == Tag.MEMBER) {
+                try {
+                    tag = Tag.valueOf(args[2].toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    context.info("object.not_found", "Tag");
+                    return;
+                }
+
+                if (tag == Tag.MEMBER) {
                     context.info("object.not_found", "Tag");
                     return;
                 }
@@ -397,9 +422,16 @@ public class AccountCommand implements ProxyInterface {
 
             if (args.length >= 3) {
 
-                Medal medal = Medal.fromUniqueCode(args[2]);
+                Medal medal;
 
-                if (medal == null || medal == Medal.NONE) {
+                try {
+                    medal = Medal.valueOf(args[2].toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    context.info("object.not_found", "Medal");
+                    return;
+                }
+
+                if (medal == Medal.NONE) {
                     context.info("object.not_found", "Medal");
                     return;
                 }
@@ -524,7 +556,14 @@ public class AccountCommand implements ProxyInterface {
 
             if (args.length >= 3) {
 
-                Clantag clantag = Clantag.fromUniqueCode(args[2]);
+                Clantag clantag;
+
+                try {
+                    clantag = Clantag.valueOf(args[2].toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    context.info("object.not_found", "ClanTag");
+                    return;
+                }
 
                 if (clantag == null || clantag == Clantag.DEFAULT) {
                     context.info("object.not_found", "ClanTag");

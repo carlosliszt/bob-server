@@ -11,6 +11,7 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.account.AccountExecutor;
 import com.minecraft.core.account.datas.SkinData;
 import com.minecraft.core.account.friend.Friend;
+import com.minecraft.core.account.friend.FriendRequest;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.clan.member.Member;
 import com.minecraft.core.database.enums.Columns;
@@ -39,6 +40,8 @@ import com.minecraft.core.util.geodata.DataResolver;
 import com.minecraft.core.util.skin.Skin;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -48,6 +51,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.md_5.bungee.protocol.Property;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -405,9 +409,19 @@ public class AccountLoader implements Listener {
             ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
             if (friendPlayer != null) {
                 if (account.getData(Columns.FRIEND_STATUS).getAsString().equals("ONLINE")) {
+                    Account friendsAccount = Account.fetch(friend.getUniqueId());
                     friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
+                    player.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + friendsAccount.getUsername() + " §eestá online.");
                 }
             }
+        }
+
+        if (!account.getReceivedPendingRequests().isEmpty()) {
+            TextComponent info = new TextComponent("§6[AMIGOS]§e Você tem §b" + account.getReceivedPendingRequests().size() + " §epedido(s) de amizade pendente(s).");
+            info.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§eClique para visualizar.")));
+            info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend pedidos"));
+
+            player.sendMessage(info);
         }
 
     }

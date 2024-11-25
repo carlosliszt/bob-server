@@ -96,6 +96,7 @@ public class FriendCommand implements ProxyInterface {
                     target.loadFriends();
                     target.loadReceivedFriendRequests();
                     target.loadRanks();
+                    target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
 
                     if (target == null) {
                         context.sendMessage("§cJogador não encontrado.");
@@ -130,23 +131,14 @@ public class FriendCommand implements ProxyInterface {
                         account.addFriend(targetFriend);
                         context.sendMessage("§aVocê aceitou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
 
-                        request.setStatus(FriendRequest.Status.ACCEPTED);
-
                         target.cancelFriendRequest(request);
-                        target.addSentFriendRequest(request);
-
                         account.removeReceivedFriendRequest(request);
-                        account.addReceivedFriendRequest(request);
 
                         ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
 
                         if (targetPlayer != null) {
                             targetPlayer.sendMessage("§aSeu pedido de amizade foi aceito por " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + "§a.");
                         }
-
-                        FriendStatusUpdate update = new FriendStatusUpdate(sender, targetFriend, FriendStatus.ONLINE, FriendStatusUpdate.Update.ADD);
-
-                        Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(update));
 
                         async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
                         async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
@@ -182,6 +174,7 @@ public class FriendCommand implements ProxyInterface {
                         targetPlayer.sendMessage(info, accept, divisa, deny);
                     }
 
+
                     async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
                     async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
 
@@ -199,6 +192,13 @@ public class FriendCommand implements ProxyInterface {
 
                 search(context, targetName, target -> {
 
+                    target.loadTags();
+                    target.loadRanks();
+                    target.loadSentFriendRequests();
+                    target.loadReceivedFriendRequests();
+                    target.loadFriends();
+                    target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
+
                     Account account = Account.fetch(player.getUniqueId());
 
                     if (account.getFriends().stream().noneMatch(friend -> friend.getUniqueId().equals(target.getUniqueId()))) {
@@ -211,10 +211,6 @@ public class FriendCommand implements ProxyInterface {
 
                     account.removeFriend(friend);
                     target.removeFriend(sender);
-
-                    FriendStatusUpdate update = new FriendStatusUpdate(sender, friend, FriendStatus.ONLINE, FriendStatusUpdate.Update.REMOVE);
-
-                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(update));
 
                     context.sendMessage("§aVocê removeu " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a da sua lista de amigos.");
 
@@ -259,6 +255,12 @@ public class FriendCommand implements ProxyInterface {
                     Friend friend = friends.get(i);
                     search(context, friend.getName(), target -> {
                         target.loadRanks();
+                        target.loadTags();
+                        target.loadRanks();
+                        target.loadSentFriendRequests();
+                        target.loadReceivedFriendRequests();
+                        target.loadFriends();
+
 
                         context.sendMessage(target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + " " + getStatus(target));
                     });
@@ -317,6 +319,13 @@ public class FriendCommand implements ProxyInterface {
 
                 search(context, targetName, target -> {
 
+                    target.loadTags();
+                    target.loadRanks();
+                    target.loadSentFriendRequests();
+                    target.loadReceivedFriendRequests();
+                    target.loadFriends();
+                    target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
+
                     Account account = Account.fetch(player.getUniqueId());
 
                     if (!target.hasSentFriendRequest(account.getUniqueId())) {
@@ -336,23 +345,15 @@ public class FriendCommand implements ProxyInterface {
                         return;
                     }
 
-                    request.setStatus(FriendRequest.Status.ACCEPTED);
-
                     target.cancelFriendRequest(request);
-                    target.addSentFriendRequest(request);
 
                     account.removeReceivedFriendRequest(request);
-                    account.addReceivedFriendRequest(request);
 
                     Friend targetFriend = new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis());
                     Friend sender = new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis());
 
                     account.addFriend(targetFriend);
                     target.addFriend(sender);
-
-                    FriendStatusUpdate update = new FriendStatusUpdate(sender, targetFriend, FriendStatus.ONLINE, FriendStatusUpdate.Update.ADD);
-
-                    Constants.getRedis().publish(Redis.FRIEND_UPDATE_CHANNEL, Constants.GSON.toJson(update));
 
                     context.sendMessage("§aVocê aceitou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
 
@@ -366,7 +367,6 @@ public class FriendCommand implements ProxyInterface {
                     async(() -> account.getDataStorage().saveTable(Tables.ACCOUNT));
 
                 });
-
             }
         },
         DENY(2, "deny", "recusar", "negar") {
@@ -377,6 +377,13 @@ public class FriendCommand implements ProxyInterface {
                 String targetName = context.getArg(1);
 
                 search(context, targetName, target -> {
+
+                    target.loadTags();
+                    target.loadRanks();
+                    target.loadSentFriendRequests();
+                    target.loadReceivedFriendRequests();
+                    target.loadFriends();
+                    target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
 
                     Account account = Account.fetch(player.getUniqueId());
 
@@ -397,13 +404,9 @@ public class FriendCommand implements ProxyInterface {
                         return;
                     }
 
-                    request.setStatus(FriendRequest.Status.DECLINED);
-
                     target.cancelFriendRequest(request);
-                    target.addSentFriendRequest(request);
 
                     account.removeReceivedFriendRequest(request);
-                    account.addReceivedFriendRequest(request);
 
                     context.sendMessage("§aVocê negou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
                     async(() -> target.getDataStorage().saveTable(Tables.ACCOUNT));
@@ -416,8 +419,6 @@ public class FriendCommand implements ProxyInterface {
         REQUESTS(1, "requests", "pedidos", "pedido") {
             @Override
             public void execute(Context<ProxiedPlayer> context) {
-
-
                 ProxiedPlayer player = context.getSender();
                 Account account = Account.fetch(player.getUniqueId());
 
@@ -428,51 +429,90 @@ public class FriendCommand implements ProxyInterface {
 
                 int page = 1;
                 if (context.argsCount() > 1) {
-                    page = Integer.parseInt(context.getArg(1));
+                    try {
+                        page = Integer.parseInt(context.getArg(1));
+                    } catch (NumberFormatException e) {
+                        context.sendMessage("§cPágina inválida.");
+                        return;
+                    }
                 }
 
-                int maxPage = (int) Math.ceil((account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size()) / 10.0);
+                int totalRequests = account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size();
+                int maxPage = (int) Math.ceil(totalRequests / 10.0);
 
-                if (page > maxPage) {
+                if (page > maxPage || page < 1) {
                     context.sendMessage("§cPágina inválida.");
                     return;
                 }
 
-                context.sendMessage("§ePedidos de amizade §a(" + (account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size()) + ") §7(Página " + page + "/" + maxPage + "):");
+                context.sendMessage("§ePedidos de amizade §a(" + totalRequests + ") §7(Página " + page + "/" + maxPage + "):");
 
                 for (int i = (page - 1) * 10; i < page * 10; i++) {
-                    if (i >= account.getPendingFriendRequests().size() + account.getReceivedPendingRequests().size())
+                    if (i >= totalRequests)
                         break;
 
                     if (i < account.getPendingFriendRequests().size()) {
                         FriendRequest request = account.getPendingFriendRequests().get(i);
-                        search(context, request.getReceiverName(), target -> {
-                            TextComponent info = new TextComponent("§ePedido para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
-                            TextComponent cancel = new TextComponent("§c§lCANCELAR");
-                            cancel.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para cancelar.")}));
-                            cancel.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend cancel " + target.getUsername()));
-
-                            context.getSender().sendMessage(info, cancel);
-                        });
+                        Account target = Account.fetch(request.getReceiver());
+                        if (target != null) {
+                            displaySent(context, target);
+                        } else {
+                            search(context, request.getReceiverName(), targetOffline -> {
+                                displaySent(context, targetOffline);
+                            });
+                        }
                     } else {
-                        FriendRequest request = account.getReceivedPendingRequests().get(i - account.getSentRequests().size());
-                        search(context, request.getSenderName(), target -> {
-                            TextComponent info = new TextComponent("§ePedido de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
-                            TextComponent accept = new TextComponent("§a§lACEITAR");
-                            accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§aClique para aceitar.")}));
-                            accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + target.getUsername()));
-
-                            TextComponent divisa = new TextComponent(" §7/ ");
-
-                            TextComponent deny = new TextComponent("§c§lRECUSAR");
-                            deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para recusar.")}));
-                            deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + target.getUsername()));
-
-                            context.getSender().sendMessage(info, accept, divisa, deny);
-                        });
+                        FriendRequest request = account.getReceivedPendingRequests().get(i - account.getPendingFriendRequests().size());
+                        Account target = Account.fetch(request.getSenderUniqueId());
+                        if (target != null) {
+                            displayReceived(context, target);
+                        } else {
+                            search(context, request.getSenderName(), targetOffline -> {
+                                displayReceived(context, targetOffline);
+                            });
+                        }
                     }
                 }
+            }
 
+            public void displaySent(Context<ProxiedPlayer> context, Account target) {
+
+                target.loadTags();
+                target.loadRanks();
+                target.loadSentFriendRequests();
+                target.loadReceivedFriendRequests();
+                target.loadFriends();
+                target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
+
+                TextComponent info = new TextComponent("§ePedido para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
+                TextComponent cancel = new TextComponent("§c§lCANCELAR");
+                cancel.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para cancelar.")}));
+                cancel.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend cancel " + target.getUsername()));
+
+                context.getSender().sendMessage(info, cancel);
+            }
+
+            public void displayReceived(Context<ProxiedPlayer> context, Account target) {
+
+                target.loadTags();
+                target.loadRanks();
+                target.loadSentFriendRequests();
+                target.loadReceivedFriendRequests();
+                target.loadFriends();
+                target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
+
+                TextComponent info = new TextComponent("§ePedido de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
+                TextComponent accept = new TextComponent("§a§lACEITAR");
+                accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§aClique para aceitar.")}));
+                accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + target.getUsername()));
+
+                TextComponent divisa = new TextComponent(" §7/ ");
+
+                TextComponent deny = new TextComponent("§c§lRECUSAR");
+                deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para recusar.")}));
+                deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + target.getUsername()));
+
+                context.getSender().sendMessage(info, accept, divisa, deny);
             }
         },
         STATUS(2, "status") {
@@ -511,6 +551,10 @@ public class FriendCommand implements ProxyInterface {
                 String targetName = context.getArg(1);
 
                 search(context, targetName, target -> {
+                    target.getDataStorage().loadColumns(Collections.singletonList(Columns.TAG));
+                    target.loadFriends();
+                    target.loadReceivedFriendRequests();
+                    target.loadSentFriendRequests();
 
                     Account account = Account.fetch(player.getUniqueId());
 

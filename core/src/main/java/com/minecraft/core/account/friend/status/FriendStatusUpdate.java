@@ -20,7 +20,7 @@ public class FriendStatusUpdate {
 
     public enum Update {
 
-        ADD, REMOVE, STATUS;
+        STATUS;
 
     }
 

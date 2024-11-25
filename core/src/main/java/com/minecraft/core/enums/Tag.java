@@ -72,6 +72,10 @@ public enum Tag {
         }
     }
 
+    public static Tag fromString(String name) {
+        return Arrays.stream(getValues()).filter(tag -> tag.name().equalsIgnoreCase(name)).findFirst().orElse(null);
+    }
+
     public boolean isBetween(Tag tag1, Tag tag2) {
         return this.getId() < tag1.getId() && this.getId() > tag2.getId();
     }

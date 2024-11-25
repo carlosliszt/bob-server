@@ -117,8 +117,6 @@ public class ProxyRedisPubSub extends JedisPubSub implements ProxyInterface {
                     }
                     break;
 
-                default:
-                    break;
             }
 
         } else if (channel.equals(Redis.CLAN_TAG_UPDATE)) {

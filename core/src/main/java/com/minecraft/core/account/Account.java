@@ -708,7 +708,7 @@ public class Account {
     }
 
     public boolean hasSentFriendRequest(UUID uniqueId) {
-        return sentRequests.stream().anyMatch(request -> request.getReceiver().equals(uniqueId));
+        return getPendingFriendRequests().stream().anyMatch(request -> request.getReceiver().equals(uniqueId));
     }
 
     public boolean hasReceivedFriendRequest(UUID uniqueId) {

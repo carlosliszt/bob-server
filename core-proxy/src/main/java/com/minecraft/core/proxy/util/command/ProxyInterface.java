@@ -49,7 +49,9 @@ public interface ProxyInterface {
     default void search(Context<?> sender, String username, Consumer<Account> result) {
 
         if (!Constants.isValid(username)) {
-            sender.info("target.not_found");
+            if (sender != null) {
+                sender.info("target.not_found");
+            }
             return;
         }
 
@@ -69,7 +71,9 @@ public interface ProxyInterface {
             boolean exists = (Columns.FIRST_LOGIN.getDefaultValue() != dataStorage.getData(Columns.FIRST_LOGIN).getAsLong());
 
             if (!exists) {
-                sender.info("target.not_found");
+                if (sender != null) {
+                    sender.info("target.not_found");
+                }
                 return;
             }
 
