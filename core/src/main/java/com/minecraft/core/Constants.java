@@ -15,6 +15,7 @@ import com.minecraft.core.clan.service.ClanService;
 import com.minecraft.core.database.mojang.MojangAPI;
 import com.minecraft.core.database.mysql.MySQL;
 import com.minecraft.core.database.redis.Redis;
+import com.minecraft.core.party.PartyStorage;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerStorage;
 import com.minecraft.core.server.ServerType;
@@ -31,27 +32,14 @@ import java.util.regex.Pattern;
 
 public class Constants {
 
-    /**
-     * MySQL connection
-     */
-    public static MySQL mySQL;
-
-    public static MySQL getMySQL() {
-        return mySQL;
-    }
+    @Getter
+    public static final AccountStorage accountStorage = new AccountStorage();
 
     public static void setMySQL(MySQL mySQL) {
         Constants.mySQL = mySQL;
     }
-
-    /**
-     * Redis connection
-     */
-    public static Redis redis;
-
-    public static Redis getRedis() {
-        return redis;
-    }
+    @Getter
+    public static final MojangAPI mojangAPI = new MojangAPI();
 
 
     public static void setRedis(Redis redis) {
@@ -81,29 +69,30 @@ public class Constants {
     public static final Gson GSON = new Gson();
     public static final Random RANDOM = new Random();
     public static final JsonParser JSON_PARSER = new JsonParser();
-    public static final AccountStorage accountStorage = new AccountStorage();
+    @Getter
+    public static final PartyStorage partyStorage = new PartyStorage();
     public static final Pattern NICKNAME_PATTERN = Pattern.compile("[a-zA-Z0-9_]{3,16}");
-    public static final MojangAPI mojangAPI = new MojangAPI();
-
-    public static ServerType serverType = ServerType.UNKNOWN, lobbyType = ServerType.UNKNOWN;
-    public static ServerStorage serverStorage;
-    public static AccountDeposit accountDeposit;
+    @Getter
     private static final ClanService clanService = new ClanService();
+    /**
+     * MySQL connection
+     */
+    @Getter
+    public static MySQL mySQL;
+    /**
+     * Redis connection
+     */
+    @Getter
+    public static Redis redis;
+    @Getter
+    public static ServerType serverType = ServerType.UNKNOWN, lobbyType = ServerType.UNKNOWN;
+    @Getter
+    public static ServerStorage serverStorage;
+    @Getter
+    public static AccountDeposit accountDeposit;
 
     public static ServerCategory getServerCategory() {
         return serverType.getServerCategory();
-    }
-
-    public static ClanService getClanService() {
-        return clanService;
-    }
-
-    public static ServerStorage getServerStorage() {
-        return serverStorage;
-    }
-
-    public static ServerType getLobbyType() {
-        return lobbyType;
     }
 
     public static void setLobbyType(ServerType lobbyType) {
@@ -114,16 +103,8 @@ public class Constants {
         Constants.serverStorage = serverStorage;
     }
 
-    public static ServerType getServerType() {
-        return serverType;
-    }
-
     public static void setServerType(ServerType serverType) {
         Constants.serverType = serverType;
-    }
-
-    public static MojangAPI getMojangAPI() {
-        return mojangAPI;
     }
 
     public static boolean isValid(String nickname) {
@@ -132,10 +113,6 @@ public class Constants {
 
     public static void setAccountDeposit(AccountDeposit accountDeposit) {
         Constants.accountDeposit = accountDeposit;
-    }
-
-    public static AccountDeposit getAccountDeposit() {
-        return accountDeposit;
     }
 
     public static UUID getCrackedUniqueId(String username) {
@@ -149,10 +126,6 @@ public class Constants {
             return false;
         }
         return true;
-    }
-
-    public static AccountStorage getAccountStorage() {
-        return accountStorage;
     }
 
     public static String KEY(int lenght, boolean specialChars) {

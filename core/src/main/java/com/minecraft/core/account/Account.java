@@ -30,6 +30,8 @@ import com.minecraft.core.punish.PunishType;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.packet.ServerPayload;
 import com.minecraft.core.translation.Language;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -1121,6 +1123,10 @@ public class Account {
         return getData(Columns.CLAN).getAsInt() != -1;
     }
 
+    public boolean isInParty() {
+        return Constants.getPartyStorage().getAllParties().stream().anyMatch(party -> party.getMembers().contains(getUniqueId())) || Constants.getPartyStorage().getAllParties().stream().anyMatch(party -> party.getOwner() == getUniqueId());
+    }
+
     public String getRatio(int kills, int deaths) {
         if (deaths == 0)
             return kills + "";
@@ -1186,6 +1192,13 @@ public class Account {
             return null;
 
         return Constants.getClanService().getClan(getData(Columns.CLAN).getAsInt());
+    }
+
+    public Party getParty() {
+        if (!isInParty())
+            return null;
+
+        return Constants.getPartyStorage().getAllParties().stream().filter(party -> party.getMembers().contains(getUniqueId()) || party.getOwner() == getUniqueId()).findFirst().orElse(null);
     }
 
     public void resetNicks() {
