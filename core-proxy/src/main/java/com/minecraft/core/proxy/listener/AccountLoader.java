@@ -10,6 +10,7 @@ import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.AccountExecutor;
 import com.minecraft.core.account.datas.SkinData;
+import com.minecraft.core.account.friend.Friend;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.clan.member.Member;
 import com.minecraft.core.database.enums.Columns;
@@ -67,7 +68,7 @@ public class AccountLoader implements Listener {
             "Africa", "North Africa", "Pakistan", "Angola", "Bangladesh", "Iraq",
             "Italy", "Croatia", "Taiwan", "Poland", "Hungary");
 
-    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.ULTRA_PLUS_MONTHS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
+    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.FRIENDS, Columns.SENT_FRIEND_REQUESTS, Columns.RECEIVED_FRIEND_REQUESTS, Columns.ULTRA_PLUS_MONTHS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
 
     @EventHandler
     public void onConnectionInit(ClientConnectEvent event) {
@@ -205,7 +206,6 @@ public class AccountLoader implements Listener {
                 account.loadRanks();
                 account.loadPermissions();
 
-
                 if (isFull(loginEvent, account))
                     return;
 
@@ -214,6 +214,9 @@ public class AccountLoader implements Listener {
                 account.loadPlusColors();
                 account.loadSkinData();
                 account.loadClanTags();
+                account.loadFriends();
+                account.loadReceivedFriendRequests();
+                account.loadSentFriendRequests();
 
                 account.getData(Columns.USERNAME).setData(name);
 
@@ -394,6 +397,13 @@ public class AccountLoader implements Listener {
                     return;
                 }
 
+                for (Friend friend : account.getFriends()) {
+                    ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                    if (friendPlayer != null) {
+                        friendPlayer.sendMessage("§6[AMIGO]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
+                    }
+                }
+
                 player.connect(BungeeCord.getInstance().getServerInfo(server.getName()));
             }
         }
@@ -435,6 +445,13 @@ public class AccountLoader implements Listener {
 
         Constants.getAccountStorage().forget(account);
 
+        for (Friend friend : account.getFriends()) {
+            ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+            if (friendPlayer != null) {
+                friendPlayer.sendMessage("§6[AMIGO]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §esaiu!");
+            }
+        }
+
         if (account.hasProperty("pings")) {
             account.getProperty("pings").getAs(PlayerPingHistory.class).getPings().clear();
         }
@@ -445,6 +462,9 @@ public class AccountLoader implements Listener {
         account.getPlusColors().clear();
         account.getMedals().clear();
         account.getRanks().clear();
+        account.getFriends().clear();
+        account.getSentRequests().clear();
+        account.getReceivedRequests().clear();
         SkinData skinData = account.getSkinData();
 
         skinData.setName("");

@@ -12,6 +12,8 @@ import com.google.gson.JsonObject;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.datas.*;
 import com.minecraft.core.account.fields.*;
+import com.minecraft.core.account.friend.Friend;
+import com.minecraft.core.account.friend.FriendRequest;
 import com.minecraft.core.account.system.UnloadTask;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.cosmetic.Title;
@@ -66,12 +68,182 @@ public class Account {
 
     private final transient HashMap<String, Property> properties = new HashMap<>();
 
+    private final List<Friend> friends = new ArrayList<>();
+    private final List<FriendRequest> sentRequests = new ArrayList<>();
+    private final List<FriendRequest> receivedRequests = new ArrayList<>();
+    
+
     private transient int flags = 0, preferences = 0;
 
     private final DataStorage dataStorage;
 
     public Account(UUID uniqueId, String username) {
         this.dataStorage = new DataStorage(this.uniqueId = uniqueId, this.username = username);
+    }
+
+    public void loadSentFriendRequests() {
+        sentRequests.clear();
+        JsonArray jsonArray = getData(Columns.SENT_FRIEND_REQUESTS).getAsJsonArray();
+
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            String friendName = object.get("name").getAsString();
+            UUID friendUniqueId = UUID.fromString(object.get("uniqueId").getAsString());
+            FriendRequest.Status status = FriendRequest.Status.valueOf(object.get("status").getAsString());
+            String senderName = object.get("senderName").getAsString();
+            UUID senderUniqueId = UUID.fromString(object.get("senderUniqueId").getAsString());
+
+            sentRequests.add(new FriendRequest(friendName, friendUniqueId, status, senderName, senderUniqueId));
+        }
+
+        getData(Columns.SENT_FRIEND_REQUESTS).setData(jsonArray);
+        getData(Columns.SENT_FRIEND_REQUESTS).setChanged(true);
+    }
+
+    public void addSentFriendRequest(FriendRequest request) {
+        JsonArray jsonArray = getData(Columns.SENT_FRIEND_REQUESTS).getAsJsonArray();
+
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("name", request.getReceiverName());
+        jsonObject.addProperty("uniqueId", request.getReceiver().toString());
+        jsonObject.addProperty("status", request.getStatus().name());
+        jsonObject.addProperty("senderName", request.getSenderName());
+        jsonObject.addProperty("senderUniqueId", request.getSenderUniqueId().toString());
+
+        jsonArray.add(jsonObject);
+
+        getData(Columns.SENT_FRIEND_REQUESTS).setData(jsonArray);
+        loadSentFriendRequests();
+    }
+
+    public void cancelFriendRequest(FriendRequest request) {
+        JsonArray jsonArray = getData(Columns.SENT_FRIEND_REQUESTS).getAsJsonArray();
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            if (object.get("uniqueId").getAsString().equalsIgnoreCase(request.getReceiver().toString())) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        getData(Columns.SENT_FRIEND_REQUESTS).setData(jsonArray);
+        loadSentFriendRequests();
+    }
+
+    public void loadReceivedFriendRequests() {
+        receivedRequests.clear();
+        JsonArray jsonArray = getData(Columns.RECEIVED_FRIEND_REQUESTS).getAsJsonArray();
+
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            String friendName = object.get("name").getAsString();
+            UUID friendUniqueId = UUID.fromString(object.get("uniqueId").getAsString());
+            FriendRequest.Status status = FriendRequest.Status.valueOf(object.get("status").getAsString());
+            String senderName = object.get("senderName").getAsString();
+            UUID senderUniqueId = UUID.fromString(object.get("senderUniqueId").getAsString());
+
+            receivedRequests.add(new FriendRequest(friendName, friendUniqueId, status, senderName, senderUniqueId));
+        }
+
+        getData(Columns.RECEIVED_FRIEND_REQUESTS).setData(jsonArray);
+        getData(Columns.RECEIVED_FRIEND_REQUESTS).setChanged(true);
+    }
+
+    public void addReceivedFriendRequest(FriendRequest request) {
+        JsonArray jsonArray = getData(Columns.RECEIVED_FRIEND_REQUESTS).getAsJsonArray();
+
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("name", request.getReceiverName());
+        jsonObject.addProperty("uniqueId", request.getReceiver().toString());
+        jsonObject.addProperty("status", request.getStatus().name());
+        jsonObject.addProperty("senderName", request.getSenderName());
+        jsonObject.addProperty("senderUniqueId", request.getSenderUniqueId().toString());
+
+        jsonArray.add(jsonObject);
+
+        getData(Columns.RECEIVED_FRIEND_REQUESTS).setData(jsonArray);
+        loadReceivedFriendRequests();
+    }
+
+    public void removeReceivedFriendRequest(FriendRequest request) {
+        JsonArray jsonArray = getData(Columns.RECEIVED_FRIEND_REQUESTS).getAsJsonArray();
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            if (object.get("uniqueId").getAsString().equalsIgnoreCase(request.getReceiver().toString())) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        getData(Columns.RECEIVED_FRIEND_REQUESTS).setData(jsonArray);
+        loadReceivedFriendRequests();
+    }
+
+    public void loadFriends() {
+        friends.clear();
+        JsonArray jsonArray = getData(Columns.FRIENDS).getAsJsonArray();
+
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            String friendName = object.get("name").getAsString();
+            UUID friendUniqueId = UUID.fromString(object.get("uniqueId").getAsString());
+            long addedAt = object.get("added_at").getAsLong();
+
+            friends.add(new Friend(friendName, friendUniqueId, addedAt));
+        }
+
+        getData(Columns.FRIENDS).setData(jsonArray);
+        getData(Columns.FRIENDS).setChanged(true);
+
+    }
+
+    public void addFriend(Friend friend) {
+        JsonArray jsonArray = getData(Columns.FRIENDS).getAsJsonArray();
+
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("name", friend.getName());
+        jsonObject.addProperty("uniqueId", friend.getUniqueId().toString());
+        jsonObject.addProperty("added_at", System.currentTimeMillis());
+
+        jsonArray.add(jsonObject);
+
+        getData(Columns.FRIENDS).setData(jsonArray);
+        loadFriends();
+    }
+
+    public void removeFriend(Friend friend) {
+        JsonArray jsonArray = getData(Columns.FRIENDS).getAsJsonArray();
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            if (object.get("uniqueId").getAsString().equalsIgnoreCase(friend.getUniqueId().toString())) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        getData(Columns.FRIENDS).setData(jsonArray);
+        loadFriends();
     }
 
     public void loadPlusColors() {
@@ -533,6 +705,34 @@ public class Account {
 
         getData(Columns.CLANTAGS).setData(jsonArray);
         loadClanTags();
+    }
+
+    public boolean hasSentFriendRequest(UUID uniqueId) {
+        return sentRequests.stream().anyMatch(request -> request.getReceiver().equals(uniqueId));
+    }
+
+    public boolean hasReceivedFriendRequest(UUID uniqueId) {
+        return receivedRequests.stream().anyMatch(request -> request.getSenderUniqueId().equals(uniqueId));
+    }
+
+    public List<FriendRequest> getPendingFriendRequests() {
+        return sentRequests.stream().filter(request -> request.getStatus() == FriendRequest.Status.PENDING).collect(Collectors.toList());
+    }
+
+    public FriendRequest getSentFriendRequest(UUID uniqueId) {
+        return sentRequests.stream().filter(request -> request.getReceiver().equals(uniqueId)).findFirst().orElse(null);
+    }
+
+    public FriendRequest getReceivedFriendRequest(UUID uniqueId) {
+        return receivedRequests.stream().filter(request -> request.getSenderUniqueId().equals(uniqueId)).findFirst().orElse(null);
+    }
+
+    public boolean hasFriend(UUID uniqueId) {
+        return friends.stream().anyMatch(friend -> friend.getUniqueId().equals(uniqueId));
+    }
+
+    public Friend getFriend(UUID uniqueId) {
+        return friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
     }
 
     public boolean hasTag(Tag tag) {

@@ -155,7 +155,9 @@ public class PreferencesInventory implements Listener, BukkitInterface {
         TELL(Preference.TELL, new ItemStack(Material.SIGN)),
         CLAN(Preference.CLAN, new ItemStack(Material.ITEM_FRAME)),
         EXTRA_INFO(Preference.EXTRA_INFO, new ItemStack(Material.PAPER)),
-        STATISTICS(Preference.STATISTICS, new ItemStack(Material.HOPPER));
+        STATISTICS(Preference.STATISTICS, new ItemStack(Material.HOPPER)),
+        FRIENDS(Preference.FRIEND_REQUEST, new ItemStack(Material.SKULL_ITEM, 1, (short) 3)),
+        ;
 
         private final Preference preference;
         private final ItemStack itemStack;

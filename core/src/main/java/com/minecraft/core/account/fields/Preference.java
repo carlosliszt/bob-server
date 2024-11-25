@@ -22,6 +22,8 @@ public enum Preference {
     EXTRA_INFO("Visualizar informações extra", Rank.MEMBER, 0x6),
     STATISTICS("Visibilidade de estatísticas", Rank.MEMBER, 0x7),
 
+    FRIEND_REQUEST("Solicitações de amizade", Rank.MEMBER, 0xe),
+
     LOBBY_PLAYER_VISIBILITY("Visualizar jogadores", Rank.MEMBER, 0x8),
     LOBBY_ANNOUNCE_JOIN("Anunciar ao entrar no lobby", Rank.VIP, 0x9),
 

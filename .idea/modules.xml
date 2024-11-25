@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/arcade-pvp/server-backend.arcade-pvp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/arcade-pvp/server-backend.arcade-pvp.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/auth/server-backend.auth.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auth/server-backend.auth.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/bedwars/server-backend.bedwars.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bedwars/server-backend.bedwars.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bob-anticheat/server-backend.bob-anticheat.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bob-anticheat/server-backend.bob-anticheat.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/build-world/server-backend.build-world.main.iml" filepath="$PROJECT_DIR$/.idea/modules/build-world/server-backend.build-world.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-bukkit/server-backend.core-bukkit.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core-bukkit/server-backend.core-bukkit.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-proxy/server-backend.core-proxy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core-proxy/server-backend.core-proxy.main.iml" />

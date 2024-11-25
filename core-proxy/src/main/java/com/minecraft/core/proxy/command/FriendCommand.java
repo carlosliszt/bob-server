@@ -1,0 +1,442 @@
+package com.minecraft.core.proxy.command;
+
+import com.minecraft.core.Constants;
+import com.minecraft.core.account.Account;
+import com.minecraft.core.account.fields.Preference;
+import com.minecraft.core.account.friend.Friend;
+import com.minecraft.core.account.friend.FriendRequest;
+import com.minecraft.core.command.annotation.Command;
+import com.minecraft.core.command.command.Context;
+import com.minecraft.core.command.platform.Platform;
+import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.database.mojang.MojangAPI;
+import com.minecraft.core.enums.Tag;
+import com.minecraft.core.proxy.util.command.ProxyInterface;
+import lombok.Getter;
+import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.sql.SQLException;
+
+public class FriendCommand implements ProxyInterface {
+
+    @Command(name = "friend", aliases = {"f", "amigo", "amiga", "amigos", "amigas", "amigue", "amigues"}, platform = Platform.PLAYER)
+    public void onFriendCommand(Context<ProxiedPlayer> context) {
+        ProxiedPlayer player = context.getSender();
+
+        if (context.argsCount() == 0) {
+            Argument.HELP.execute(context);
+        } else {
+
+            Argument argument = Argument.fetch(context.getArg(0));
+
+            if (argument == null) {
+                Argument.ADD.execute(context);
+                return;
+            }
+
+            if (argument.getMinimumArgs() > context.argsCount()) {
+                Argument.HELP.execute(context);
+                return;
+            }
+            argument.execute(context);
+        }
+
+    }
+
+    @Getter
+    public enum Argument implements ProxyInterface {
+        ADD(2, "add", "adicionar") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+                ProxiedPlayer player = context.getSender();
+                String targetName = context.getArg(1);
+
+                if (player.getName().equalsIgnoreCase(targetName)) {
+                    context.sendMessage("§cVocê não pode adicionar você mesmo.");
+                    return;
+                }
+
+                search(context, targetName, target -> {
+
+                    target.loadSentFriendRequests();
+                    target.loadFriends();
+                    target.loadReceivedFriendRequests();
+                    target.loadRanks();
+
+                    if (target == null) {
+                        context.sendMessage("§cJogador não encontrado.");
+                        return;
+                    }
+
+                    Account account = Account.fetch(player.getUniqueId());
+
+                    if (account.getFriends().stream().anyMatch(friend -> friend.getUniqueId().equals(target.getUniqueId()))) {
+                        context.sendMessage("§cVocê já é amigo desse jogador.");
+                        return;
+                    }
+
+                    if (account.getFriends().size() >= 150) {
+                        context.sendMessage("§cVocê atingiu o limite de amigos.");
+                        return;
+                    }
+
+                    if (account.hasSentFriendRequest(target.getUniqueId())) {
+                        context.sendMessage("§cVocê já enviou um pedido de amizade para esse jogador.");
+                        return;
+                    }
+
+                    if (target.hasSentFriendRequest(account.getUniqueId())) {
+
+                        FriendRequest request = target.getSentRequests().stream().filter(r -> r.getSenderUniqueId().equals(account.getUniqueId())).findFirst().orElse(null);
+
+                        target.addFriend(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()));
+                        account.addFriend(new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis()));
+                        context.sendMessage("§aVocê aceitou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
+
+                        request.setStatus(FriendRequest.Status.ACCEPTED);
+
+                        target.cancelFriendRequest(request);
+                        target.addSentFriendRequest(request);
+
+                        account.removeReceivedFriendRequest(request);
+                        account.addReceivedFriendRequest(request);
+
+                        ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
+
+                        if (targetPlayer != null) {
+                            targetPlayer.sendMessage("§aSeu pedido de amizade foi aceito por " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + "§a.");
+                        }
+
+                        return;
+                    }
+
+                    if (!target.getPreference(Preference.FRIEND_REQUEST)) {
+                        context.sendMessage("§cEsse jogador não aceita pedidos de amizade.");
+                        return;
+                    }
+
+                    FriendRequest request = new FriendRequest(target.getUsername(), target.getUniqueId(), FriendRequest.Status.PENDING, target.getUsername(), target.getUniqueId());
+
+                    account.addSentFriendRequest(request);
+                    target.addReceivedFriendRequest(request);
+
+                    context.sendMessage("§aPedido de amizade enviado para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
+
+                    ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
+
+                    if (targetPlayer != null) {
+                        TextComponent info = new TextComponent("§eVocê recebeu um pedido de amizade de " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + " ");
+                        TextComponent accept = new TextComponent("§a§lACEITAR");
+                        accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§aClique para aceitar.")}));
+                        accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + account.getUsername()));
+
+                        TextComponent divisa = new TextComponent(" §7/ ");
+
+                        TextComponent deny = new TextComponent("§c§lRECUSAR");
+                        deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para recusar.")}));
+                        deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + account.getUsername()));
+
+                        targetPlayer.sendMessage(info, accept, divisa, deny);
+                    }
+
+                });
+
+            }
+        },
+        REMOVE(2, "remove", "remover") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+
+                ProxiedPlayer player = context.getSender();
+                String targetName = context.getArg(1);
+
+                search(context, targetName, target -> {
+
+                    Account account = Account.fetch(player.getUniqueId());
+
+                    if (account.getFriends().stream().noneMatch(friend -> friend.getUniqueId().equals(target.getUniqueId()))) {
+                        context.sendMessage("§cVocê não é amigo desse jogador.");
+                        return;
+                    }
+
+                    Friend friend = account.getFriends().stream().filter(f -> f.getUniqueId().equals(target.getUniqueId())).findFirst().orElse(null);
+                    Friend sender = target.getFriends().stream().filter(f -> f.getUniqueId().equals(account.getUniqueId())).findFirst().orElse(null);
+
+                    account.removeFriend(friend);
+                    target.removeFriend(sender);
+
+                    context.sendMessage("§aVocê removeu " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a da sua lista de amigos.");
+
+                });
+
+            }
+        },
+        LIST(2, "list", "lista") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+                ProxiedPlayer player = context.getSender();
+                Account account = Account.fetch(player.getUniqueId());
+
+                if (account.getFriends().isEmpty()) {
+                    context.sendMessage("§cVocê não tem amigos.");
+                    return;
+                }
+
+                int page = context.argsCount() == 1 ? 1 : Integer.parseInt(context.getArg(1));
+
+                int maxPage = (int) Math.ceil(account.getFriends().size() / 10.0);
+
+                if (page > maxPage) {
+                    context.sendMessage("§cPágina inválida.");
+                    return;
+                }
+
+                context.sendMessage("§eSeus amigos §a(" + account.getFriends().size() + "/150) " + " §7(Página " + page + "/" + maxPage + "):");
+
+                for (int i = (page - 1) * 10; i < page * 10; i++) {
+                    if (i >= account.getFriends().size())
+                        break;
+
+                    Friend friend = account.getFriends().get(i);
+                    search(context, friend.getName(), target -> {
+                        target.loadRanks();
+
+                        ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
+                        context.sendMessage(target.getRank().getDefaultTag().getFormattedColor() + target.getUsername() + (targetPlayer == null ? " §cEstá offline." : " §eEstá em §b" + Constants.getServerStorage().getServer(targetPlayer.getServer().getInfo().getName()).getServerType().getName() + "§e."));
+                    });
+                }
+            }
+        },
+        ACCEPT(2, "accept", "aceitar") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+
+                ProxiedPlayer player = context.getSender();
+                String targetName = context.getArg(1);
+
+                search(context, targetName, target -> {
+
+                    Account account = Account.fetch(player.getUniqueId());
+
+                    if (!target.hasSentFriendRequest(account.getUniqueId())) {
+                        context.sendMessage("§cEsse jogador não enviou um pedido de amizade para você.");
+                        return;
+                    }
+
+                    if (!account.hasReceivedFriendRequest(target.getUniqueId())) {
+                        context.sendMessage("§cVocê não recebeu um pedido de amizade desse jogador.");
+                        return;
+                    }
+
+                    FriendRequest request = account.getReceivedRequests().stream().filter(r -> r.getSenderUniqueId().equals(target.getUniqueId())).findFirst().orElse(null);
+
+                    if (request == null) {
+                        context.sendMessage("§cVocê não recebeu um pedido de amizade desse jogador.");
+                        return;
+                    }
+
+                    request.setStatus(FriendRequest.Status.ACCEPTED);
+
+                    target.cancelFriendRequest(request);
+                    target.addSentFriendRequest(request);
+
+                    account.removeReceivedFriendRequest(request);
+                    account.addReceivedFriendRequest(request);
+
+                    account.addFriend(new Friend(target.getUsername(), target.getUniqueId(), System.currentTimeMillis()));
+                    target.addFriend(new Friend(account.getUsername(), account.getUniqueId(), System.currentTimeMillis()));
+
+                    context.sendMessage("§aVocê aceitou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
+
+                    ProxiedPlayer targetPlayer = BungeeCord.getInstance().getPlayer(target.getUniqueId());
+
+                    if (targetPlayer != null) {
+                        targetPlayer.sendMessage("§aSeu pedido de amizade foi aceito por " + Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString()).getFormattedColor() + account.getDisplayName() + "§a.");
+                    }
+
+
+                });
+
+            }
+        },
+        DENY(2, "deny", "recusar", "negar") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+
+                ProxiedPlayer player = context.getSender();
+                String targetName = context.getArg(1);
+
+                search(context, targetName, target -> {
+
+                    Account account = Account.fetch(player.getUniqueId());
+
+                    if (!target.hasSentFriendRequest(account.getUniqueId())) {
+                        context.sendMessage("§cEsse jogador não enviou um pedido de amizade para você.");
+                        return;
+                    }
+
+                    if (!account.hasReceivedFriendRequest(target.getUniqueId())) {
+                        context.sendMessage("§cVocê não recebeu um pedido de amizade desse jogador.");
+                        return;
+                    }
+
+                    FriendRequest request = account.getReceivedRequests().stream().filter(r -> r.getSenderUniqueId().equals(target.getUniqueId())).findFirst().orElse(null);
+
+                    if (request == null) {
+                        context.sendMessage("§cVocê não recebeu um pedido de amizade desse jogador.");
+                        return;
+                    }
+
+                    request.setStatus(FriendRequest.Status.DECLINED);
+
+                    target.cancelFriendRequest(request);
+                    target.addSentFriendRequest(request);
+
+                    account.removeReceivedFriendRequest(request);
+                    account.addReceivedFriendRequest(request);
+
+                    context.sendMessage("§aVocê negou o pedido de amizade de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
+
+                });
+
+            }
+        },
+        REQUESTS(2, "requests", "pedidos", "pedido") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+
+                //ambos pendentes e enviados
+
+                ProxiedPlayer player = context.getSender();
+                Account account = Account.fetch(player.getUniqueId());
+
+                if (account.getSentRequests().isEmpty() && account.getReceivedRequests().isEmpty()) {
+                    context.sendMessage("§cVocê não tem pedidos de amizade.");
+                    return;
+                }
+
+                int page = context.argsCount() == 1 ? 1 : Integer.parseInt(context.getArg(1));
+                int maxPage = (int) Math.ceil((account.getSentRequests().size() + account.getReceivedRequests().size()) / 10.0);
+
+                if (page > maxPage) {
+                    context.sendMessage("§cPágina inválida.");
+                    return;
+                }
+
+                context.sendMessage("§ePedidos de amizade §a(" + (account.getSentRequests().size() + account.getReceivedRequests().size()) + ") §7(Página " + page + "/" + maxPage + "):");
+
+                for (int i = (page - 1) * 10; i < page * 10; i++) {
+                    if (i >= account.getSentRequests().size() + account.getReceivedRequests().size())
+                        break;
+
+                    if (i < account.getSentRequests().size()) {
+                        FriendRequest request = account.getSentRequests().get(i);
+                        search(context, request.getReceiverName(), target -> {
+                            TextComponent info = new TextComponent("§ePedido para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
+                            TextComponent cancel = new TextComponent("§c§lCANCELAR");
+                            cancel.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para cancelar.")}));
+                            cancel.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend cancel " + target.getUsername()));
+
+                            context.getSender().sendMessage(info, cancel);
+                        });
+                    } else {
+                        FriendRequest request = account.getReceivedRequests().get(i - account.getSentRequests().size());
+                        search(context, request.getSenderName(), target -> {
+                            TextComponent info = new TextComponent("§ePedido de " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + " ");
+                            TextComponent accept = new TextComponent("§a§lACEITAR");
+                            accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§aClique para aceitar.")}));
+                            accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend accept " + target.getUsername()));
+
+                            TextComponent divisa = new TextComponent(" §7/ ");
+
+                            TextComponent deny = new TextComponent("§c§lRECUSAR");
+                            deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§cClique para recusar.")}));
+                            deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/friend deny " + target.getUsername()));
+
+                            context.getSender().sendMessage(info, accept, divisa, deny);
+                        });
+                    }
+                }
+
+            }
+        },
+        CANCEL(2, "cancel", "cancelar") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+
+                ProxiedPlayer player = context.getSender();
+                String targetName = context.getArg(1);
+
+                search(context, targetName, target -> {
+
+                    Account account = Account.fetch(player.getUniqueId());
+
+                    if (!account.hasSentFriendRequest(target.getUniqueId())) {
+                        context.sendMessage("§cVocê não enviou um pedido de amizade para esse jogador.");
+                        return;
+                    }
+
+                    if (!target.hasReceivedFriendRequest(account.getUniqueId())) {
+                        context.sendMessage("§cEsse jogador não recebeu um pedido de amizade seu.");
+                        return;
+                    }
+
+                    FriendRequest request = account.getSentRequests().stream().filter(r -> r.getReceiver().equals(target.getUniqueId())).findFirst().orElse(null);
+
+                    if (request == null) {
+                        context.sendMessage("§cVocê não enviou um pedido de amizade para esse jogador.");
+                        return;
+                    }
+
+                    target.cancelFriendRequest(request);
+
+                    account.removeReceivedFriendRequest(request);
+
+                    context.sendMessage("§aVocê cancelou o pedido de amizade para " + Tag.fromUniqueCode(target.getData(Columns.TAG).getAsString()).getFormattedColor() + target.getDisplayName() + "§a.");
+
+                });
+
+            }
+        },
+        HELP(1, "help", "ajuda", "comandos", "comando") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) {
+                context.sendMessage("§6Uso do §a/" + context.getLabel() + "§6:");
+                context.sendMessage("§e/" + context.getLabel() + " <jogador> §e- §bAdicione um amigo.");
+                context.sendMessage("§e/" + context.getLabel() + " remover <jogador> §e- §bRemove um amigo.");
+                context.sendMessage("§e/" + context.getLabel() + " recusar <jogador> §e- §bRecusar pedido.");
+                context.sendMessage("§e/" + context.getLabel() + " aceitar <jogador> §e- §bAceitar pedido.");
+                context.sendMessage("§e/" + context.getLabel() + " [página] §e- §bVer amigos.");
+                context.sendMessage("§e/" + context.getLabel() + " [página] §e- §bVer pedidos.");
+                context.sendMessage("§e/" + context.getLabel() + " cancelar <jogador> §e- §bCancela um pedido.");
+            }
+        };
+
+        private final int minimumArgs;
+        private final String[] field;
+
+        Argument(int minimumArgs, java.lang.String... strings) {
+            this.minimumArgs = minimumArgs;
+            this.field = strings;
+        }
+
+        public static Argument fetch(String s) {
+            for (Argument arg : values()) {
+                for (String key : arg.getField()) {
+                    if (key.equalsIgnoreCase(s))
+                        return arg;
+                }
+            }
+            return null;
+        }
+
+        public abstract void execute(Context<ProxiedPlayer> context);
+
+
+    }
+
+}

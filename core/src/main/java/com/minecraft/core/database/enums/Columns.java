@@ -48,6 +48,10 @@ public enum Columns {
     PREFERENCES(0, "Int", "preferences", "INT(100)"),
     SKIN("{}", "JsonObject", "skin", "longtext"),
     BLOCKEDS("[]", "JsonArray", "blocks", "longtext"),
+    FRIENDS("[]", "JsonArray", "friends", "longtext"),
+    FRIEND_STATUS("ONLINE", "String", "friend_status", "VARCHAR(16)"),
+    SENT_FRIEND_REQUESTS("[]", "JsonArray", "sent_friend_requests", "longtext"),
+    RECEIVED_FRIEND_REQUESTS("[]", "JsonArray", "received_friend_requests", "longtext"),
     ULTRA_PLUS_MONTHS(0, "Int", "ultra_plus_months", "INT(100)"),
 
     HG_KILLS(0, "Int", "hg_kills", "INT(100)"),
