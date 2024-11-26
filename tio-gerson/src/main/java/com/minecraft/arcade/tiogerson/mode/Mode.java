@@ -57,7 +57,7 @@ public abstract class Mode implements BukkitInterface, Listener {
     @Setter
     private int maxPlayers, minTioGerson, maxTioGerson;
 
-    private int tioGersonDelay = 5;
+    private int tioGersonDelay = 10;
 
     public void load() {
 
@@ -229,7 +229,7 @@ public abstract class Mode implements BukkitInterface, Listener {
                 room.win(room.getEnzo());
             }
 
-            if (room.getTime() == 365) {
+            if (room.getTime() == 370) {
                 room.getTioGerson().getMembers().forEach(c -> {
                     c.getPlayer().sendTitle(new Title("§4§lDERROTA!", "§eVocê não conseguiu achar todos os ENZOS!", 1, 40, 10));
                     c.getPlayer().sendMessage("§cVocê não conseguiu matar os Enzos a tempo!");
