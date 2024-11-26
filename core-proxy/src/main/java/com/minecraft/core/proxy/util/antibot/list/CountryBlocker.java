@@ -19,9 +19,6 @@ public class CountryBlocker extends AntiBotModule {
     @Override
     public boolean isViolator(PendingConnection connection) {
         String hostString = connection.getAddress().getHostString();
-        if ("127.0.0.1".equals(hostString) || "localhost".equalsIgnoreCase(hostString) || "0.0.0.0".equalsIgnoreCase(hostString)) {
-            return false;
-        }
         AddressData dataResolver = DataResolver.getInstance().getData(connection.getAddress().getHostString());
         return dataResolver.getCountry() == null || blockedCountries.contains(dataResolver.getCountry());
     }
