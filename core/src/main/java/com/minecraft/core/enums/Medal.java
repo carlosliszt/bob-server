@@ -41,11 +41,11 @@ public enum Medal {
 
     MONTHLY_STAFFER("Staff Destaque", "Medalha exclusiva para o Staffer do mês", "Destaque", "➸", "§b", "3gdis", Rank.ADMINISTRATOR, false),
 
-    BOB("Bob", "Medalha exclusiva para jogadores com 'BOB' no nick", "Apoiador", "B", "§d§l", "spt21", Rank.HELPER, false),
+    BOB("Bob", "Medalha exclusiva para Bob.", "Bob", "B", "§d§l", "spt21", Rank.HELPER, false),
 
     THORMENTO("Thormento", "Medalha exclusiva para o Thormento", "Thormento", "⚡", "§b", "thm21", Rank.DEVELOPER_ADMIN, false),
 
-    GAY("Gay", "gay.", "Gay", "§c§kA§r§6§lG§e§lA§a§lY§r§b§kA§r", "§e", "uwu", Rank.BOB, false),
+    GAY("Gay", "Medalha exclusiva para o abalar.", "Gay", "§c§kA§r§6§lG§e§lA§a§lY§r§b§kA§r", "§e", "uwu", Rank.BOB, false),
 
     CROWN("Crown", "Medalha exclusiva para Rank Pro", "Crown", "♚", "§6", "crown", Rank.PRO, false),
 

@@ -316,9 +316,6 @@ public class AccountLoader implements Listener {
                     account.setDisplayName(customName);
                 } else account.getData(Columns.NICK).setData("...");
 
-                if (pendingConnection.isOnlineMode() && name.contains("BOB")) {
-                    account.giveMedal(Medal.BOB, -1, "[SERVER]");
-                } else account.removeMedal(Medal.BOB);
 
                 if (account.getRank().isStaffer()) {
                     account.getDataStorage().load(STAFF);
