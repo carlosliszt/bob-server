@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public enum Title {
 
     NONE("BARRIER", TitleCategory.NONE, TitleAnimation.NONE, "None", "§cNenhum", "§cNenhum", "", null, false, Rank.MEMBER),
-    SINCE("PAPER", TitleCategory.GENERAL, TitleAnimation.NONE, "Since", "§eDesde §b{0}", "§eDesde §b2024", "title.since", Columns.FIRST_LOGIN, true, Rank.ULTRA_PLUS),
-    CLAN("PAPER", TitleCategory.GENERAL, TitleAnimation.NONE, "Clan", "§eMembro de {0}", "§eMembro de {0}", "title.clan", Columns.CLAN, true, Rank.ULTRA_PLUS),
+    SINCE("PAPER", TitleCategory.GENERAL, TitleAnimation.NONE, "Since", "§eDesde §b{0}", "§eDesde §b2024", "title.since", Columns.FIRST_LOGIN, true, Rank.BLAZE_PLUS),
+    CLAN("PAPER", TitleCategory.GENERAL, TitleAnimation.NONE, "Clan", "§eMembro de {0}", "§eMembro de {0}", "title.clan", Columns.CLAN, true, Rank.BLAZE_PLUS),
     ;
 
     private String displayMaterial;

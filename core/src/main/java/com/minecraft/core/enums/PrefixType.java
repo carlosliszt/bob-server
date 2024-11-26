@@ -17,15 +17,15 @@ public enum PrefixType {
 
     DEFAULT("dMjgl", Rank.MEMBER, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " "),
     BRACES("LRBwT", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "{" + formatTagName(tag.getName(), tag) + tag.getColor() + "} "),
-    BRACKETS("sJvjZ", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + formatTagName(tag.getName(), tag) + tag.getColor() + "] "),
-    BRACKETS_UPPER("fHYat", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + "] "),
-    COLOR("xOEsP", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getFormattedColor()),
+    BRACKETS("sJvjZ", Rank.BLAZE_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + formatTagName(tag.getName(), tag) + tag.getColor() + "] "),
+    BRACKETS_UPPER("fHYat", Rank.BLAZE_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "[" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + "] "),
+    COLOR("xOEsP", Rank.BLAZE_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getFormattedColor()),
     PARENTHESIS("bvjLy", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "(" + formatTagName(tag.getName(), tag) + tag.getColor() + ") "),
     VANILLA("EDhtE", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "<" + formatTagName(tag.getName(), tag) + tag.getColor() + "> "),
-    DEFAULT_BOLD("XspJC", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " "),
-    DEFAULT_GRAY("bWJnm", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " §7"),
+    DEFAULT_BOLD("XspJC", Rank.BLAZE_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " "),
+    DEFAULT_GRAY("bWJnm", Rank.BLAZE_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " §7"),
     DEFAULT_LOWER("wtFLH", Rank.PARTNER_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + formatTagName(tag.getName(), tag) + tag.getColor() + " "),
-    DEFAULT_WHITE("YnRcF", Rank.ULTRA_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " §f");
+    DEFAULT_WHITE("YnRcF", Rank.BLAZE_PLUS, tag -> tag == Tag.ROSA ? tag.getColor() : tag.getColor() + "§l" + formatTagName(tag.getName().toUpperCase(), tag) + tag.getColor() + " §f");
 
     private final String uniqueCode;
     private final Rank rank;

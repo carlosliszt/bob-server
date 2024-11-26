@@ -35,7 +35,7 @@ public class Rocket extends Celebration {
         setDescription("Use seu foguete para decolar e ir até o espaço!");
         setIcon(Pattern.of(Material.FIREWORK));
         setRarity(CelebrationRarity.EPIC);
-        setRank(Rank.ULTRA_PLUS);
+        setRank(Rank.BLAZE_PLUS);
     }
 
     @Override

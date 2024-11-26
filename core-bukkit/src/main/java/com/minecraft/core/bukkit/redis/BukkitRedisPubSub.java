@@ -73,20 +73,20 @@ public class BukkitRedisPubSub extends JedisPubSub {
             }
 
             if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 1) {
-                if (!account.hasTag(Tag.ULTRA_PLUS_1)) {
-                    account.giveTag(Tag.ULTRA_PLUS_1, -1, "[SERVER]");
+                if (!account.hasTag(Tag.BLAZE_PLUS_1)) {
+                    account.giveTag(Tag.BLAZE_PLUS_1, -1, "[SERVER]");
                 }
             }
 
             if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 6) {
-                if (!account.hasTag(Tag.ULTRA_PLUS_2)) {
-                    account.giveTag(Tag.ULTRA_PLUS_2, -1, "[SERVER]");
+                if (!account.hasTag(Tag.BLAZE_PLUS_2)) {
+                    account.giveTag(Tag.BLAZE_PLUS_2, -1, "[SERVER]");
                 }
             }
 
             if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 12) {
-                if (!account.hasTag(Tag.ULTRA_PLUS_3)) {
-                    account.giveTag(Tag.ULTRA_PLUS_3, -1, "[SERVER]");
+                if (!account.hasTag(Tag.BLAZE_PLUS_3)) {
+                    account.giveTag(Tag.BLAZE_PLUS_3, -1, "[SERVER]");
                 }
             }
 

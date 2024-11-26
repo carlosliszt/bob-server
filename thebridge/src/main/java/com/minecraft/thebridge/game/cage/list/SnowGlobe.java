@@ -13,7 +13,7 @@ public class SnowGlobe extends Cage {
         super(theBridge);
 
         setDisplayName("Snow Globe");
-        setRank(Rank.ULTRA_PLUS);
+        setRank(Rank.BLAZE_PLUS);
         setRarity(CageRarity.LEGENDARY);
         setPrice(10000);
 

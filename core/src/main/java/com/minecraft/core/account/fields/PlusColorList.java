@@ -3,7 +3,6 @@ package com.minecraft.core.account.fields;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.PlusColor;
-import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +20,7 @@ public class PlusColorList {
     public void loadPlusColor() {
         plusColor.clear();
         for (PlusColor color : PlusColor.getValues()) {
-            if (account.hasTag(Tag.ULTRA_PLUS_3) || account.hasPlusColor(color) || account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= color.getMonths() || color == PlusColor.GOLDEN) {
+            if (account.hasTag(Tag.BLAZE_PLUS_3) || account.hasPlusColor(color) || account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= color.getMonths() || color == PlusColor.GOLDEN) {
                 plusColor.add(color);
             }
         }

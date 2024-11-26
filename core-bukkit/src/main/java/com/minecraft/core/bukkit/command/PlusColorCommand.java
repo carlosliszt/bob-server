@@ -1,8 +1,6 @@
 package com.minecraft.core.bukkit.command;
 
 import com.minecraft.core.account.Account;
-import com.minecraft.core.account.datas.PlusColorData;
-import com.minecraft.core.account.fields.Flag;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.command.annotation.Command;
@@ -18,7 +16,7 @@ import org.bukkit.entity.Player;
 
 public class PlusColorCommand implements BukkitInterface {
 
-    @Command(name = "pluscolor", rank = Rank.ULTRA_PLUS, async = true, usage = "{labe} <pluscolor>", platform = Platform.PLAYER)
+    @Command(name = "pluscolor", rank = Rank.BLAZE_PLUS, async = true, usage = "{labe} <pluscolor>", platform = Platform.PLAYER)
     public void handleCommand(Context<Player> context) {
 
         String[] args = context.getArgs();

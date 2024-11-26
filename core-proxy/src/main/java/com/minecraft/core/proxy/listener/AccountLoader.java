@@ -11,12 +11,10 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.account.AccountExecutor;
 import com.minecraft.core.account.datas.SkinData;
 import com.minecraft.core.account.friend.Friend;
-import com.minecraft.core.account.friend.FriendRequest;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.clan.member.Member;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Medal;
-import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
 import com.minecraft.core.proxy.ProxyGame;
@@ -51,7 +49,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.md_5.bungee.protocol.Property;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -315,7 +312,7 @@ public class AccountLoader implements Listener {
                 account.loadNicks();
                 String customName = account.getData(Columns.NICK).getAsString();
 
-                if (!customName.equals("...") && account.getRank().getId() >= Rank.ULTRA_PLUS.getId()) {
+                if (!customName.equals("...") && account.getRank().getId() >= Rank.BLAZE_PLUS.getId()) {
                     account.setDisplayName(customName);
                 } else account.getData(Columns.NICK).setData("...");
 
@@ -331,20 +328,20 @@ public class AccountLoader implements Listener {
                 account.getPlusColorList().loadPlusColor();
 
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 1) {
-                    if (!account.hasTag(Tag.ULTRA_PLUS_1)) {
-                        account.giveTag(Tag.ULTRA_PLUS_1, -1, "[SERVER]");
+                    if (!account.hasTag(Tag.BLAZE_PLUS_1)) {
+                        account.giveTag(Tag.BLAZE_PLUS_1, -1, "[SERVER]");
                     }
                 }
 
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 6) {
-                    if (!account.hasTag(Tag.ULTRA_PLUS_2)) {
-                        account.giveTag(Tag.ULTRA_PLUS_2, -1, "[SERVER]");
+                    if (!account.hasTag(Tag.BLAZE_PLUS_2)) {
+                        account.giveTag(Tag.BLAZE_PLUS_2, -1, "[SERVER]");
                     }
                 }
 
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 12) {
-                    if (!account.hasTag(Tag.ULTRA_PLUS_3)) {
-                        account.giveTag(Tag.ULTRA_PLUS_3, -1, "[SERVER]");
+                    if (!account.hasTag(Tag.BLAZE_PLUS_3)) {
+                        account.giveTag(Tag.BLAZE_PLUS_3, -1, "[SERVER]");
                     }
                 }
 
