@@ -34,7 +34,7 @@ import java.util.List;
 
 public class FriendCommand implements ProxyInterface {
 
-    @Command(name = "friend", aliases = {"f", "amigo", "amiga", "amigos", "amigas", "amigue", "amigues"}, platform = Platform.PLAYER)
+    @Command(name = "amigo", aliases = {"f", "friend", "amiga", "amigos", "amigas", "amigue", "amigues"}, platform = Platform.PLAYER)
     public void onFriendCommand(Context<ProxiedPlayer> context) {
         ProxiedPlayer player = context.getSender();
 
@@ -57,7 +57,7 @@ public class FriendCommand implements ProxyInterface {
 
     }
 
-    @Completer(name = "friend")
+    @Completer(name = "amigo")
     public List<String> handleComplete(Context<CommandSender> context) {
         List<String> list = new ArrayList<>();
         if (context.argsCount() == 1) {
