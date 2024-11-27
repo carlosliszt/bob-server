@@ -16,11 +16,11 @@ import java.util.Arrays;
 public enum Clantag {
 
     DEFAULT("Default", "§7", "yQFBm", "GRAY", Rank.MEMBER, false),
-    STAFF("Staff", "§5", "db37a", "DARK_PURPLE", Rank.SECONDARY_MOD, true),
-    PARTNER_PLUS("Partner+", "§3", "hd73b", "DARK_AQUA", Rank.PARTNER_PLUS, true),
+    STAFF("Staff", "§5", "db37a", "DARK_PURPLE", Rank.SECONDARY_MOD, false),
+    PARTNER_PLUS("Partner+", "§3", "hd73b", "DARK_AQUA", Rank.PARTNER_PLUS, false),
     CHAMPION("Campeão", "§6", "27adh", "GOLD", Rank.ADMINISTRATOR, true),
-    RED("Admin", "§c", "d3aad", "RED", Rank.ADMINISTRATOR, true),
-    ROSA("Rosa", "§d", "d3a7d", "LIGHT_PURPLE", Rank.BOB, true),
+    RED("Admin", "§c", "d3aad", "RED", Rank.ADMINISTRATOR, false),
+    ROSA("Rosa", "§d", "d3a7d", "LIGHT_PURPLE", Rank.BOB, false),
     ;
 
     private final String name, color, uniqueCode, chatColor;
