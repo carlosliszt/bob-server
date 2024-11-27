@@ -7,9 +7,6 @@ import java.time.LocalTime;
 public class UpdateCheckScheduler implements Runnable{
     @Override
     public void run() {
-
-
-
         if(isCertainHour(5, 30)) {
             BungeeCord.getInstance().stop();
         }
