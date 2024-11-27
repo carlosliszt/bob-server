@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class FriendCommand implements ProxyInterface {
 
@@ -60,24 +63,36 @@ public class FriendCommand implements ProxyInterface {
     @Completer(name = "amigo")
     public List<String> handleComplete(Context<CommandSender> context) {
         List<String> list = new ArrayList<>();
+
+        // Handle first argument completion
         if (context.argsCount() == 1) {
+            String userInput = context.getArg(0).toLowerCase();
             for (Argument argument : Argument.values()) {
-                list.addAll(List.of(argument.getField()));
-                list.addAll(getOnlineNicknames(context));
+                for(String field : argument.getField()) {
+                    if (field.startsWith(userInput)) {
+                        list.add(field);
+                    }
+                }
             }
+
+            for (String nickname : getOnlineNicknames(context)) {
+                if (nickname.toLowerCase().startsWith(userInput)) {
+                    list.add(nickname);
+                }
+            }
+
             return list;
         }
 
-        if (context.getArg(2).equalsIgnoreCase("status")) {
-            list.clear();
-            list.addAll(Arrays.asList("online", "offline"));
-            return list;
+        if (context.argsCount() == 2 && context.getArg(0).equalsIgnoreCase("status")) {
+            return Arrays.asList("online", "offline");
         }
 
-        return getOnlineNicknames(context);
-
+        String userInput = context.getArg(context.argsCount() - 1).toLowerCase();
+        return getOnlineNicknames(context).stream()
+                .filter(nickname -> nickname.toLowerCase().startsWith(userInput))
+                .collect(Collectors.toList());
     }
-
     @Getter
     public enum Argument implements ProxyInterface {
         ADD(2, "add", "adicionar") {
@@ -244,7 +259,12 @@ public class FriendCommand implements ProxyInterface {
                     return;
                 }
 
-                List<Friend> friends = getFriends(account);
+                List<Friend> friends;
+                try {
+                    friends = getSortedFriends(account, context).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
 
                 context.sendMessage("§eSeus amigos §a(" + account.getFriends().size() + "/150) " + " §7(Página " + page + "/" + maxPage + "):");
 
@@ -281,34 +301,73 @@ public class FriendCommand implements ProxyInterface {
             }
 
             @NotNull
-            private List<Friend> getFriends(Account account) {
+            private CompletableFuture<List<Friend>> getSortedFriends(Account account, Context<ProxiedPlayer> context) {
                 List<Friend> friends = new ArrayList<>(account.getFriends());
-                friends.sort((f1, f2) -> {
-                    ProxiedPlayer p1 = BungeeCord.getInstance().getPlayer(f1.getUniqueId());
-                    ProxiedPlayer p2 = BungeeCord.getInstance().getPlayer(f2.getUniqueId());
-                    FriendStatus status1 = FriendStatus.valueOf(account.getData(Columns.FRIEND_STATUS).getAsString());
-                    FriendStatus status2 = FriendStatus.valueOf(account.getData(Columns.FRIEND_STATUS).getAsString());
 
-                    int onlineComparison = Boolean.compare(p2 != null, p1 != null);
-                    if (onlineComparison != 0) {
-                        return onlineComparison;
-                    }
+                List<CompletableFuture<FriendStatusData>> futures = friends.stream().map(friend ->
+                        retrieveFriendStatus(context, friend)
+                ).collect(Collectors.toList());
 
-                    if (p1 != null && p2 != null) {
-                        int statusComparison = status1.compareTo(status2);
-                        if (statusComparison != 0) {
-                            return statusComparison;
-                        }
-                    }
+                return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                        .thenApply(v -> {
+                            List<FriendStatusData> statusDataList = futures.stream()
+                                    .map(CompletableFuture::join)
+                                    .collect(Collectors.toList());
 
-                    if (p1 == null && p2 == null) {
-                        return f1.getName().compareToIgnoreCase(f2.getName());
-                    }
+                            statusDataList.sort((d1, d2) -> {
+                                int statusComparison = Integer.compare(getStatusPriority(d1.status), getStatusPriority(d2.status));
+                                if (statusComparison != 0) {
+                                    return statusComparison;
+                                }
+                                return d1.friend.getName().compareToIgnoreCase(d2.friend.getName());
+                            });
 
-                    return status1.compareTo(status2);
-                });
-                return friends;
+                            return statusDataList.stream()
+                                    .map(statusData -> statusData.friend)
+                                    .collect(Collectors.toList());
+                        });
             }
+
+            private CompletableFuture<FriendStatusData> retrieveFriendStatus(Context<ProxiedPlayer> context, Friend friend) {
+                CompletableFuture<FriendStatusData> future = new CompletableFuture<>();
+                search(context, friend.getName(), target -> {
+                    target.loadRanks();
+                    target.loadTags();
+                    target.loadSentFriendRequests();
+                    target.loadReceivedFriendRequests();
+                    target.loadFriends();
+
+                    FriendStatus status = FriendStatus.valueOf(target.getData(Columns.FRIEND_STATUS).getAsString());
+                    if (status == FriendStatus.VANISHED || status == FriendStatus.SILENTVANISH) {
+                        status = FriendStatus.OFFLINE;
+                    }
+
+                    future.complete(new FriendStatusData(friend, status));
+                });
+
+                return future;
+            }
+
+            private int getStatusPriority(FriendStatus status) {
+                switch (status) {
+                    case ONLINE:
+                        return 0;
+                    case OFFLINE:
+                    default:
+                        return 1;
+                }
+            }
+
+            class FriendStatusData {
+                Friend friend;
+                FriendStatus status;
+
+                FriendStatusData(Friend friend, FriendStatus status) {
+                    this.friend = friend;
+                    this.status = status;
+                }
+            }
+
         },
         ACCEPT(2, "accept", "aceitar") {
             @Override
