@@ -24,6 +24,7 @@ import com.minecraft.core.proxy.listener.ServerListener;
 import com.minecraft.core.proxy.redis.ProxyRedisPubSub;
 import com.minecraft.core.proxy.scheduler.CountWatchScheduler;
 import com.minecraft.core.proxy.scheduler.LogScheduler;
+import com.minecraft.core.proxy.scheduler.UpdateCheckScheduler;
 import com.minecraft.core.proxy.server.ProxyServerStorage;
 import com.minecraft.core.proxy.staff.ShortcutRepository;
 import com.minecraft.core.proxy.staff.StaffStorage;
@@ -48,9 +49,11 @@ import redis.clients.jedis.Jedis;
 import java.io.*;
 import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class ProxyGame extends Plugin {
@@ -128,6 +131,27 @@ public class ProxyGame extends Plugin {
             getProxy().getScheduler().schedule(this, () -> {
                 new LogScheduler().run();
                 countWatchScheduler.run();
+                new UpdateCheckScheduler().run();
+            }, 1, 1, TimeUnit.SECONDS);
+
+            AtomicInteger seconds = new AtomicInteger(600); // 600 segundos = 10 minutos
+            getProxy().getScheduler().schedule(this, () -> {
+                LocalTime now = LocalTime.now();
+                LocalTime start = LocalTime.of(5, 20);
+                LocalTime end = LocalTime.of(5, 30);
+
+                if (now.isAfter(start) && now.isBefore(end)) {
+                    if (seconds.get() > 0) {
+                        if (seconds.get() % 60 == 0 || seconds.get() <= 120) {
+                            String mensagem = "§4§l" + Constants.SERVER_NAME.toUpperCase() + " §7» "
+                                    + "§cO servidor será reiniciado em §l"
+                                    + formatSeconds(seconds.get())
+                                    + "§r§c.";
+                            getProxy().broadcast(TextComponent.fromLegacyText(mensagem));
+                        }
+                        seconds.getAndDecrement();
+                    }
+                }
             }, 1, 1, TimeUnit.SECONDS);
 
             enableBroadcast();
@@ -143,6 +167,13 @@ public class ProxyGame extends Plugin {
             getProxy().stop();
         }
 
+    }
+
+    public static String formatSeconds(long totalSeconds) {
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
+
+        return String.format("%d " +  (minutes > 1 ? "minutos" : " minuto") + " e %d " + (seconds > 1 ? "segundos" : "segundo"), minutes, seconds);
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -74,6 +75,16 @@ public class AwayListener extends DynamicListener {
                 }
             }
         }
+
+        if(isCertainHour(5, 3)) {
+            Bukkit.getServer().shutdown();
+        }
+
+    }
+
+    public static boolean isCertainHour(int hour, int min) {
+        LocalTime now = LocalTime.now();
+        return now.getHour() == hour && now.getMinute() == min;
     }
 
     @EventHandler
