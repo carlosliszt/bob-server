@@ -405,7 +405,7 @@ public class AccountLoader implements Listener {
                 if (account.getData(Columns.FRIEND_STATUS).getAsString().equals("ONLINE")) {
                     Account friendsAccount = Account.fetch(friend.getUniqueId());
                     friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
-                    player.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + friendsAccount.getUsername() + " §eestá online.");
+                    player.sendMessage("§6[AMIGOS]§e " + friendsAccount.getRank().getDefaultTag().getFormattedColor() + friendsAccount.getUsername() + " §eestá online.");
                 }
             }
         }
