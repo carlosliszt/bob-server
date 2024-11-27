@@ -25,7 +25,7 @@ public class MySQLProperties {
     private final String username, password, database;
 
     public static MySQLProperties load(File file) {
-        MySQLProperties properties = new MySQLProperties("localhost", 3306, "server", "yumrWaCYdYINenasgjxeos5xJKJ1xxx", "minecraft");
+        MySQLProperties properties = new MySQLProperties("localhost", 3306, "server", "", "minecraft");
         if (!file.exists()) {
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(Constants.GSON.toJson(properties));

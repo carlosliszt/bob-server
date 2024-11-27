@@ -21,7 +21,7 @@ import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.redis.Redis;
-import com.minecraft.core.enums.Rank;
+import com.minecraft.core.enums.*;
 import com.minecraft.core.proxy.util.chat.ChatType;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import lombok.Getter;
@@ -30,13 +30,16 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import redis.clients.jedis.Jedis;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClanCommand implements ProxyInterface {
 
@@ -96,6 +99,11 @@ public class ClanCommand implements ProxyInterface {
             }
             return stringList;
         }
+
+        if (args.length == 2 && (args[0].equalsIgnoreCase("cortag") || args[0].equalsIgnoreCase("tagcolor"))) {
+            return context.getAccount().getClanTagList().getClanTags().stream().map(clantag -> clantag.getName().toLowerCase()).filter(s -> startsWith(s, context.getArg(1))).collect(Collectors.toList());
+        }
+
         return Collections.emptyList();
     }
 
@@ -317,6 +325,94 @@ public class ClanCommand implements ProxyInterface {
 
 
             }
+        },
+
+        TAGCOLOR(1, "cortag", "tagcolor") {
+            @Override
+            public void execute(Context<ProxiedPlayer> context) throws SQLException {
+                String[] args = context.getArgs();
+                Account account = context.getAccount();
+
+                Clan clan = Constants.getClanService().fetch(account.getData(Columns.CLAN).getAsInt());
+
+                if (clan == null || !account.hasClan()) {
+                    context.sendMessage("§cVocê precisa fazer parte de um clan para alterar sua clan tag.");
+                    return;
+                }
+
+                account.getClanTagList().loadClanTags();
+
+                if (args.length == 1) {
+                    int max = account.getClanTagList().getClanTags().size() * 2;
+
+                    TextComponent[] textComponents = new TextComponent[max];
+                    textComponents[0] = new TextComponent("§aSuas Clan Tags: ");
+
+                    int i = max - 1;
+
+                    final Tag tag = Tag.fromUniqueCode(account.getData(Columns.TAG).getAsString());
+                    final PrefixType prefixType = PrefixType.fromUniqueCode(account.getData(Columns.PREFIXTYPE).getAsString());
+
+                    for (Clantag clantag : account.getClanTagList().getClanTags()) {
+                        if (i < max - 1) {
+                            textComponents[i] = new TextComponent("§f, ");
+                            i -= 1;
+                        }
+
+                        String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)).replace("#", PlusColor.fromUniqueCode(account.getData(Columns.PLUSCOLOR).getAsString()).getColor() + "+") + account.getDisplayName() + " " + clantag.getColor() + "[" + clan.getTag().toUpperCase() + "]" + "\n\n§eClique para selecionar!";
+
+                        TextComponent component = createTextComponent(clantag.getColor() + clantag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/clantag " + clantag.getName());
+                        textComponents[i] = component;
+                        i -= 1;
+                    }
+
+                    context.getSender().sendMessage(textComponents);
+                } else {
+                    Clantag clantag = Clantag.fromName(args[1]);
+
+                    if (clantag == null) {
+                        context.info("command.clantag.generic_error");
+                        return;
+                    }
+
+                    if (!account.getClanTagList().hasTag(clantag)) {
+                        context.info("command.clantag.generic_error");
+                        return;
+                    }
+
+                    if (clantag.getChatColor().equals(clan.getColor())) {
+                        context.info("command.clantag.clantag_already_in_use");
+                        return;
+                    }
+
+                    if (!clan.getMember(account.getUniqueId()).isAdmin()) {
+                        context.sendMessage("§cVocê precisa ser um gerente do clan para alterar a clan tag.");
+                        return;
+                    }
+
+                    context.info("command.clantag.clantag_change", clantag.getColor() + clantag.getName());
+
+                    clan.setColor(clantag.getChatColor());
+                    try {
+                        Constants.getClanService().pushClan(clan);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    try (Jedis jedis = Constants.getRedis().getResource()) {
+                        jedis.publish(Redis.CLAN_TAG_UPDATE, clan.getIndex() + ":" + clan.getColor());
+                    }
+
+                }
+            }
+
+            TextComponent createTextComponent(String name, HoverEvent.Action hoverAction, String hoverDisplay, ClickEvent.Action clickAction, String clickValue) {
+                TextComponent textComponent = new TextComponent(name);
+                textComponent.setHoverEvent(new HoverEvent(hoverAction, new TextComponent[]{new TextComponent(hoverDisplay)}));
+                textComponent.setClickEvent(new ClickEvent(clickAction, clickValue));
+                return textComponent;
+            }
+
         },
 
         INVITE(2, "convidar", "invite") {
