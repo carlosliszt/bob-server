@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class CrashCommand implements BukkitInterface {
 
-    @Command(name = "crash", usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
+    @Command(name = "crash", usage = "{label} <target>", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR, aliases = {"faasty", "walkids"})
     public void handleCommand(Context<Player> context, Player target) {
         Player sender = context.getSender();
 
