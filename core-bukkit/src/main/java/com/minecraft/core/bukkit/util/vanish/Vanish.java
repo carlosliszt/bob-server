@@ -160,6 +160,10 @@ public class Vanish {
         return playerVanish.get(uniqueId).getCategory().getImportance() == rank.getCategory().getImportance();
     }
 
+    public boolean visible(UUID uniqueId) {
+        return !playerVanish.containsKey(uniqueId) || playerVanish.get(uniqueId).getCategory().getImportance() == Rank.Category.NONE.getImportance();
+    }
+
     public boolean isVanishedToCategory(UUID uniqueId, Rank.Category category) {
         return playerVanish.get(uniqueId).getCategory().getImportance() == category.getImportance();
     }
