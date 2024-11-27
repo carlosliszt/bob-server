@@ -36,12 +36,3 @@ dependencies {
 jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
-
-def shadowJarTask = tasks.getByName("shadowJar")
-
-tasks.register("copyToPluginsDir", Copy) {
-    dependsOn shadowJarTask
-    from shadowJarTask.outputs.files
-    into "C:/Users/carlos/Documents/yolomc/server/build/plugins"
-}
-
