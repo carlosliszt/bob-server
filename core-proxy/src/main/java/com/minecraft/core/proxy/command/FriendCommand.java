@@ -293,7 +293,11 @@ public class FriendCommand implements ProxyInterface {
                     return "§cestá offline.";
                 } else {
                     if (FriendStatus.valueOf(friend.getData(Columns.FRIEND_STATUS).getAsString()) == FriendStatus.ONLINE) {
-                        return "§eestá em §b" + Constants.getServerStorage().getServer(target.getServer().getInfo().getName()).getServerType().getName() + "§e.";
+                        if(target.getServer().getInfo() == null) {
+                            return "§eestá no §blimbo§e.";
+                        } else {
+                            return "§eestá em §b" + Constants.getServerStorage().getServer(target.getServer().getInfo().getName()).getServerType().getName() + "§e.";
+                        }
                     } else {
                         return "§cestá offline.";
                     }

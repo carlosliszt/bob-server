@@ -361,7 +361,7 @@ public class ClanCommand implements ProxyInterface {
 
                         String hoverDisplay = "§fExemplo: " + (tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag)).replace("#", PlusColor.fromUniqueCode(account.getData(Columns.PLUSCOLOR).getAsString()).getColor() + "+") + account.getDisplayName() + " " + clantag.getColor() + "[" + clan.getTag().toUpperCase() + "]" + "\n\n§eClique para selecionar!";
 
-                        TextComponent component = createTextComponent(clantag.getColor() + clantag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/clantag " + clantag.getName());
+                        TextComponent component = createTextComponent(clantag.getColor() + clantag.getName(), HoverEvent.Action.SHOW_TEXT, hoverDisplay, ClickEvent.Action.RUN_COMMAND, "/clan cortag " + clantag.getName());
                         textComponents[i] = component;
                         i -= 1;
                     }
