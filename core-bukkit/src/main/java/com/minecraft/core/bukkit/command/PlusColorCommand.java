@@ -4,6 +4,7 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.command.annotation.Command;
+import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Columns;
@@ -13,6 +14,9 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlusColorCommand implements BukkitInterface {
 
@@ -49,9 +53,11 @@ public class PlusColorCommand implements BukkitInterface {
 
             context.getSender().sendMessage(textComponents);
         } else {
-            PlusColor medal = PlusColor.valueOf(args[0]);
+            PlusColor medal;
 
-            if (medal == null) {
+            try {
+                medal = PlusColor.valueOf(args[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
                 context.sendMessage("§cEssa cor não existe ou você não a possui.");
                 return;
             }
@@ -77,6 +83,19 @@ public class PlusColorCommand implements BukkitInterface {
             async(() -> account.getDataStorage().saveColumn(Columns.PLUSCOLOR));
         }
 
+    }
+
+    @Completer(name = "pluscolor")
+    public List<String> handleComplete(Context<Player> context) {
+        ArrayList<String> list = new ArrayList<>();
+        if (context.argsCount() == 1) {
+            for (PlusColor plusColor : PlusColor.values()) {
+                if (context.getAccount().getPlusColorList().hasPlusColor(plusColor)) {
+                    list.add(plusColor.name());
+                }
+            }
+        }
+        return list;
     }
 
 }
