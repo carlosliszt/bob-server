@@ -50,7 +50,7 @@ public class CageTask {
 
             final Player player = user.getPlayer();
 
-            player.teleport(this.blue);
+            player.teleport(this.blue.clone().add(0,1,0));
             player.setHealth(20.0D);
 
             player.setItemOnCursor(null);
@@ -66,7 +66,7 @@ public class CageTask {
 
             final Player player = user.getPlayer();
 
-            player.teleport(this.red);
+            player.teleport(this.red.clone().add(0,1,0));
             player.setHealth(20.0D);
 
             player.setItemOnCursor(null);

@@ -233,8 +233,6 @@ public class Game implements BukkitInterface {
         scores.add("Winstreak: §7" + user.getAccount().getData(getType().getWinstreak()).getAsInteger());
         if (bool)
             scores.add("Mapa: §a" + game.getConfiguration().getName());
-        else
-            scores.add("Exp: §a" + user.getAccount().getData(Columns.BRIDGE_RANK_EXP).getAsInteger());
         scores.add(" ");
         scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
 

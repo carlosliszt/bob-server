@@ -83,18 +83,28 @@ public class RankingFactory {
         Columns ranking = getTarget().getRanking();
         Columns exp = getTarget().getExperience();
 
-        String query = "SELECT `unique_id` FROM " + ranking.getTable().getName() + " WHERE " + ranking.getField() + " IS NOT NULL AND " + exp.getField() + " IS NOT NULL AND `" + ranking.getField() + "`=" + Ranking.MASTER_IV.getId() + " ORDER BY " + exp.getField() + " DESC LIMIT 5;";
+        String query = "SELECT `unique_id` FROM `" + ranking.getTable().getName() + "` " +
+                "WHERE `" + ranking.getField() + "` IS NOT NULL " +
+                "AND `" + exp.getField() + "` IS NOT NULL " +
+                "AND `" + ranking.getField() + "` = ? " +
+                "ORDER BY `" + exp.getField() + "` DESC " +
+                "LIMIT 5;";
 
         List<UUID> besties = new ArrayList<>();
 
         try {
             PreparedStatement preparedStatement = Constants.getMySQL().getConnection().prepareStatement(query);
+
+            preparedStatement.setInt(1, Ranking.MASTER_IV.getId());
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 besties.add(UUID.fromString(resultSet.getString("unique_id")));
             }
+
             this.bestPlayers = besties;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

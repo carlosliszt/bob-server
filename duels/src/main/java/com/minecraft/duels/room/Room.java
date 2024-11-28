@@ -21,10 +21,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,9 +44,20 @@ public class Room implements BukkitInterface {
     private MapConfiguration mapConfiguration;
     private int time;
 
+    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final Random RANDOM = new Random();
+
+    public static String generateRoomCode(int a) {
+        StringBuilder code = new StringBuilder(a);
+        for (int i = 0; i < a; i++) {
+            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+        return code.toString();
+    }
+
     public Room(int id, Mode mode, World world) {
         this.mode = mode;
-        this.code = "21f" + id;
+        this.code = generateRoomCode(6 - id)+ id;
         this.red = new Team(ChatColor.RED, this);
         this.blue = new Team(ChatColor.BLUE, this);
         this.spectators = new HashSet<>();

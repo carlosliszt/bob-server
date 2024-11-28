@@ -39,10 +39,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -54,6 +51,17 @@ public class TheBridge extends BukkitGame implements BukkitInterface {
     private UserStorage userStorage;
     private BridgeConstants constants;
     private CageStorage cageStorage;
+
+    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final Random RANDOM = new Random();
+
+    public static String generateRoomCode(int a) {
+        StringBuilder code = new StringBuilder(a);
+        for (int i = 0; i < a; i++) {
+            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+        return code.toString();
+    }
 
     @Override
     public void onLoad() {
@@ -182,7 +190,7 @@ public class TheBridge extends BukkitGame implements BukkitInterface {
 
         for (int i = 0; i < SOLO_GAMES + GameType.DOUBLE.getMaxGames(); i++) {
             int id = i + 1;
-            String mapName = "18p" + id;
+            String mapName = generateRoomCode(6-id) + id;
 
             File mapDirectory = new File(Bukkit.getWorldContainer(), mapName);
             File map = maps.get(mapLoop);

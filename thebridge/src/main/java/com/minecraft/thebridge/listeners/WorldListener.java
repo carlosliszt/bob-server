@@ -102,7 +102,7 @@ public class WorldListener implements Listener {
             return;
         }
 
-        if (block.getLocation().getY() >= 100) {
+        if (block.getLocation().getY() >= room.getConfiguration().getMax_y()) {
             event.setCancelled(true);
             return;
         }
