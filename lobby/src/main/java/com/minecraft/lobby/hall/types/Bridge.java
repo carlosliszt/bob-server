@@ -59,10 +59,16 @@ public class Bridge extends Hall {
 
     private final Server server;
 
-    private final Leaderboard winsLeaderboard = new Leaderboard(Columns.BRIDGE_SOLO_ROUNDS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
+    private final Leaderboard winsLeaderboard = new Leaderboard(Columns.BRIDGE_SOLO_WINS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
     private final Leaderboard killsLeaderboard = new Leaderboard(Columns.BRIDGE_SOLO_POINTS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
+    private final Leaderboard winstreakLeaderboard = new Leaderboard(Columns.BRIDGE_SOLO_WINSTREAK, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
 
-    private final Location winsLocation, killsLocation;
+    private final Leaderboard winsDuoLeaderboard = new Leaderboard(Columns.BRIDGE_DOUBLES_WINS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
+    private final Leaderboard killsDuoLeaderboard = new Leaderboard(Columns.BRIDGE_DOUBLES_POINTS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
+    private final Leaderboard winstreakDuoLeaderboard = new Leaderboard(Columns.BRIDGE_DOUBLES_WINSTREAK, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 100, Columns.USERNAME, Columns.RANKS).query();
+
+
+    private final Location winsLocation, winstreakLocation, killsLocation, killsDuoLocation, winstreakDuoLocation, winsDuoLocation;
 
     private final Leaderboard ranking = new Leaderboard(Columns.BRIDGE_RANK_EXP, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 3, Columns.USERNAME, Columns.BRIDGE_RANK, Columns.SKIN).registerHandler(new LeaderboardHandler() {
         @Override
@@ -78,7 +84,7 @@ public class Bridge extends Hall {
     public Bridge(Lobby lobby) {
         super(lobby, "The Bridge Lobby", "bridgelobby", "THE BRIDGE NO BLAZEMC.COM.BR");
 
-        setSpawn(new Location(getWorld(), 0.5, 70, 0.5));
+        setSpawn(new Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5, 0, 0));
         getLobby().getAccountLoader().addColumns(Columns.BRIDGE_SOLO_WINS, Columns.BRIDGE_SOLO_WINSTREAK, Columns.BRIDGE_DOUBLES_WINS, Columns.BRIDGE_DOUBLES_WINSTREAK, Columns.BRIDGE_SOLO_KILLS, Columns.BRIDGE_SOLO_DEATHS, Columns.BRIDGE_DOUBLES_KILLS, Columns.BRIDGE_DOUBLES_DEATHS, Columns.BRIDGE_COINS);
 
         Constants.setServerType(ServerType.THE_BRIDGE_LOBBY);
@@ -86,8 +92,13 @@ public class Bridge extends Hall {
 
         server = Constants.getServerStorage().getServer("bridge1a");
 
-        this.winsLocation = new Location(getWorld(), -15.5, 71.5, 11.5);
-        this.killsLocation = new Location(getWorld(), -15.5, 71.5, 23.5);
+        this.winsLocation = new Location(Bukkit.getWorld("world"), 11.5, 67, 12.5);
+        this.killsLocation = new Location(Bukkit.getWorld("world"), 16.5, 67, 16.5);
+        this.winstreakLocation = new Location(Bukkit.getWorld("world"), 13.5, 67, 14.5);
+
+        this.winsDuoLocation = new Location(Bukkit.getWorld("world"), -10.5, 67, 11.5);
+        this.killsDuoLocation = new Location(Bukkit.getWorld("world"), -15.5, 67, 15.5);
+        this.winstreakDuoLocation = new Location(Bukkit.getWorld("world"), -12.5, 67, 13.5);
 
         this.bestPlayers = new Location(getWorld(), -18.5, 74, 17.5);
 
@@ -95,7 +106,7 @@ public class Bridge extends Hall {
         this.loc2 = new Location(getWorld(), -18.5, 70, 19.5, -90, 0);
         this.loc3 = new Location(getWorld(), -18.5, 69, 15.5, -90, 0);
 
-        this.stats = new Location(getWorld(), -2.5, 69, 4.5, -140, 0);
+        this.stats = new Location(Bukkit.getWorld("world"), -2.5, 65.0, 4.5, 217, 0);
 
         this.cagesConfig.addAll(jedisCages());
     }
@@ -173,11 +184,23 @@ public class Bridge extends Hall {
             infoHologram.show();
             infoHologram1.show();
 
-            LeaderboardHologram leaderboardHologram = new LeaderboardHologram(winsLeaderboard, "§e§lTOP 100 §b§lROUNDS SOLO §7(%s/%s)", player, winsLocation);
+            LeaderboardHologram leaderboardHologram = new LeaderboardHologram(winsLeaderboard, "§e§lTOP 100 §b§lWINS SOLO §7(%s/%s)", player, winsLocation);
             leaderboardHologram.show();
 
-            LeaderboardHologram leaderboardHologram1 = new LeaderboardHologram(killsLeaderboard, "§e§lTOP 100 §b§lPOINTS SOLO §7(%s/%s)", player, killsLocation);
+            LeaderboardHologram leaderboardHologram1 = new LeaderboardHologram(killsLeaderboard, "§e§lTOP 100 §b§LPONTOS SOLO §7(%s/%s)", player, killsLocation);
             leaderboardHologram1.show();
+
+            LeaderboardHologram leaderboardHologram2 = new LeaderboardHologram(winstreakLeaderboard, "§e§lTOP 100 §b§lWINSTREAK SOLO §7(%s/%s)", player, winstreakLocation);
+            leaderboardHologram2.show();
+
+            LeaderboardHologram leaderboardHologram3 = new LeaderboardHologram(winsDuoLeaderboard, "§e§lTOP 100 §b§lWINS DUPLAS §7(%s/%s)", player, winsDuoLocation);
+            leaderboardHologram3.show();
+
+            LeaderboardHologram leaderboardHologram4 = new LeaderboardHologram(killsDuoLeaderboard, "§e§lTOP 100 §b§lPONTOS DUPLAS §7(%s/%s)", player, killsDuoLocation);
+            leaderboardHologram4.show();
+
+            LeaderboardHologram leaderboardHologram5 = new LeaderboardHologram(winstreakDuoLeaderboard, "§e§lTOP 100 §b§lWINSTREAK DUPLAS §7(%s/%s)", player, winstreakDuoLocation);
+            leaderboardHologram5.show();
 
             EntityPlayer playerNMS = ((CraftPlayer) player).getHandle();
 
@@ -233,11 +256,11 @@ public class Bridge extends Hall {
         }, (user.getAccount().getVersion() >= 47 ? 0 : 5));
     }
 
-    private final NPC SOLO = NPC.builder().location(new Location(Bukkit.getWorld("world"), 2.5, 69.5, 28.5, 175, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1MzQxMzY3NzA4MTMsInByb2ZpbGVJZCI6IjBiZTU2MmUxNzIyODQ3YmQ5MDY3MWYxNzNjNjA5NmNhIiwicHJvZmlsZU5hbWUiOiJ4Y29vbHgzIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81OGUzZTdmOGY0MWYxOTJmNzQzOWI0YjllOTU2ZDk4ZjQzYzAzOGNiODQwZjIzYWJlYjg1YmI2ZmY2MDBkYjY1In19fQ==", "OJzADdLod8MMXbIEqKdKmqdcOyNh3OuUPXxQOBruCy6rMPiWv8cA7S1mf9YNsERCTj8Fxe3uqnEA3Z9eDt9ROkL3RTg8MQvC18Yr3o+dqriwRRrOwFuFShutTg1vb239Zv3O99YaLYHg6b7+RvBDFUldM9hzlSTsZ9YucUTOLvfS5kA4+n8o9w/ZhIMP045FciNuGHSR8f/HANJLIpa2bXv/38VRnp7V9i9OcPoODctE8YqbZ/MfY5lgkWjVcqn+hrYISkKP1ICABE1+/ns3zL3uvc2FBYQZ0hpO17Y4OlZ4Zi9WQFsD0vGRWOMhgtP4Q4+tq0nH6gqQ6kQYK8rXKMYU0EgShCFtZynFwjSmTOE51lhuxhjYSWGQP1Ux/uK6ltF8CK6bsvcjEZIN8Tyn+GvjsffEv48uIjL/z7hHNVv0gsulUtslcNuikmdbwoMFjFQGbshRzhUDK1LyM9u7n8d42VU1VCzmqYvXM864vj0Ledfrp5GI3UOUlBq1Fdaiw8pbnp1L1tLnaAcl9qOX/EB5KE43/1kkCQVnzF4I9XCMKmIVOh4VXOlrhZiorkXkP+Zm4B3pJU8qg3TsuxDBZQRJXUB8uK3HfySzDim2y57ww12vv0vsgIl/PM8MjvqJ6oP9GfdlCTZiMkLC43HqfYY52iFCU0doVuU/d6R3JDk=")).interactExecutor((player, npc, type) -> connect(player, GameType.SOLO)).build();
+    private final NPC SOLO = NPC.builder().location(new Location(Bukkit.getWorld("world"), 1.5, 64.375, 41.5, -180, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1MzQxMzY3NzA4MTMsInByb2ZpbGVJZCI6IjBiZTU2MmUxNzIyODQ3YmQ5MDY3MWYxNzNjNjA5NmNhIiwicHJvZmlsZU5hbWUiOiJ4Y29vbHgzIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81OGUzZTdmOGY0MWYxOTJmNzQzOWI0YjllOTU2ZDk4ZjQzYzAzOGNiODQwZjIzYWJlYjg1YmI2ZmY2MDBkYjY1In19fQ==", "OJzADdLod8MMXbIEqKdKmqdcOyNh3OuUPXxQOBruCy6rMPiWv8cA7S1mf9YNsERCTj8Fxe3uqnEA3Z9eDt9ROkL3RTg8MQvC18Yr3o+dqriwRRrOwFuFShutTg1vb239Zv3O99YaLYHg6b7+RvBDFUldM9hzlSTsZ9YucUTOLvfS5kA4+n8o9w/ZhIMP045FciNuGHSR8f/HANJLIpa2bXv/38VRnp7V9i9OcPoODctE8YqbZ/MfY5lgkWjVcqn+hrYISkKP1ICABE1+/ns3zL3uvc2FBYQZ0hpO17Y4OlZ4Zi9WQFsD0vGRWOMhgtP4Q4+tq0nH6gqQ6kQYK8rXKMYU0EgShCFtZynFwjSmTOE51lhuxhjYSWGQP1Ux/uK6ltF8CK6bsvcjEZIN8Tyn+GvjsffEv48uIjL/z7hHNVv0gsulUtslcNuikmdbwoMFjFQGbshRzhUDK1LyM9u7n8d42VU1VCzmqYvXM864vj0Ledfrp5GI3UOUlBq1Fdaiw8pbnp1L1tLnaAcl9qOX/EB5KE43/1kkCQVnzF4I9XCMKmIVOh4VXOlrhZiorkXkP+Zm4B3pJU8qg3TsuxDBZQRJXUB8uK3HfySzDim2y57ww12vv0vsgIl/PM8MjvqJ6oP9GfdlCTZiMkLC43HqfYY52iFCU0doVuU/d6R3JDk=")).interactExecutor((player, npc, type) -> connect(player, GameType.SOLO)).build();
 
-    private final NPC DOUBLE = NPC.builder().location(new Location(Bukkit.getWorld("world"), -1.5, 69.5, 28.5, -175, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1MzQxMzY3NzA4MTMsInByb2ZpbGVJZCI6IjBiZTU2MmUxNzIyODQ3YmQ5MDY3MWYxNzNjNjA5NmNhIiwicHJvZmlsZU5hbWUiOiJ4Y29vbHgzIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81OGUzZTdmOGY0MWYxOTJmNzQzOWI0YjllOTU2ZDk4ZjQzYzAzOGNiODQwZjIzYWJlYjg1YmI2ZmY2MDBkYjY1In19fQ==", "OJzADdLod8MMXbIEqKdKmqdcOyNh3OuUPXxQOBruCy6rMPiWv8cA7S1mf9YNsERCTj8Fxe3uqnEA3Z9eDt9ROkL3RTg8MQvC18Yr3o+dqriwRRrOwFuFShutTg1vb239Zv3O99YaLYHg6b7+RvBDFUldM9hzlSTsZ9YucUTOLvfS5kA4+n8o9w/ZhIMP045FciNuGHSR8f/HANJLIpa2bXv/38VRnp7V9i9OcPoODctE8YqbZ/MfY5lgkWjVcqn+hrYISkKP1ICABE1+/ns3zL3uvc2FBYQZ0hpO17Y4OlZ4Zi9WQFsD0vGRWOMhgtP4Q4+tq0nH6gqQ6kQYK8rXKMYU0EgShCFtZynFwjSmTOE51lhuxhjYSWGQP1Ux/uK6ltF8CK6bsvcjEZIN8Tyn+GvjsffEv48uIjL/z7hHNVv0gsulUtslcNuikmdbwoMFjFQGbshRzhUDK1LyM9u7n8d42VU1VCzmqYvXM864vj0Ledfrp5GI3UOUlBq1Fdaiw8pbnp1L1tLnaAcl9qOX/EB5KE43/1kkCQVnzF4I9XCMKmIVOh4VXOlrhZiorkXkP+Zm4B3pJU8qg3TsuxDBZQRJXUB8uK3HfySzDim2y57ww12vv0vsgIl/PM8MjvqJ6oP9GfdlCTZiMkLC43HqfYY52iFCU0doVuU/d6R3JDk=")).interactExecutor((player, npc, type) -> connect(player, GameType.DOUBLE)).build();
+    private final NPC DOUBLE = NPC.builder().location(new Location(Bukkit.getWorld("world"), -0.5, 64.375, 41.5, -180, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1MzQxMzY3NzA4MTMsInByb2ZpbGVJZCI6IjBiZTU2MmUxNzIyODQ3YmQ5MDY3MWYxNzNjNjA5NmNhIiwicHJvZmlsZU5hbWUiOiJ4Y29vbHgzIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81OGUzZTdmOGY0MWYxOTJmNzQzOWI0YjllOTU2ZDk4ZjQzYzAzOGNiODQwZjIzYWJlYjg1YmI2ZmY2MDBkYjY1In19fQ==", "OJzADdLod8MMXbIEqKdKmqdcOyNh3OuUPXxQOBruCy6rMPiWv8cA7S1mf9YNsERCTj8Fxe3uqnEA3Z9eDt9ROkL3RTg8MQvC18Yr3o+dqriwRRrOwFuFShutTg1vb239Zv3O99YaLYHg6b7+RvBDFUldM9hzlSTsZ9YucUTOLvfS5kA4+n8o9w/ZhIMP045FciNuGHSR8f/HANJLIpa2bXv/38VRnp7V9i9OcPoODctE8YqbZ/MfY5lgkWjVcqn+hrYISkKP1ICABE1+/ns3zL3uvc2FBYQZ0hpO17Y4OlZ4Zi9WQFsD0vGRWOMhgtP4Q4+tq0nH6gqQ6kQYK8rXKMYU0EgShCFtZynFwjSmTOE51lhuxhjYSWGQP1Ux/uK6ltF8CK6bsvcjEZIN8Tyn+GvjsffEv48uIjL/z7hHNVv0gsulUtslcNuikmdbwoMFjFQGbshRzhUDK1LyM9u7n8d42VU1VCzmqYvXM864vj0Ledfrp5GI3UOUlBq1Fdaiw8pbnp1L1tLnaAcl9qOX/EB5KE43/1kkCQVnzF4I9XCMKmIVOh4VXOlrhZiorkXkP+Zm4B3pJU8qg3TsuxDBZQRJXUB8uK3HfySzDim2y57ww12vv0vsgIl/PM8MjvqJ6oP9GfdlCTZiMkLC43HqfYY52iFCU0doVuU/d6R3JDk=")).interactExecutor((player, npc, type) -> connect(player, GameType.DOUBLE)).build();
 
-    private final NPC SHOP = NPC.builder().location(new Location(Bukkit.getWorld("world"), 18.5, 68, 17.5, 100, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1ODU0MzE3NjYyMTEsInByb2ZpbGVJZCI6ImRkZWQ1NmUxZWY4YjQwZmU4YWQxNjI5MjBmN2FlY2RhIiwicHJvZmlsZU5hbWUiOiJEaXNjb3JkQXBwIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yNWMyMjMzMWNiMGYzOGIxZDExMmQyZDFjNzk2ZDZiZWQ3MGI5YWU1ZTM0NTM2ODU4Njg2N2MyMjI5NDk2MGZjIn19fQ==", "d5PemnvK8zDQJuTWn+XRYHXOnnAFz0X2NRuI775qzj5tmuH82921YMiKTfhbMlMVkLN5cmE4FHGzJ0HXUgxalTqlGVnvZuoE3LWVsERUHMsspqvt0nLInSZW4ZazAr9/fIgcnZ/0GI0DQhR1vm6KzBRv5szMOT2Ityr7g6Vy69UM376efxJDsJZ5iwW50Op7FiPN+YaVS+zaWsL99H6EDA6vpsWArp8GvLKkE8Y7c0+Gc24znPwiaPjSMsrQw1gNvjN+7P8A8vW2rI0LBXfxJgAOEBltYjG0dr7VB0Pv+gH9zf/mJ6J+t0iNpnSa5i+B8tkk0affxImR1+0R55uetlZgixvbg1RBrXsNWN/i68hv0x8Afd1nOvT0R8FJSGff8WJJC+RYphYmpZ9V791W8zdFrzkAnac499V6+gxIJw1gzoW6oUpDY53wCx+kd7DIeG7F7bz2aO+R+KjoCoVdzzsjZlF6OIYFvhenmtdVR4VIZZtlOjcrGVN4hTA1gxEbftokjjVvQPyMFpa+fkjrMjbxIygw2jhAWVqmpjD5tVGQ9GfYkF5q2IO6isG/QyIlxuEy6cl7IKBTw30XR9BznP5jP4+3O4KFPVMtuerG37rUyTh8gsIWo9+8mwAto3EHgXIjhk+8TMIBSfkdhJON2J9MJBGhdoLuj1nbdbm+qp8=")).interactExecutor((player, npc, type) -> getShopMenu().open(player)).build();
+    private final NPC SHOP = NPC.builder().location(new Location(Bukkit.getWorld("world"), 3.5, 65.0, 4.5, 148, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1ODU0MzE3NjYyMTEsInByb2ZpbGVJZCI6ImRkZWQ1NmUxZWY4YjQwZmU4YWQxNjI5MjBmN2FlY2RhIiwicHJvZmlsZU5hbWUiOiJEaXNjb3JkQXBwIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yNWMyMjMzMWNiMGYzOGIxZDExMmQyZDFjNzk2ZDZiZWQ3MGI5YWU1ZTM0NTM2ODU4Njg2N2MyMjI5NDk2MGZjIn19fQ==", "d5PemnvK8zDQJuTWn+XRYHXOnnAFz0X2NRuI775qzj5tmuH82921YMiKTfhbMlMVkLN5cmE4FHGzJ0HXUgxalTqlGVnvZuoE3LWVsERUHMsspqvt0nLInSZW4ZazAr9/fIgcnZ/0GI0DQhR1vm6KzBRv5szMOT2Ityr7g6Vy69UM376efxJDsJZ5iwW50Op7FiPN+YaVS+zaWsL99H6EDA6vpsWArp8GvLKkE8Y7c0+Gc24znPwiaPjSMsrQw1gNvjN+7P8A8vW2rI0LBXfxJgAOEBltYjG0dr7VB0Pv+gH9zf/mJ6J+t0iNpnSa5i+B8tkk0affxImR1+0R55uetlZgixvbg1RBrXsNWN/i68hv0x8Afd1nOvT0R8FJSGff8WJJC+RYphYmpZ9V791W8zdFrzkAnac499V6+gxIJw1gzoW6oUpDY53wCx+kd7DIeG7F7bz2aO+R+KjoCoVdzzsjZlF6OIYFvhenmtdVR4VIZZtlOjcrGVN4hTA1gxEbftokjjVvQPyMFpa+fkjrMjbxIygw2jhAWVqmpjD5tVGQ9GfYkF5q2IO6isG/QyIlxuEy6cl7IKBTw30XR9BznP5jP4+3O4KFPVMtuerG37rUyTh8gsIWo9+8mwAto3EHgXIjhk+8TMIBSfkdhJON2J9MJBGhdoLuj1nbdbm+qp8=")).interactExecutor((player, npc, type) -> getShopMenu().open(player)).build();
 
     private final Selector shopMenu = Selector.builder().withSize(27).withName("Comerciante")
             .withCustomItem(11, new InteractableItem(new ItemFactory(Material.DIAMOND_HELMET).setName("§aChapéus").setDescription("§7Selecione um chapéu para usar durante a partida.\n\n§eClique para ver mais!").addItemFlag(ItemFlag.HIDE_ATTRIBUTES).getStack(), new InteractableItem.Interact() {

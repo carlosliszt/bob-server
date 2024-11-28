@@ -130,6 +130,7 @@ public class Main extends Hall {
             PVP.clone(player).spawn(true);
             DUELS.clone(player).spawn(true);
             PROTOTYPE.clone(player).spawn(true);
+            THE_BRIDGE.clone(player).spawn(true);
 
             InfoHologram pvp = new InfoHologram(player, PVP.getLocation().clone().add(0, 2.1, 0), null, "§bPvP", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.PVP_LOBBY, ServerType.PVP));
             pvp.setInteract(interact);
@@ -142,6 +143,10 @@ public class Main extends Hall {
             InfoHologram hg = new InfoHologram(player, HG.getLocation().clone().add(0, 2.1, 0), null, "§BHardcore Games", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.HG_LOBBY, ServerType.HGMIX, ServerType.TOURNAMENT, ServerType.CLANXCLAN, ServerType.SCRIM, ServerType.EVENT));
             hg.setInteract(interact);
             hg.show();
+
+            InfoHologram the_bridge = new InfoHologram(player, THE_BRIDGE.getLocation().clone().add(0, 2.1, 0), null, "§bThe Bridge", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.THE_BRIDGE, ServerType.THE_BRIDGE_LOBBY));
+            the_bridge.setInteract(interact);
+            the_bridge.show();
 
             InfoHologram prototype = new InfoHologram(player, PROTOTYPE.getLocation().clone().add(0, 2.1, 0), null, "§bProtótipos", LeaderboardUpdate.SECOND, () -> Constants.getServerStorage().count(ServerType.TIOGERSON, ServerType.PROTOTYPE));
             prototype.setInteract(interact);
@@ -243,7 +248,7 @@ public class Main extends Hall {
         account.connect(server);
     }).build();
 
-    private final NPC THE_BRIDGE = NPC.builder().equipment(NPC.Equipment.builder().hand(new ItemStack(Material.STAINED_CLAY)).build()).location(new Location(Bukkit.getWorld("world"), 0.5, 63.5, 40.5, 180, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1MzQxMzY3NzA4MTMsInByb2ZpbGVJZCI6IjBiZTU2MmUxNzIyODQ3YmQ5MDY3MWYxNzNjNjA5NmNhIiwicHJvZmlsZU5hbWUiOiJ4Y29vbHgzIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81OGUzZTdmOGY0MWYxOTJmNzQzOWI0YjllOTU2ZDk4ZjQzYzAzOGNiODQwZjIzYWJlYjg1YmI2ZmY2MDBkYjY1In19fQ==", "OJzADdLod8MMXbIEqKdKmqdcOyNh3OuUPXxQOBruCy6rMPiWv8cA7S1mf9YNsERCTj8Fxe3uqnEA3Z9eDt9ROkL3RTg8MQvC18Yr3o+dqriwRRrOwFuFShutTg1vb239Zv3O99YaLYHg6b7+RvBDFUldM9hzlSTsZ9YucUTOLvfS5kA4+n8o9w/ZhIMP045FciNuGHSR8f/HANJLIpa2bXv/38VRnp7V9i9OcPoODctE8YqbZ/MfY5lgkWjVcqn+hrYISkKP1ICABE1+/ns3zL3uvc2FBYQZ0hpO17Y4OlZ4Zi9WQFsD0vGRWOMhgtP4Q4+tq0nH6gqQ6kQYK8rXKMYU0EgShCFtZynFwjSmTOE51lhuxhjYSWGQP1Ux/uK6ltF8CK6bsvcjEZIN8Tyn+GvjsffEv48uIjL/z7hHNVv0gsulUtslcNuikmdbwoMFjFQGbshRzhUDK1LyM9u7n8d42VU1VCzmqYvXM864vj0Ledfrp5GI3UOUlBq1Fdaiw8pbnp1L1tLnaAcl9qOX/EB5KE43/1kkCQVnzF4I9XCMKmIVOh4VXOlrhZiorkXkP+Zm4B3pJU8qg3TsuxDBZQRJXUB8uK3HfySzDim2y57ww12vv0vsgIl/PM8MjvqJ6oP9GfdlCTZiMkLC43HqfYY52iFCU0doVuU/d6R3JDk=")).interactExecutor((player, npc, type) -> {
+    private final NPC THE_BRIDGE = NPC.builder().equipment(NPC.Equipment.builder().hand(new ItemStack(Material.STAINED_CLAY)).build()).location(new Location(Bukkit.getWorld("world"), 6.5, 60.0, 9.5, -180, 0)).property(new Property("textures", "eyJ0aW1lc3RhbXAiOjE1MzQxMzY3NzA4MTMsInByb2ZpbGVJZCI6IjBiZTU2MmUxNzIyODQ3YmQ5MDY3MWYxNzNjNjA5NmNhIiwicHJvZmlsZU5hbWUiOiJ4Y29vbHgzIiwic2lnbmF0dXJlUmVxdWlyZWQiOnRydWUsInRleHR1cmVzIjp7IlNLSU4iOnsidXJsIjoiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81OGUzZTdmOGY0MWYxOTJmNzQzOWI0YjllOTU2ZDk4ZjQzYzAzOGNiODQwZjIzYWJlYjg1YmI2ZmY2MDBkYjY1In19fQ==", "OJzADdLod8MMXbIEqKdKmqdcOyNh3OuUPXxQOBruCy6rMPiWv8cA7S1mf9YNsERCTj8Fxe3uqnEA3Z9eDt9ROkL3RTg8MQvC18Yr3o+dqriwRRrOwFuFShutTg1vb239Zv3O99YaLYHg6b7+RvBDFUldM9hzlSTsZ9YucUTOLvfS5kA4+n8o9w/ZhIMP045FciNuGHSR8f/HANJLIpa2bXv/38VRnp7V9i9OcPoODctE8YqbZ/MfY5lgkWjVcqn+hrYISkKP1ICABE1+/ns3zL3uvc2FBYQZ0hpO17Y4OlZ4Zi9WQFsD0vGRWOMhgtP4Q4+tq0nH6gqQ6kQYK8rXKMYU0EgShCFtZynFwjSmTOE51lhuxhjYSWGQP1Ux/uK6ltF8CK6bsvcjEZIN8Tyn+GvjsffEv48uIjL/z7hHNVv0gsulUtslcNuikmdbwoMFjFQGbshRzhUDK1LyM9u7n8d42VU1VCzmqYvXM864vj0Ledfrp5GI3UOUlBq1Fdaiw8pbnp1L1tLnaAcl9qOX/EB5KE43/1kkCQVnzF4I9XCMKmIVOh4VXOlrhZiorkXkP+Zm4B3pJU8qg3TsuxDBZQRJXUB8uK3HfySzDim2y57ww12vv0vsgIl/PM8MjvqJ6oP9GfdlCTZiMkLC43HqfYY52iFCU0doVuU/d6R3JDk=")).interactExecutor((player, npc, type) -> {
         if (isConnectionCooldown(player.getUniqueId())) {
             Account account = Account.fetch(player.getUniqueId());
             Cooldown cooldown = this.getCooldown(player.getUniqueId());

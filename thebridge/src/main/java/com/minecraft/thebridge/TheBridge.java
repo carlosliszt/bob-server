@@ -190,7 +190,7 @@ public class TheBridge extends BukkitGame implements BukkitInterface {
 
         for (int i = 0; i < SOLO_GAMES + GameType.DOUBLE.getMaxGames(); i++) {
             int id = i + 1;
-            String mapName = generateRoomCode(6-id) + id;
+            String mapName = generateRoomCode(5) + id;
 
             File mapDirectory = new File(Bukkit.getWorldContainer(), mapName);
             File map = maps.get(mapLoop);
