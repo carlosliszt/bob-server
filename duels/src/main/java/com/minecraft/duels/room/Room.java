@@ -6,6 +6,7 @@ import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Tag;
+import com.minecraft.duels.Duels;
 import com.minecraft.duels.map.config.MapConfiguration;
 import com.minecraft.duels.mode.Mode;
 import com.minecraft.duels.room.team.Team;
@@ -44,20 +45,10 @@ public class Room implements BukkitInterface {
     private MapConfiguration mapConfiguration;
     private int time;
 
-    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final Random RANDOM = new Random();
-
-    public static String generateRoomCode(int a) {
-        StringBuilder code = new StringBuilder(a);
-        for (int i = 0; i < a; i++) {
-            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
-        }
-        return code.toString();
-    }
-
     public Room(int id, Mode mode, World world) {
+        int replaceLength = (id < 10) ? 1 : 2;
         this.mode = mode;
-        this.code = generateRoomCode(6 - id)+ id;
+        this.code = Duels.getInstance().getInstanceId().substring(0, Duels.getInstance().getInstanceId().length() - replaceLength) + id;
         this.red = new Team(ChatColor.RED, this);
         this.blue = new Team(ChatColor.BLUE, this);
         this.spectators = new HashSet<>();

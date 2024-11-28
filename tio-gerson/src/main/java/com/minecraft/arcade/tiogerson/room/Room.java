@@ -1,5 +1,6 @@
 package com.minecraft.arcade.tiogerson.room;
 
+import com.minecraft.arcade.tiogerson.ArcadeMain;
 import com.minecraft.arcade.tiogerson.config.MapConfiguration;
 import com.minecraft.arcade.tiogerson.mode.Mode;
 import com.minecraft.arcade.tiogerson.room.team.Team;
@@ -34,7 +35,6 @@ public class Room implements BukkitInterface {
     private final String code;
     private final World world;
     private final Team tioGerson, enzo;
-    private static final int CODE_LENGTH = 5;
     private final Set<User> spectators;
     private final Set<Block> rollback;
     private int maxPlayers;
@@ -46,21 +46,13 @@ public class Room implements BukkitInterface {
     private MapConfiguration mapConfiguration;
     private int time;
 
-    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private final Set<User> alivePlayers;
-    private static final Random RANDOM = new Random();
-
-    public static String generateRoomCode() {
-        StringBuilder code = new StringBuilder(CODE_LENGTH);
-        for (int i = 0; i < CODE_LENGTH; i++) {
-            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
-        }
-        return code.toString();
-    }
 
     public Room(int id, Mode mode, World world) {
+
+        int replaceLength = (id < 10) ? 1 : 2;
         this.mode = mode;
-        this.code = generateRoomCode() + id;
+        this.code = ArcadeMain.getInstance().getInstanceId().substring(0, ArcadeMain.getInstance().getInstanceId().length() - replaceLength) + id;
         this.tioGerson = new Team(ChatColor.RED, this, mode.getMaxTioGerson());
         this.enzo = new Team(ChatColor.BLUE, this, mode.getMaxPlayers() - mode.getMaxTioGerson());
         this.spectators = new HashSet<>();

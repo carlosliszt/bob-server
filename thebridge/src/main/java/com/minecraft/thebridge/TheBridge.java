@@ -52,17 +52,6 @@ public class TheBridge extends BukkitGame implements BukkitInterface {
     private BridgeConstants constants;
     private CageStorage cageStorage;
 
-    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final Random RANDOM = new Random();
-
-    public static String generateRoomCode(int a) {
-        StringBuilder code = new StringBuilder(a);
-        for (int i = 0; i < a; i++) {
-            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
-        }
-        return code.toString();
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
@@ -190,7 +179,8 @@ public class TheBridge extends BukkitGame implements BukkitInterface {
 
         for (int i = 0; i < SOLO_GAMES + GameType.DOUBLE.getMaxGames(); i++) {
             int id = i + 1;
-            String mapName = generateRoomCode(5) + id;
+            int replaceLength = (id < 10) ? 1 : 2;
+            String mapName = "bridge-" + id;
 
             File mapDirectory = new File(Bukkit.getWorldContainer(), mapName);
             File map = maps.get(mapLoop);
@@ -202,7 +192,7 @@ public class TheBridge extends BukkitGame implements BukkitInterface {
 
             World world = Bukkit.createWorld(creator);
 
-            Game game = new Game(mapName, world, i < SOLO_GAMES ? GameType.SOLO : GameType.DOUBLE);
+            Game game = new Game( getInstanceId().substring(0, getInstanceId().length() - replaceLength) + id, world, i < SOLO_GAMES ? GameType.SOLO : GameType.DOUBLE);
 
             if (mapLoop + 1 >= maps.size())
                 mapLoop = 0;

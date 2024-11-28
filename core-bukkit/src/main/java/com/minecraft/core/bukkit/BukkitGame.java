@@ -53,6 +53,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 @Getter
 public class BukkitGame extends JavaPlugin {
@@ -75,6 +76,19 @@ public class BukkitGame extends JavaPlugin {
     private KnockbackService knockbackService;
     private InventoryService inventoryService;
 
+    private String instanceId;
+
+    private static final String CHARACTERS = "abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final Random RANDOM = new Random();
+
+    public static String generateRoomCode(int a) {
+        StringBuilder code = new StringBuilder(a);
+        for (int i = 0; i < a; i++) {
+            code.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+        return code.toString();
+    }
+
     @Override
     public void onLoad() {
 
@@ -92,6 +106,10 @@ public class BukkitGame extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        instanceId = generateRoomCode(6);
+
+        System.out.println("Instance ID: " + instanceId);
 
         if (pluginUpdater.isUpdated())
             return;
@@ -125,7 +143,7 @@ public class BukkitGame extends JavaPlugin {
                 "me", "say", "reload", "rl", "ban", "ban-ip", "ban-list", "pardon",
                 "pardon-ip", "xp", "minecraft:kick", "minecraft:gamemode"), 2L);
 
-        bukkitFrame.registerCommands(new StatisticsCommand(), new PlusColorCommand(), new NickBookCommand(), new TpsCommand(), new ForceskinCommand(), new ReportsCommand(), new ArcadeDevCommand(), new ExportInventoryCommand(), new ParticleCommand(), new PckgstatCommand(), new GetlogsCommand(), new PacketFilterCommand(), new AlertCommand(), new PreferencesCommand(), new CensorCheckCommand(), new TeleportallCommand(), new MedalCommand(), new LobbyCommand(), new VariableCommand(), new ChatCommand(), new StafflogCommand(), new GetlocationCommand(), new VanishCommand(), new WhitelistCommand(), new SpeedCommand(), new LanguageCommand(), new ProfileCommand(), new CrashCommand(), new SudoCommand(), new SmiteCommand(), new WhisperCommand(), new FollowCommand(), new EffectsCommand(), new InventoryCommand(), new LoopCommand(), new NickCommand(), new TagCommand(), new PrefixtypeCommand(), new WorldEditCommand(), new TeleportCommand(), new GamemodeCommand(), new MydragonCommand());
+        bukkitFrame.registerCommands(new StatisticsCommand(), new ServerIdCommand(), new PlusColorCommand(), new NickBookCommand(), new TpsCommand(), new ForceskinCommand(), new ReportsCommand(), new ArcadeDevCommand(), new ExportInventoryCommand(), new ParticleCommand(), new PckgstatCommand(), new GetlogsCommand(), new PacketFilterCommand(), new AlertCommand(), new PreferencesCommand(), new CensorCheckCommand(), new TeleportallCommand(), new MedalCommand(), new LobbyCommand(), new VariableCommand(), new ChatCommand(), new StafflogCommand(), new GetlocationCommand(), new VanishCommand(), new WhitelistCommand(), new SpeedCommand(), new LanguageCommand(), new ProfileCommand(), new CrashCommand(), new SudoCommand(), new SmiteCommand(), new WhisperCommand(), new FollowCommand(), new EffectsCommand(), new InventoryCommand(), new LoopCommand(), new NickCommand(), new TagCommand(), new PrefixtypeCommand(), new WorldEditCommand(), new TeleportCommand(), new GamemodeCommand(), new MydragonCommand());
 
         PluginManager pluginManager = getServer().getPluginManager();
 
