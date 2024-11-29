@@ -17,6 +17,7 @@ import java.util.List;
 public enum PunishCategory {
 
     CHARGEBACK("Estorno", "Chargeback", true, "chargeback", Rank.ADMINISTRATOR, Collections.singletonList(PunishType.BAN)),
+    EDATING("Web Namoro", "E-Dating", true, "edating", Rank.BOB, Arrays.asList(PunishType.BAN, PunishType.MUTE), "Web Namoro"),
     BADBUILD("Construção Inapropriada", "Inappropriate construction", false, "badbuild", Rank.TRIAL_MODERATOR, Collections.singletonList(PunishType.BAN), "Construção Inapropriada"),
     EXTREMISM("Extremismo", "Extremism", true, "extremism", Rank.TRIAL_MODERATOR, Collections.singletonList(PunishType.BAN), "Nazismo"),
     BADNICK("Nickname Inapropriado", "Inappropriate Nickname", true, "badnick", Rank.TRIAL_MODERATOR, Collections.singletonList(PunishType.BAN), "Nick Inapropriado"),
