@@ -8,15 +8,17 @@ package com.minecraft.lobby.listener;
 
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
+import com.minecraft.core.bukkit.accessory.list.title.TitleAccessory;
+import com.minecraft.core.bukkit.accessory.list.title.list.TitleCollector;
+import com.minecraft.core.bukkit.util.item.ItemFactory;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
-import com.minecraft.core.enums.PlusColor;
-import com.minecraft.core.enums.PrefixType;
-import com.minecraft.core.enums.Rank;
-import com.minecraft.core.enums.Tag;
+import com.minecraft.core.database.enums.Columns;
+import com.minecraft.core.enums.*;
 import com.minecraft.lobby.Lobby;
 import com.minecraft.lobby.hall.Hall;
 import com.minecraft.lobby.user.User;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +30,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.github.paperspigot.Title;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 public class UserLoader implements Listener {
@@ -87,6 +90,29 @@ public class UserLoader implements Listener {
         }
 
         player.sendTitle(new Title("§b§l" + Constants.SERVER_NAME.toUpperCase(), account.getLanguage().translate("lobby.welcome_title"), 8, 15, 12));
+
+        if(!account.getData(Columns.TITLE).getAsString().equals("...")) {
+            for(TitleCollector titleCollector : TitleCollector.values()) {
+                if(account.getData(Columns.TITLE).getAsString().equals(titleCollector.getAccessory().getName().toLowerCase())) {
+                    TitleAccessory title = titleCollector.getAccessory();
+                    if(title.getName().equalsIgnoreCase("clan")) {
+                        title.setDisplay("§eMembro de " + (account.getClan() == null ? "§cNenhum" : ChatColor.valueOf(account.getClan().getColor()) + "[" + account.getClan().getTag() + "]"));
+                    } else if(title.getName().equalsIgnoreCase("desde")) {
+                        Calendar c = Calendar.getInstance();
+                        c.setTimeInMillis(account.getData(Columns.FIRST_LOGIN).getAsLong());
+                        int year = c.get(Calendar.YEAR);
+                        title.setDisplay("§eDesde §b" + year);
+                    } else if(title.getName().contains("Medal")) {
+                        Medal selected = account.getProperty("account_medal").getAs(Medal.class);
+                        title.setDisplay(title.getDisplay().replace("{0}", "" + selected.getColor() + selected.getIcon()));
+                    } else {
+                        title.setDisplay(title.getDisplay().replace("{0}", "" + account.getData(title.getData()).getAsInteger()));
+                    }
+
+                    title.give(player);
+                }
+            }
+        }
 
         hall.handleNPCs(user);
     }

@@ -15,6 +15,7 @@ import com.minecraft.core.bukkit.event.player.PlayerShowEvent;
 import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
 import com.minecraft.core.bukkit.scheduler.GameRunnable;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.actionbar.ActionBar;
 import com.minecraft.core.bukkit.util.bossbar.Bossbar;
 import com.minecraft.core.bukkit.util.cooldown.CooldownProvider;
 import com.minecraft.core.bukkit.util.cooldown.type.Cooldown;
@@ -132,9 +133,19 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
                 }
                 if (user.isPlateDelay())
                     user.setPlateDelay(false);
+
+                if(Vanish.getInstance().isVanished(user.getUniqueId())) { // this shouldn't be here, I know...
+                    ActionBar.sendActionBar(user.getPlayer(), "§fVocê está §cESCONDIDO§f! Apenas §c" + Vanish.getInstance().getRank(user.getUniqueId()).getCategory().getDisplay().toUpperCase() + "§f e superior conseguem te ver.");
+                }
+
             }
 
+
+
         }
+
+
+
     }
 
     private final Set<UUID> vanisheds = new HashSet<>();

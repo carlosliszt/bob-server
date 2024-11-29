@@ -12,6 +12,7 @@ import com.minecraft.core.bukkit.accessory.list.gadget.BalloonGadgetAccessory;
 import com.minecraft.core.bukkit.accessory.list.gadget.FossilGadgetAccessory;
 import com.minecraft.core.bukkit.accessory.list.gadget.TrampolineGadgetAccessory;
 import com.minecraft.core.bukkit.accessory.list.particles.list.ParticleCollector;
+import com.minecraft.core.bukkit.accessory.list.title.list.TitleCollector;
 import com.minecraft.core.bukkit.listener.AwayListener;
 import com.minecraft.core.bukkit.server.BukkitServerStorage;
 import com.minecraft.lobby.command.BuildCommand;
@@ -70,6 +71,10 @@ public class Lobby extends BukkitGame {
         }
 
         for (EmotionCollector collector : EmotionCollector.values()) {
+            getAccessoryStorage().register(collector.getAccessory());
+        }
+
+        for(TitleCollector collector : TitleCollector.values()) {
             getAccessoryStorage().register(collector.getAccessory());
         }
 

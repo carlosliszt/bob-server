@@ -3,7 +3,9 @@ package com.minecraft.core.bukkit.listener;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
+import com.minecraft.core.bukkit.util.actionbar.ActionBar;
 import com.minecraft.core.bukkit.util.listener.DynamicListener;
+import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerStorage;
@@ -74,9 +76,10 @@ public class AwayListener extends DynamicListener {
                     account.connect(server);
                 }
             }
+
         }
 
-        if(isCertainHour(5, 3)) {
+        if(isCertainHour(5, 30)) { // this also shouldn't be here.
             Bukkit.getServer().shutdown();
         }
 

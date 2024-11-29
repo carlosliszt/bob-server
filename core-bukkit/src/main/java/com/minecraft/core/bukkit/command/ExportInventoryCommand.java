@@ -66,7 +66,7 @@ public class ExportInventoryCommand implements BukkitInterface {
         if (response.contains("\"key\"")) {
             response = response.substring(response.indexOf(":") + 2, response.length() - 2);
 
-            String postURL = raw ? "https://hastebin.com/raw/" : "https://hastebin.com/";
+            String postURL = raw ? "https://hastebin.com/share/" : "https://hastebin.com/";
             response = postURL + response;
         }
 

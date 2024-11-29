@@ -39,6 +39,8 @@ public class ParticlesAccessory extends Accessory {
     public void give(Player player) {
         Account account = Account.fetch(player.getUniqueId());
 
+        account.setAlpha(0.0D);
+
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {

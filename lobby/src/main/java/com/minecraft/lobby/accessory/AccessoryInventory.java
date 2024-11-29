@@ -7,6 +7,7 @@ import com.minecraft.core.bukkit.accessory.AccessoryType;
 import com.minecraft.core.bukkit.accessory.list.emotions.EmotionsAccessory;
 import com.minecraft.core.bukkit.accessory.list.emotions.list.EmotionCollector;
 import com.minecraft.core.bukkit.accessory.list.particles.list.ParticleCollector;
+import com.minecraft.core.bukkit.accessory.list.title.TitleAccessory;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.bukkit.util.inventory.Selector;
 import com.minecraft.core.bukkit.util.item.InteractableItem;
@@ -15,6 +16,7 @@ import com.minecraft.core.bukkit.util.reflection.ClassHandler;
 import com.minecraft.core.database.data.Data;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.lobby.Lobby;
+import com.minecraft.lobby.accessory.title.TitleSelectionInventory;
 import com.minecraft.lobby.duel.inventory.InventoryEditorCollection;
 import com.minecraft.lobby.duel.inventory.enums.FactoryInventory;
 import com.minecraft.lobby.duel.inventory.enums.FactorySettings;
@@ -147,6 +149,28 @@ public class AccessoryInventory implements Listener, BukkitInterface {
             case TITLES:
                 response.withName("Acessórios: Titulos");
                 response.withCustomItem(27, returnItem.getItemStack());
+                indexSlot = 10;
+                for(TitleAccessory.TitleCategory category : TitleAccessory.TitleCategory.values()) {
+                    InteractableItem item = new InteractableItem(
+                            new ItemFactory().setType(category.getMaterial()).setName("§a" + category.getName()).setDescription(
+                                    "",
+                                    "§7Desbloqueados: §c-/- §8(0%)",
+                                    "",
+                                    "§eClique para ver mais!"
+                            ).getStack(), new InteractableItem.Interact() {
+                        @Override
+                        public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+                            new TitleSelectionInventory(player, account, category).openInventory();
+                            return true;
+                        }
+                    }
+
+                    );
+                    response.withCustomItem(indexSlot, item.getItemStack());
+                    indexSlot++;
+                }
+                response.withCustomItem(27, returnItem.getItemStack());
+
                 break;
             case PARTICLES:
                 response.withSize(36);
