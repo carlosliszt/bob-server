@@ -42,23 +42,27 @@ public class ParticlesAccessory extends Accessory {
         BukkitTask task = new BukkitRunnable() {
             @Override
             public void run() {
-                Account.fetch(player.getUniqueId()).setAlpha( Account.fetch(player.getUniqueId()).getAlpha() + (Math.PI / 16));
-                double alphaNumeric =  Account.fetch(player.getUniqueId()).getAlpha();
-                Location loc = player.getLocation();
-                Location firstLocation = loc.clone().add(Math.cos(alphaNumeric), Math.sin(alphaNumeric) + 1.0, Math.sin(alphaNumeric));
-                Location secondLocation = loc.clone().add(Math.cos(alphaNumeric + Math.PI), Math.sin(alphaNumeric) + 1.0, Math.sin(alphaNumeric + Math.PI));
+                if(Account.fetch(player.getUniqueId()) != null) {
+                    Account.fetch(player.getUniqueId()).setAlpha(Account.fetch(player.getUniqueId()).getAlpha() + (Math.PI / 16));
+                    double alphaNumeric =  Account.fetch(player.getUniqueId()).getAlpha();
+                    Location loc = player.getLocation();
+                    Location firstLocation = loc.clone().add(Math.cos(alphaNumeric), Math.sin(alphaNumeric) + 1.0, Math.sin(alphaNumeric));
+                    Location secondLocation = loc.clone().add(Math.cos(alphaNumeric + Math.PI), Math.sin(alphaNumeric) + 1.0, Math.sin(alphaNumeric + Math.PI));
 
-                String dataString = account.getDataStorage().getData(Columns.PARTICLE).getAsString();
-                for (ParticleCollector particle : ParticleCollector.values()) {
-                    if (particle.getDisplay().toLowerCase().equals(dataString)) {
-                        PacketPlayOutWorldParticles packetPlayOutWorldParticles = new PacketPlayOutWorldParticles(particle.getParticle(), true, (float) firstLocation.getX(), (float) firstLocation.getY(), (float) firstLocation.getZ(), 0, 0, 0, 0, 1);
-                        PacketPlayOutWorldParticles packetPlayOutWorldParticles2 = new PacketPlayOutWorldParticles(particle.getParticle(), true, (float) secondLocation.getX(), (float) secondLocation.getY(), (float) secondLocation.getZ(), 0, 0, 0, 0, 1);
+                    String dataString = account.getDataStorage().getData(Columns.PARTICLE).getAsString();
+                    for (ParticleCollector particle : ParticleCollector.values()) {
+                        if (particle.getDisplay().toLowerCase().equals(dataString)) {
+                            PacketPlayOutWorldParticles packetPlayOutWorldParticles = new PacketPlayOutWorldParticles(particle.getParticle(), true, (float) firstLocation.getX(), (float) firstLocation.getY(), (float) firstLocation.getZ(), 0, 0, 0, 0, 1);
+                            PacketPlayOutWorldParticles packetPlayOutWorldParticles2 = new PacketPlayOutWorldParticles(particle.getParticle(), true, (float) secondLocation.getX(), (float) secondLocation.getY(), (float) secondLocation.getZ(), 0, 0, 0, 0, 1);
 
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutWorldParticles);
-                            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutWorldParticles2);
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutWorldParticles);
+                                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutWorldParticles2);
+                            }
                         }
                     }
+                } else {
+                    cancel();
                 }
             }
         }.runTaskTimer(BukkitGame.getEngine(), 0, 3);

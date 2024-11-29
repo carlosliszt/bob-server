@@ -7,6 +7,11 @@
 package com.minecraft.lobby;
 
 import com.minecraft.core.bukkit.BukkitGame;
+import com.minecraft.core.bukkit.accessory.list.emotions.list.EmotionCollector;
+import com.minecraft.core.bukkit.accessory.list.gadget.BalloonGadgetAccessory;
+import com.minecraft.core.bukkit.accessory.list.gadget.FossilGadgetAccessory;
+import com.minecraft.core.bukkit.accessory.list.gadget.TrampolineGadgetAccessory;
+import com.minecraft.core.bukkit.accessory.list.particles.list.ParticleCollector;
 import com.minecraft.core.bukkit.listener.AwayListener;
 import com.minecraft.core.bukkit.server.BukkitServerStorage;
 import com.minecraft.lobby.command.BuildCommand;
@@ -57,6 +62,16 @@ public class Lobby extends BukkitGame {
         getServer().getPluginManager().registerEvents(new UserLoader(), this);
         getServer().getPluginManager().registerEvents(new BasicListener(), this);
         getServer().getPluginManager().registerEvents(new AwayListener(), this);
+
+        getAccessoryStorage().register(new FossilGadgetAccessory(), new BalloonGadgetAccessory(), new TrampolineGadgetAccessory());
+
+        for (ParticleCollector collector : ParticleCollector.values()) {
+            getAccessoryStorage().register(collector.getAccessory());
+        }
+
+        for (EmotionCollector collector : EmotionCollector.values()) {
+            getAccessoryStorage().register(collector.getAccessory());
+        }
 
         this.hall = loadHall();
         ((BukkitServerStorage) getServerStorage()).subscribeProxyCount();

@@ -31,6 +31,8 @@ import com.minecraft.core.translation.Language;
 import com.minecraft.lobby.Lobby;
 import com.minecraft.lobby.command.DuelCommand;
 import com.minecraft.lobby.duel.DuelMenu;
+import com.minecraft.lobby.duel.inventory.DuelsSettingsInventory;
+import com.minecraft.lobby.duel.inventory.enums.FactorySettings;
 import com.minecraft.lobby.hall.Hall;
 import com.minecraft.lobby.user.User;
 import com.mojang.authlib.properties.Property;
@@ -52,6 +54,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Duels extends Hall {
+
+    InteractableItem duels_menu = new InteractableItem(new ItemFactory().setType(Material.EMERALD).setName("§aMenu do Duels §7(Clique Direito)")
+            .setDescription(
+                    "§7Configure as preferências de",
+                    "§7seus duelos dentro de nosso",
+                    "§7servidor.",
+                    "",
+                    "§eClique para configurar!"
+            )
+            .getStack(), new InteractableItem.Interact() {
+        @Override
+        public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+            new DuelsSettingsInventory(player, Account.fetch(player.getUniqueId()), FactorySettings.MAIN).openInventory();
+            return true;
+        }
+    });
 
     public Duels(Lobby lobby) {
         super(lobby, "Duels Lobby", "duelslobby", "DUELS NO BLAZEMC.COM.BR");
@@ -88,7 +106,9 @@ public class Duels extends Hall {
     public void handleNPCs(User user) {
         Player player = user.getPlayer();
 
+
         player.getInventory().setItem(2, new ItemFactory(Material.BLAZE_ROD).setName("§aDesafiar §7(Direito no jogador)").getStack());
+        player.getInventory().setItem(3, duels_menu.getItemStack());
 
         Language language = user.getAccount().getLanguage();
 

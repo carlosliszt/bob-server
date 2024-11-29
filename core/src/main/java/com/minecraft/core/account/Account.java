@@ -16,7 +16,6 @@ import com.minecraft.core.account.friend.Friend;
 import com.minecraft.core.account.friend.FriendRequest;
 import com.minecraft.core.account.system.UnloadTask;
 import com.minecraft.core.clan.Clan;
-import com.minecraft.core.cosmetic.Title;
 import com.minecraft.core.database.data.Data;
 import com.minecraft.core.database.data.DataStorage;
 import com.minecraft.core.database.enums.Columns;
@@ -48,7 +47,6 @@ public class Account {
     private transient TagList tagList = new TagList(this);
     private transient MedalList medalList = new MedalList(this);
     private transient ClanTagList clanTagList = new ClanTagList(this);
-    private transient TitleList titleList = new TitleList(this);
     private final transient List<PlusColorData> plusColors = new ArrayList<>();
 
     private transient UnloadTask unloadTask;
@@ -65,7 +63,6 @@ public class Account {
     private final transient List<ClanTagData> clanTags = new ArrayList<>();
     private final transient List<MedalData> medals = new ArrayList<>();
     private final transient List<PermissionData> permissions = new ArrayList<>();
-    private final transient List<TitleData> titles = new ArrayList<>();
     private transient PlusColorList plusColorList = new PlusColorList(this);
 
     private final transient HashMap<String, Property> properties = new HashMap<>();
@@ -73,7 +70,10 @@ public class Account {
     private final List<Friend> friends = new ArrayList<>();
     private final List<FriendRequest> sentRequests = new ArrayList<>();
     private final List<FriendRequest> receivedRequests = new ArrayList<>();
-    
+
+    @Getter
+    @Setter
+    private double alpha = 0.0D; //cosmetic
 
     private transient int flags = 0, preferences = 0;
 
@@ -318,90 +318,6 @@ public class Account {
         loadPlusColors();
     }
 
-    public void loadTitles() {
-        titles.clear();
-
-        JsonArray jsonArray = getData(Columns.TITLES).getAsJsonArray();
-        Iterator<JsonElement> iterator = jsonArray.iterator();
-
-        while(iterator.hasNext()) {
-            JsonObject object = iterator.next().getAsJsonObject();
-
-            String code = object.get("title").getAsString();
-            String addedBy = object.get("added_by").getAsString();
-            long expiration = object.get("expiration").getAsLong();
-            long addedAt = object.get("added_at").getAsLong();
-            long updatedAt = object.has("updated_at") ? object.get("updated_at").getAsLong() : object.get("added_at").getAsLong();
-
-            Title title = Title.valueOf(code.toUpperCase());
-
-            if(title == null) {
-                System.out.println("Title '" + code + "' not found, removing from " + username + "'s account.");
-                iterator.remove();
-                continue;
-            }
-
-            if(expiration != -1 && expiration < System.currentTimeMillis()) {
-                System.out.println("Title '" + title.getName() + "' expired, removing from " + username + "'s account.");
-                iterator.remove();
-                continue;
-            }
-
-            titles.add(new TitleData(title, addedBy, addedAt, updatedAt, expiration));
-        }
-
-        getData(Columns.TITLES).setData(jsonArray);
-        getData(Columns.TITLES).setChanged(true);
-    }
-
-    public void giveTitle(Title title, long expiration, String added_by) {
-        JsonArray jsonArray = getData(Columns.TITLES).getAsJsonArray();
-
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("title", title.name());
-        jsonObject.addProperty("expiration", expiration);
-        jsonObject.addProperty("added_by", added_by);
-        jsonObject.addProperty("added_at", System.currentTimeMillis());
-        jsonArray.add(jsonObject);
-
-        getData(Columns.TITLES).setData(jsonArray);
-        loadTitles();
-    }
-
-    public void giveTitle(Title title, long expiration, String added_by, long added_at, long updated_at) {
-        JsonArray jsonArray = getData(Columns.TITLES).getAsJsonArray();
-
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("title", title.name());
-        jsonObject.addProperty("expiration", expiration);
-        jsonObject.addProperty("added_by", added_by);
-        jsonObject.addProperty("added_at", added_at);
-        jsonObject.addProperty("updated_at", updated_at);
-        jsonArray.add(jsonObject);
-
-        getData(Columns.TITLES).setData(jsonArray);
-        loadTitles();
-    }
-
-    public void removeTitle(Title title) {
-        JsonArray jsonArray = getData(Columns.TITLES).getAsJsonArray();
-        Iterator<JsonElement> iterator = jsonArray.iterator();
-
-        while(iterator.hasNext()) {
-            JsonObject object = iterator.next().getAsJsonObject();
-
-            Title comparator = Title.valueOf(object.get("title").getAsString().toUpperCase());
-
-            if(comparator == title) {
-                iterator.remove();
-                break;
-            }
-        }
-
-        getData(Columns.TITLES).setData(jsonArray);
-        loadTitles();
-    }
 
     public void loadPermissions() {
         permissions.clear();
