@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -205,6 +206,26 @@ public class ItemFactory {
         return meta;
     }
 
+    public ItemFactory replaceDescription(String placeholder, String replacement) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null && meta.hasLore()) {
+            List<String> lore = meta.getLore();
+            if (lore != null) {
+                List<String> updatedLore = new ArrayList<>();
+                for (String line : lore) {
+                    updatedLore.add(line.replace(placeholder, replacement));
+                }
+                meta.setLore(updatedLore);
+                itemStack.setItemMeta(meta);
+            }
+        }
+        return this;
+    }
+
+    public ItemFactory replaceDescription(String placeholder, int replacement) {
+        return replaceDescription(placeholder, String.valueOf(replacement));
+    }
+
     public ItemFactory setSkull(String owner) {
         itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
@@ -219,6 +240,24 @@ public class ItemFactory {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", new String(Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", "http://textures.minecraft.net/texture/" + url).getBytes()))));
         FieldHelper.setValue(meta, "profile", profile);
+        itemStack.setItemMeta(meta);
+        return this;
+    }
+
+    public ItemFactory setSkullProperty(Property property) {
+        itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        profile.getProperties().put("textures", property);
+
+        try {
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, profile);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         itemStack.setItemMeta(meta);
         return this;
     }

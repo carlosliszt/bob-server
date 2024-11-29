@@ -119,6 +119,11 @@ public class RoomListeners implements Listener, BukkitInterface {
         }
     }
 
+    @EventHandler
+    public void playerPickUpEvent(PlayerPickupArrowEvent event) {
+        event.setCancelled(true);
+    }
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onCallDeath(PlayerMoveEvent event) {
         final Player player = event.getPlayer();

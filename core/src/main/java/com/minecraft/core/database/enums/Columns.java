@@ -29,6 +29,10 @@ public enum Columns {
     LAST_LOGIN(0L, "Long", "lastLogin", "BIGINT"),
     ADDRESS("...", "String", "address", "VARCHAR(50)"),
 
+    ACCESSORY("...", "String", "accessory", "VARCHAR(100)"),
+    PARTICLE("...", "String", "particle", "VARCHAR(100)"),
+    TITLE("NONE", "String", "title", "VARCHAR(100)"),
+
     PASSWORD("...", "String", "password", "VARCHAR(24)"),
     PASSWORD_LAST_UPDATE(0L, "Long", "lastUpdate", "BIGINT"),
     SESSION_EXPIRES_AT(0L, "Long", "session_expiresAt", "BIGINT"),
@@ -39,7 +43,6 @@ public enum Columns {
     NICK_OBJECTS("[]", "JsonArray", "nick_objects", "longtext"),
     LAST_NICK("...", "String", "last_nick", "VARCHAR(16)"),
     TAG("EalNl", "String", "tag", "VARCHAR(6)"),
-    TITLE("NONE", "String", "title", "VARCHAR(100)"),
     CLANTAG("yQFBm", "String", "clantag", "VARCHAR(6)"),
     PREFIXTYPE("dMjgl", "String", "prefixtype", "VARCHAR(6)"),
     MEDAL("TaAEd", "String", "medal", "VARCHAR(6)"),
@@ -47,6 +50,8 @@ public enum Columns {
     LANGUAGE("VIxPa", "String", "language", "VARCHAR(6)"),
     PREFERENCES(0, "Int", "preferences", "INT(100)"),
     SKIN("{}", "JsonObject", "skin", "longtext"),
+    DUELS_KILL_EFFECT(0, "Int", "duels_effect", "INT(100)"),
+    DUELS_SPEC_PREFERENCE(true, "Boolean", "duels_specs", "VARCHAR(10)"),
     BLOCKEDS("[]", "JsonArray", "blocks", "longtext"),
     FRIENDS("[]", "JsonArray", "friends", "longtext"),
     FRIEND_STATUS("ONLINE", "String", "friend_status", "VARCHAR(16)"),
@@ -185,6 +190,8 @@ public enum Columns {
     BRIDGE_RANK(1, "Int", "rank", "INT(100)"),
     BRIDGE_RANK_EXP(0, "Int", "rank_exp", "INT(100)"),
     BRIDGE_DATA("[]", "JsonArray", "data", "longtext"),
+    BRIDGE_INVENTORY("...", "String", "inventory", "VARCHAR(5000)"),
+
 
     STAFF_WEEKLY_BANS(0, "Int", "weekly_bans", "INT(100)"),
     STAFF_WEEKLY_MUTES(0, "Int", "weekly_mutes", "INT(100)"),

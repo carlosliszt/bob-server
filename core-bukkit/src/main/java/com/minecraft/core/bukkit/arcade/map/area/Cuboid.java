@@ -4,6 +4,7 @@ import com.minecraft.core.bukkit.arcade.map.synthetic.SyntheticLocation;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -62,6 +63,20 @@ public class Cuboid {
         }
 
         return chunks;
+    }
+
+    public Set<Block> getBlocks(World world) {
+        Set<Block> blocks = new HashSet<>();
+
+        for (int x = (int) lowX; x <= (int) highX; x++) {
+            for (int y = (int) lowY; y <= (int) highY; y++) {
+                for (int z = (int) lowZ; z <= (int) highZ; z++) {
+                    blocks.add(world.getBlockAt(x, y, z));
+                }
+            }
+        }
+
+        return blocks;
     }
 
 }

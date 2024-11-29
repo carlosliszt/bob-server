@@ -8,6 +8,7 @@ package com.minecraft.core.bukkit;
 
 import com.minecraft.core.Constants;
 
+import com.minecraft.core.bukkit.accessory.AccessoryStorage;
 import com.minecraft.core.bukkit.command.*;
 import com.minecraft.core.bukkit.listener.AccountLoader;
 import com.minecraft.core.bukkit.listener.AntiDamageIndicator;
@@ -75,6 +76,7 @@ public class BukkitGame extends JavaPlugin {
     private BossbarProvider bossbarProvider;
     private KnockbackService knockbackService;
     private InventoryService inventoryService;
+    private AccessoryStorage accessoryStorage;
 
     private String instanceId;
 
@@ -127,6 +129,7 @@ public class BukkitGame extends JavaPlugin {
         this.whitelist = Whitelist.load();
         this.variableLoader = new VariableLoader();
         this.knockbackService = Bukkit.imanity().getKnockbackService();
+        this.accessoryStorage = new AccessoryStorage();
 
         getServer().imanity().registerPacketHandler(this, new AntiDamageIndicator());
 

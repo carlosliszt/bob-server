@@ -9,6 +9,7 @@ package com.minecraft.lobby.hall;
 import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.BukkitGame;
+import com.minecraft.core.bukkit.accessory.AccessoryType;
 import com.minecraft.core.bukkit.command.ProfileCommand;
 import com.minecraft.core.bukkit.event.player.PlayerShowEvent;
 import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
@@ -30,6 +31,7 @@ import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
 import com.minecraft.core.translation.Language;
 import com.minecraft.lobby.Lobby;
+import com.minecraft.lobby.accessory.AccessoryInventory;
 import com.minecraft.lobby.feature.chair.ChairStairs;
 import com.minecraft.lobby.user.User;
 import lombok.Getter;
@@ -69,6 +71,9 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
 
     private World world;
     private Location spawn;
+
+    @Getter
+    private Hologram bestTime;
 
     private int room;
 
@@ -195,9 +200,17 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
             }
         });
 
-        InteractableItem collectibles = new InteractableItem(new ItemFactory().setType(Material.CHEST).setName("§aColetáveis").getStack(), new InteractableItem.Interact() {
+        InteractableItem collectibles = new InteractableItem(new ItemFactory().setType(Material.CHEST).setDurability(3).setName("§aAcessórios §7(Clique Direito)")
+                .setDescription(
+                        "§eClique para ver os cosméticos!"
+                )
+                .getStack(), new InteractableItem.Interact() {
             public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
-                player.sendMessage("§cEm breve!");
+                if (Account.fetch(player.getUniqueId()).hasRank(Rank.DEVELOPER_ADMIN)) {
+                    new AccessoryInventory(player, account, AccessoryType.NULL).openInventory();
+                } else {
+                    player.sendMessage("§cEm desenvolvimento.");
+                }
                 return false;
             }
         });
