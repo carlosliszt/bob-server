@@ -50,6 +50,7 @@ public class CageTask {
 
             final Player player = user.getPlayer();
 
+            player.getActivePotionEffects().clear();
             player.teleport(this.blue.clone().add(0,1,0));
             player.setHealth(20.0D);
 
@@ -66,6 +67,7 @@ public class CageTask {
 
             final Player player = user.getPlayer();
 
+            player.getActivePotionEffects().clear();
             player.teleport(this.red.clone().add(0,1,0));
             player.setHealth(20.0D);
 

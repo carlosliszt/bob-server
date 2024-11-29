@@ -100,11 +100,11 @@ public class Bridge extends Hall {
         this.killsDuoLocation = new Location(Bukkit.getWorld("world"), -15.5, 67, 15.5);
         this.winstreakDuoLocation = new Location(Bukkit.getWorld("world"), -12.5, 67, 13.5);
 
-        this.bestPlayers = new Location(getWorld(), -18.5, 74, 17.5);
+        this.bestPlayers = new Location(Bukkit.getWorld("world"), -7.5, 68, 33.5);
 
-        this.loc1 = new Location(getWorld(), -19.5, 71, 17.5, -90, 0);
-        this.loc2 = new Location(getWorld(), -18.5, 70, 19.5, -90, 0);
-        this.loc3 = new Location(getWorld(), -18.5, 69, 15.5, -90, 0);
+        this.loc1 = new Location(Bukkit.getWorld("world"), -7.5, 64.5, 33.5, -130, 0);
+        this.loc2 = new Location(Bukkit.getWorld("world"), -7.5, 64.0, 31.5, -117, 0);
+        this.loc3 = new Location(Bukkit.getWorld("world"), -5.5, 63.5, 34.5, -145, 0);
 
         this.stats = new Location(Bukkit.getWorld("world"), -2.5, 65.0, 4.5, 217, 0);
 

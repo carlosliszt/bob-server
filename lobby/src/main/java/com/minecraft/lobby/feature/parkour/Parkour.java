@@ -8,7 +8,7 @@ import com.minecraft.core.bukkit.util.item.ItemFactory;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.database.enums.Tables;
 import com.minecraft.lobby.Lobby;
-import com.minecraft.lobby.hall.types.Main;
+import com.minecraft.lobby.hall.Hall;
 import com.minecraft.lobby.user.User;
 import lombok.Getter;
 import org.bukkit.GameMode;
@@ -32,6 +32,7 @@ public class Parkour implements Listener, BukkitInterface {
 
     private final Location startLocation, endLocation;
     private final List<Checkpoint> checkpoints = new ArrayList<>();
+    private Columns recordColumn;
 
     InteractableItem resetParkour = new InteractableItem(new ItemFactory().setType(Material.RECORD_7).setName("§aReiniciar o Parkour").getStack(), new InteractableItem.Interact() {
         public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
@@ -141,16 +142,16 @@ public class Parkour implements Listener, BukkitInterface {
             if (user.isParkourMode()) {
                 if (user.getCheckpoints().values().containsAll(checkpoints)) {
                     player.sendMessage("§b§lPARKOUR§a Parabéns, você completou o parkour em " + formatSeconds(user.getParkourTime()) + "!");
-                    Main main = (Main) user.getHall();
-                    if (user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong() > user.getParkourTime() || user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong() == 0) {
-                        player.sendMessage("§b§lPARKOUR§a Você bateu o recorde pessoal por " + (user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong() - user.getParkourTime()) + " segundos!");
-                        main.getBestTime().updateText(0, "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getParkourTime()));
-                        user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).setData(user.getParkourTime());
+                    Hall hall = user.getHall();
+                    if (user.getAccount().getData(recordColumn).getAsLong() > user.getParkourTime() || user.getAccount().getData(recordColumn).getAsLong() == 0) {
+                        player.sendMessage("§b§lPARKOUR§a Você bateu o recorde pessoal por " + (user.getAccount().getData(recordColumn).getAsLong() - user.getParkourTime()) + " segundos!");
+                        hall.getBestTime().updateText(0, "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getParkourTime()));
+                        user.getAccount().getData(recordColumn).setData(user.getParkourTime());
                         async(() -> {
                             user.getAccount().getDataStorage().saveTable(Tables.LOBBY_PARKOUR);
                         });
                     } else {
-                        player.sendMessage("§b§lPARKOUR§a Seu tempo foi de " + (user.getParkourTime() - user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong()) + " segundos a mais que o recorde pessoal!");
+                        player.sendMessage("§b§lPARKOUR§a Seu tempo foi de §c" + (user.getParkourTime() - user.getAccount().getData(recordColumn).getAsLong()) + "§a segundos a mais que o recorde pessoal!");
                     }
                     resetParkour(player, user);
 

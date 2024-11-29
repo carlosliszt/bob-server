@@ -47,8 +47,6 @@ public class Main extends Hall {
     private final Leaderboard bansLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_BANS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
     private final Leaderboard mutesLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_MUTES, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
     private final Leaderboard parkourLeaderboard = new Leaderboard(Columns.MAIN_LOBBY_PARKOUR_RECORD, LeaderboardUpdate.MINUTE, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).reverseQuery();
-    @Getter
-    private Hologram bestTime;
 
     private final Location bansLocation, mutesLocation;
     private final Location parkourStart, parkourEnd;
@@ -168,8 +166,8 @@ public class Main extends Hall {
             Hologram startHologram = new Hologram(player, parkourStart.clone().add(0, 2, 0), "§b§LPARKOUR", "§aInício.");
             startHologram.show();
 
-            bestTime = new Hologram(player, parkourStart.clone().add(0, 1, 0), "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong()));
-            bestTime.show();
+            setBestTime(new Hologram(player, parkourStart.clone().add(0, 1, 0), "§eRecorde pessoal: §7" + Parkour.formatSeconds(user.getAccount().getData(Columns.MAIN_LOBBY_PARKOUR_RECORD).getAsLong())));
+            getBestTime().show();
 
             Hologram endHologram = new Hologram(player, parkourEnd.clone().add(0, 2, 0), "§b§LPARKOUR", "§cFim.");
             endHologram.show();
