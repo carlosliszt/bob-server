@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -221,12 +222,15 @@ public abstract class Lobby implements VariableStorage, Listener, BukkitInterfac
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent event) {
         if (event.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
-            final Vector vector = this.spawn.clone().getDirection().multiply(2.9).setY(0.66);
+            Block blockAboveSlime = event.getTo().getBlock();
+            if (!(blockAboveSlime.getType() == Material.CARPET && blockAboveSlime.getData() == DyeColor.GREEN.getWoolData())) {
+                final Vector vector = this.spawn.clone().getDirection().multiply(2.9).setY(0.66);
 
-            final Player player = event.getPlayer();
+                final Player player = event.getPlayer();
 
-            player.setVelocity(vector);
-            player.playSound(player.getLocation(), Sound.FIREWORK_LAUNCH, 2.5F, 2.5F);
+                player.setVelocity(vector);
+                player.playSound(player.getLocation(), Sound.FIREWORK_LAUNCH, 2.5F, 2.5F);
+            }
         }
     }
 

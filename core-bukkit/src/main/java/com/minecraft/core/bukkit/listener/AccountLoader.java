@@ -10,6 +10,7 @@ import com.minecraft.core.Constants;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.account.AccountExecutor;
 import com.minecraft.core.bukkit.BukkitGame;
+import com.minecraft.core.bukkit.util.title.TitleHandler;
 import com.minecraft.core.bukkit.util.variable.VariableStorage;
 import com.minecraft.core.bukkit.util.variable.object.Variable;
 import com.minecraft.core.bukkit.util.whitelist.Whitelist;
@@ -214,6 +215,7 @@ public class AccountLoader implements Listener, VariableStorage {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         Constants.getAccountStorage().forget(event.getPlayer().getUniqueId());
+        TitleHandler.getInstance().removeTitle(event.getPlayer());
     }
 
     public void addColumns(Columns... columns) {

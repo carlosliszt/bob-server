@@ -102,12 +102,6 @@ public class ProxyRedisPubSub extends JedisPubSub implements ProxyInterface {
 
                         case VANISHED:
                             holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
-                            for (Friend friend : holderAccount.getFriends()) {
-                                ProxiedPlayer proxiedPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
-                                if (proxiedPlayer != null) {
-                                    proxiedPlayer.sendMessage("§6[AMIGOS]§e " + holderAccount.getRank().getDefaultTag().getFormattedColor() + holderAccount.getUsername() + " §esaiu!");
-                                }
-                            }
                             async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
                             break;
                         case SILENTVANISH:

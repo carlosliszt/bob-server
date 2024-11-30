@@ -21,7 +21,7 @@ public class DamageListener implements Listener {
             ItemStack itemStack = player.getItemInHand();
 
             if (itemStack != null && ACCEPTABLE_MATERIALS.contains(itemStack.getType()))
-                event.setDamage(Math.max(2, event.getDamage() - 1.5));
+                event.setDamage(Math.max(2, event.getDamage() + 1.5));
         }
     }
 

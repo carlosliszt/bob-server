@@ -351,6 +351,18 @@ public class AccountLoader implements Listener {
                     Staffer user = new Staffer(account);
                     ProxyGame.getInstance().getStaffStorage().store(account.getUniqueId(), user);
                 }
+
+                for (Friend friend : account.getFriends()) {
+                    ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                    if (friendPlayer != null) {
+                        if (account.getData(Columns.FRIEND_STATUS).getAsString().equals("ONLINE")) {
+
+                            Account friendsAccount = Account.fetch(friend.getUniqueId());
+                            friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
+                        }
+                    }
+                }
+
             } else {
                 loginEvent.setCancelled(true);
                 loginEvent.setCancelReason(TextComponent.fromLegacyText(Language.PORTUGUESE.translate("unexpected_error")));
@@ -396,16 +408,12 @@ public class AccountLoader implements Listener {
                 }
 
                 player.connect(BungeeCord.getInstance().getServerInfo(server.getName()));
-            }
-        }
-
-        for (Friend friend : account.getFriends()) {
-            ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
-            if (friendPlayer != null) {
-                if (account.getData(Columns.FRIEND_STATUS).getAsString().equals("ONLINE")) {
-                    Account friendsAccount = Account.fetch(friend.getUniqueId());
-                    friendPlayer.sendMessage("§6[AMIGOS]§e " + account.getRank().getDefaultTag().getFormattedColor() + account.getUsername() + " §eentrou!");
-                    player.sendMessage("§6[AMIGOS]§e " + friendsAccount.getRank().getDefaultTag().getFormattedColor() + friendsAccount.getUsername() + " §eestá online.");
+                for (Friend friend : account.getFriends()) {
+                    ProxiedPlayer friendPlayer = BungeeCord.getInstance().getPlayer(friend.getUniqueId());
+                    if (friendPlayer != null) {
+                        Account friendsAccount = Account.fetch(friend.getUniqueId());
+                        player.sendMessage("§6[AMIGOS]§e " + friendsAccount.getRank().getDefaultTag().getFormattedColor() + friendsAccount.getUsername() + " §eestá online.");
+                    }
                 }
             }
         }

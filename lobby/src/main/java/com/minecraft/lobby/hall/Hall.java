@@ -92,7 +92,7 @@ public abstract class Hall extends GameRunnable implements Listener, VariableSto
         this.world = Bukkit.getWorlds().get(0);
         this.world.setAutoSave(false);
 
-        this.spawn = new Location(this.world, 0, 62, -17, 0, 0);
+        this.spawn = new Location(Bukkit.getWorld("world"), 120.5, 83.0, 112.5, 90, 0);
 
         this.findSlimeBlocks();
 

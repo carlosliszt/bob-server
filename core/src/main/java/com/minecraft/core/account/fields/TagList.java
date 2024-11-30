@@ -14,6 +14,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 public class TagList {
@@ -22,12 +23,28 @@ public class TagList {
     @Getter
     private final List<Tag> tags = new ArrayList<>();
 
+    private static final Map<Tag, Rank> restrictedTags = Map.of(
+            Tag.PARTNER_PLUS, Rank.PARTNER_PLUS,
+            Tag.BUILDER, Rank.BUILDER,
+            Tag.HELPER, Rank.HELPER
+    );
+
     public void loadTags() {
         tags.clear();
 
         for (Tag tag : Tag.getValues()) {
-            if (!tag.isDedicated() && account.hasPermission(tag.getDefaultRank()) || (tag == Tag.BUILDER && account.hasRank(Rank.BUILDER)) || (tag == Tag.PARTNER_PLUS && account.hasRank(Rank.PARTNER_PLUS)) || tag.isDedicated() && account.getRank().getDefaultTag().getId() == tag.getId() || tag.isDedicated() && account.hasPermission(Rank.ADMINISTRATOR) || account.hasTag(tag))
+            if (restrictedTags.containsKey(tag)) {
+                if (account.getRank() == restrictedTags.get(tag)) {
+                    tags.add(tag);
+                }
+            } else if (
+                    (!tag.isDedicated() && account.hasPermission(tag.getDefaultRank())) ||
+                            (tag.isDedicated() && account.getRank().getDefaultTag().getId() == tag.getId()) ||
+                            (tag.isDedicated() && account.hasPermission(Rank.ADMINISTRATOR)) ||
+                            account.hasTag(tag)
+            ) {
                 tags.add(tag);
+            }
         }
     }
 

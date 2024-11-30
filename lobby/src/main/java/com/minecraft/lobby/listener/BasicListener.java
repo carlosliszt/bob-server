@@ -22,6 +22,7 @@ import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.EntitySnowball;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -72,9 +73,12 @@ public class BasicListener implements Listener {
         User user = User.fetch(p.getUniqueId());
         Location loc = Lobby.getLobby().getHall().getSpawn().clone();
         if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
-            Vector v = loc.getDirection().multiply(2.9).setY(0.66);
-            p.setVelocity(v);
-            p.playSound(p.getLocation(), Sound.FIREWORK_LAUNCH, 2.5F, 2.5F);
+            Block blockAboveSlime = e.getTo().getBlock();
+            if (!(blockAboveSlime.getType() == Material.CARPET && blockAboveSlime.getData() == DyeColor.GREEN.getWoolData())) {
+                Vector v = loc.getDirection().multiply(2.9).setY(0.66);
+                p.setVelocity(v);
+                p.playSound(p.getLocation(), Sound.FIREWORK_LAUNCH, 2.5F, 2.5F);
+            }
         }
 
         if (user.isPlateKillSwitch()) {
@@ -243,6 +247,17 @@ public class BasicListener implements Listener {
 
         if (grapplerHooks.containsKey(player.getUniqueId()))
             grapplerHooks.remove(player.getUniqueId()).remove();
+    }
+
+    @EventHandler
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBlockPhysics(EntityChangeBlockEvent event) {
+        if (!event.getBlock().getType().hasGravity()) return;
+            event.setCancelled(true);
     }
 
     @Getter
