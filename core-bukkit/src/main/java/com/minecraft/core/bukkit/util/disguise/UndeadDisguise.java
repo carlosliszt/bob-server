@@ -57,6 +57,9 @@ public class UndeadDisguise {
             case GHAST:
                 entity = getEntity("EntityGhast", p);
                 break;
+            case ENDER_DRAGON:
+                entity = getEntity("EntityDragon", p);
+                break;
             case GIANT:
                 entity = getEntity("EntityGiant", p);
                 break;
@@ -193,7 +196,7 @@ public class UndeadDisguise {
     public static enum DisguiseType {
         ZOMBIE(Type.BIPED), WITHER_SKELETON(Type.BIPED), SKELETON(Type.BIPED), ZOMBIEPIG(Type.BIPED), BLAZE(Type.MOB),
         ENDERMAN(Type.MOB), CREEPER(Type.MOB), SPIDER(Type.MOB), WITCH(Type.MOB), WITHER_BOSS(Type.MOB),
-        GHAST(Type.MOB), GIANT(Type.MOB);
+        GHAST(Type.MOB), GIANT(Type.MOB), ENDER_DRAGON(Type.MOB);
 
         private Type type;
 

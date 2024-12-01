@@ -19,7 +19,6 @@ import redis.clients.jedis.Jedis;
 import java.util.Arrays;
 import java.util.List;
 
-
 @AllArgsConstructor
 @Getter
 public class AddressData {
@@ -81,7 +80,7 @@ public class AddressData {
         context.sendMessage("  §7País: %s", getCountry());
         context.sendMessage("  §7Estado: %s", getState());
 
-        if (context.getAccount().hasPermission(Rank.PRIMARY_MOD))
+        if (context.getAccount().hasPermission(Rank.ADMINISTRATOR))
             context.sendMessage("  §7Cidade: %s", getCity());
 
         if (isAdmin) {

@@ -9,6 +9,7 @@ package com.minecraft.core.bukkit.command;
 import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.BukkitGame;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.disguise.UndeadDisguise;
 import com.minecraft.core.command.annotation.Command;
 import com.minecraft.core.command.annotation.Optional;
 import com.minecraft.core.command.command.Context;
@@ -31,7 +32,7 @@ import org.bukkit.util.Vector;
 public class MydragonCommand implements BukkitInterface, Listener {
 
     @Command(name = "mydragon", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
-    public void handleCommand(Context<Player> context, @Optional(def = "§d§lMY DRAGON!") String[] name) {
+    public void handleCommand(Context<Player> context, @Optional(def = "§d§lJORGE") String[] name) {
         Player player = context.getSender();
 
         Account account = context.getAccount();
@@ -88,6 +89,14 @@ public class MydragonCommand implements BukkitInterface, Listener {
                 ec.yaw = player.getLocation().getYaw() - 180;
             }
         }.runTaskTimerAsynchronously(BukkitGame.getEngine(), 0, 1);
+    }
+
+    @Command(name = "dragonmyself", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
+    public void handleOtherCommand(Context<Player> context) {
+        UndeadDisguise dis = new UndeadDisguise(UndeadDisguise.DisguiseType.ENDER_DRAGON, context.getSender());
+        dis.disguiseToAll();
+
+        context.sendMessage("§dWoosh!");
     }
 
     @EventHandler
