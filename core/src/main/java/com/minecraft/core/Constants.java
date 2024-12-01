@@ -70,7 +70,7 @@ public class Constants {
      */
     public static final String SERVER_NAME = System.getProperty("server_name", "BlazeMC");
     public static final String SERVER_WEBSITE = System.getProperty("server_website", "www.blazemc.com.br");
-    public static final String SERVER_DISCORD = System.getProperty("server_discord", "discord.gg/mariaumfc");
+    public static final String SERVER_DISCORD = System.getProperty("server_discord", "discord.gg/blazemc");
     public static final String SERVER_STORE = System.getProperty("server_store", "loja.blazemc.com.br");
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("###,###,###,###,###.##");
     public static final DecimalFormat SIMPLE_DECIMAL_FORMAT = create();
