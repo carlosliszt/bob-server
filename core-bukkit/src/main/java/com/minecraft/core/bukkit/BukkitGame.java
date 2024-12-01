@@ -10,6 +10,7 @@ import com.minecraft.core.Constants;
 
 import com.minecraft.core.bukkit.accessory.AccessoryStorage;
 import com.minecraft.core.bukkit.command.*;
+import com.minecraft.core.bukkit.discord.Discord;
 import com.minecraft.core.bukkit.listener.AccountLoader;
 import com.minecraft.core.bukkit.listener.AntiDamageIndicator;
 import com.minecraft.core.bukkit.listener.ServerListener;
@@ -41,6 +42,8 @@ import com.minecraft.core.util.ranking.RankingFactory;
 import com.minecraft.core.util.updater.PluginUpdater;
 import dev.imanity.knockback.api.KnockbackService;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -77,6 +80,7 @@ public class BukkitGame extends JavaPlugin {
     private KnockbackService knockbackService;
     private InventoryService inventoryService;
     private AccessoryStorage accessoryStorage;
+    private Discord discord;
 
     private String instanceId;
 
@@ -108,6 +112,9 @@ public class BukkitGame extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        discord = new Discord();
+        discord = new Discord().start("MTMwNTE5NDYwMzU0ODI0NjA1Nw.G-BIU4.PBP_RcRXT1SbzMvD2iiye9Ep8ZDZtqPaEs5cnY");
 
         instanceId = generateRoomCode(6);
 
@@ -167,6 +174,17 @@ public class BukkitGame extends JavaPlugin {
         new BukkitServerTicker().start(this);
 
         PaperSpigotConfig.interactLimitEnabled = false;
+
+        Bukkit.getScheduler().runTaskLater(this,
+                () -> {
+                    discord.log(new EmbedBuilder()
+                            .setTitle("Servidor ligado!")
+                            .addField(new MessageEmbed.Field("Nome", Constants.getServerStorage().getLocalServer().getName(), false))
+                            .addField(new MessageEmbed.Field("Tipo", Constants.getServerStorage().getLocalServer().getServerType().getName(), false))
+                            .addField(new MessageEmbed.Field("Categoria", Constants.getServerStorage().getLocalServer().getServerCategory().getName(), false))
+                            .addField(new MessageEmbed.Field("Instância", BukkitGame.getEngine().getInstanceId(), false)).setColor(0x00FF00));
+                }, 10 * 20L); // 10 seconds
+
     }
 
 
@@ -180,6 +198,13 @@ public class BukkitGame extends JavaPlugin {
     @Override
     public void onDisable() {
 
+        discord.log(new EmbedBuilder()
+                .setTitle("Servidor desligado!")
+                .addField(new MessageEmbed.Field("Nome", Constants.getServerStorage().getLocalServer().getName(), false))
+                .addField(new MessageEmbed.Field("Tipo", Constants.getServerStorage().getLocalServer().getServerType().getName(), false))
+                .addField(new MessageEmbed.Field("Categoria", Constants.getServerStorage().getLocalServer().getServerCategory().getName(), false))
+                .addField(new MessageEmbed.Field("Instância", instanceId, false)).setColor(0xFF0000));
+
         if (pluginUpdater.isUpdated())
             return;
 
@@ -190,6 +215,8 @@ public class BukkitGame extends JavaPlugin {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
+        discord.shutdown();
 
         pluginUpdater.verify(Bukkit::shutdown);
     }

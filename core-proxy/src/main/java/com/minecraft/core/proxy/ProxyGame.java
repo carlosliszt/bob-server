@@ -109,12 +109,6 @@ public class ProxyGame extends Plugin {
 
             discord = new Discord().start("MTMwNTE5NDYwMzU0ODI0NjA1Nw.G-BIU4.PBP_RcRXT1SbzMvD2iiye9Ep8ZDZtqPaEs5cnY");
 
-            discord.log(new EmbedBuilder()
-                    .setTitle("Proxy")
-                    .setDescription("O servidor foi iniciado com sucesso!")
-                    .setColor(0x00FF00)
-                    .setTimestamp(LocalDateTime.now()));
-
             proxyFrame = new ProxyFrame(this);
 
             countWatchScheduler = new CountWatchScheduler();

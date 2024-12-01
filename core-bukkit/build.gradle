@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url "https://hub.spigotmc.org/nexus/content/groups/public/" }
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
@@ -28,6 +32,9 @@ dependencies {
 
     compile 'org.atteo.classindex:classindex:3.9'
     compile 'it.unimi.dsi:fastutil:8.3.0'
+    compile('net.dv8tion:JDA:5.2.1') {
+        exclude module: 'opus-java'
+    }
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 

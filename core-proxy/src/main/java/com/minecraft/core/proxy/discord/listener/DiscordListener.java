@@ -10,11 +10,13 @@ import com.minecraft.core.account.fields.Preference;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.discord.Discord;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -22,6 +24,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +38,16 @@ public class DiscordListener extends ListenerAdapter implements ProxyInterface {
 
     public DiscordListener(Discord discord) {
         this.discord = discord;
+    }
+
+    @Override
+    public void onReady(@NotNull ReadyEvent event) {
+        super.onReady(event);
+        discord.log(new EmbedBuilder()
+                .setTitle("Proxy")
+                .setDescription("O servidor foi iniciado com sucesso!")
+                .setColor(0x00FF00)
+                .setTimestamp(LocalDateTime.now()));
     }
 
     public WebhookClient getWebhook(TextChannel textChannel, Account account) {

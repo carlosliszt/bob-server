@@ -53,18 +53,10 @@ public class ProxyRedisPubSub extends JedisPubSub implements ProxyInterface {
 
             Server server = proxyserverStorage.getServer(serverPayload);
 
-            if (server == null)
+            if (server == null) {
                 proxyserverStorage.getServers().add(server = new Server(proxyserverStorage.getNameOf(serverPayload.getPort()), serverPayload.getPort(), serverPayload, serverPayload.getServerType(), serverPayload.getServerCategory()));
-
+            }
             server.setLastBreath(serverPayload);
-
-            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
-                    .setTitle("Servidor ligado!")
-                    .addField(new MessageEmbed.Field("Nome", server.getName(), false))
-                    .addField(new MessageEmbed.Field("Tipo", server.getServerType().name(), false))
-                    .addField(new MessageEmbed.Field("Categoria", server.getServerCategory().name(), false))
-                    .addField(new MessageEmbed.Field("Porta", String.valueOf(server.getPort()), false))
-                    .setColor(Color.GREEN));
 
             if (server.getServerCategory() == ServerCategory.UNKNOWN)
                 server.setServerCategory(serverPayload.getServerCategory());
