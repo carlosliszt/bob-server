@@ -13,6 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Arrays;
 
@@ -22,7 +25,6 @@ public class RewardCommand implements ProxyInterface {
     public void rescueCommand(Context<CommandSender> context, String code) {
 
         GiftCode giftCode = ProxyGame.getInstance().getGiftCodeStorage().get(code);
-
 
         if (giftCode == null) {
             context.info("object.not_found", "Código-presente");
@@ -65,14 +67,12 @@ public class RewardCommand implements ProxyInterface {
 
         HELP(null, -1, ctx -> {
             ctx.sendMessage("§cUso do /reward:");
-            ctx.sendMessage("§c * /reward new <description> <rank> [duration]");
+            ctx.sendMessage("§c * /reward new <rank> [duration] <name>");
             ctx.sendMessage("§c * /reward info <key>");
             ctx.sendMessage("§c * /reward del <key>");
         }),
 
         NEW("new", 3, ctx -> {
-
-            // TODO: giftcode new [name] elite 5d
 
             Rank rank = Rank.fromString(ctx.getArg(1));
 
@@ -100,7 +100,7 @@ public class RewardCommand implements ProxyInterface {
                 }
             }
 
-            String name = "generic_giftcode";
+            String name = rank.getName() + "_giftcode";
 
             if (ctx.argsCount() > 3) {
                 name = createArgs(3, ctx.getArgs(), "?", true);
@@ -126,7 +126,16 @@ public class RewardCommand implements ProxyInterface {
                 ctx.info("unexpected_error");
                 return;
             }
-            ctx.sendMessage("§aCódigo presente §f" + key + "§a de §f'" + rank.getName() + "' §acriado com sucesso.");
+            ctx.sendMessage("§eCódigo presente §b" + key + "§e de §b'" + rank.getName() + "' §ecriado com sucesso.");
+            TextComponent copy = new TextComponent("§b§lCLIQUE AQUI");
+            copy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§eClique aqui!")}));
+            copy.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, giftCode.getKey()));
+
+            TextComponent message = new TextComponent("§r§e para copiar o código!");
+
+           if(ctx.isPlayer()) {
+               ctx.getSender().sendMessage(copy, message);
+           }
         }),
 
         DELETE("del", 2, ctx -> {
