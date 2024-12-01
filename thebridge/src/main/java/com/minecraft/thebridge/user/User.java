@@ -4,6 +4,7 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.server.route.BridgeRouteContext;
 import com.minecraft.core.bukkit.util.item.ItemFactory;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
+import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
@@ -20,6 +21,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collections;
 import java.util.UUID;
 
 @Getter
@@ -62,7 +64,13 @@ public class User {
 
     public User setAccount(Account account) {
         this.account = account;
-        this.cage = TheBridge.getInstance().getCageStorage().getDefaultCage();
+        account.getDataStorage().loadColumns(Collections.singletonList(Columns.BRIDGE_CAGE));
+        Cage cage = TheBridge.getInstance().getCageStorage().getCage(account.getData(Columns.BRIDGE_CAGE).getAsString());
+        if(cage != null) {
+            this.cage = cage;
+        } else {
+            this.cage = TheBridge.getInstance().getCageStorage().getDefaultCage();
+        }
         return this;
     }
 

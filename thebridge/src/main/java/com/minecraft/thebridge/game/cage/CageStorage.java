@@ -31,7 +31,7 @@ public class CageStorage {
             }
         }
 
-        defaultCage = getCages().get(0);
+        defaultCage = getCages().stream().filter(cage -> cage.getDisplayName().equals("Padrão")).findFirst().orElse(null);
     }
 
     public void loadCages() {

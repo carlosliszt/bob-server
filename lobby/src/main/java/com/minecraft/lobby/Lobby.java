@@ -80,6 +80,7 @@ public class Lobby extends BukkitGame {
 
         this.hall = loadHall();
         ((BukkitServerStorage) getServerStorage()).subscribeProxyCount();
+        System.out.println("yuck");
     }
 
     public final Set<Block> blockSet = new HashSet<>();

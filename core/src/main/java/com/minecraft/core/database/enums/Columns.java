@@ -190,8 +190,8 @@ public enum Columns {
     BRIDGE_RANK(1, "Int", "rank", "INT(100)"),
     BRIDGE_RANK_EXP(0, "Int", "rank_exp", "INT(100)"),
     BRIDGE_DATA("[]", "JsonArray", "data", "longtext"),
+    BRIDGE_CAGE("default", "String", "cage", "VARCHAR(100)"),
     BRIDGE_INVENTORY("...", "String", "inventory", "VARCHAR(5000)"),
-
 
     STAFF_WEEKLY_BANS(0, "Int", "weekly_bans", "INT(100)"),
     STAFF_WEEKLY_MUTES(0, "Int", "weekly_mutes", "INT(100)"),

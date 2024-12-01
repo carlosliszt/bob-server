@@ -230,6 +230,8 @@ public class UserListeners implements Listener, BukkitInterface {
             if (countStats)
                 killer.getAccount().addInt(1, game.getType().getKills());
 
+            player.setVelocity(new Vector(0,0,0));
+
             game.sendMessage(killed.getTeam().getChatColor() + player.getName() + "§e foi morto por " + killer.getTeam().getChatColor() + killer_player.getName() + "§e.");
         } else game.sendMessage(killed.getTeam().getChatColor() + player.getName() + " §emorreu.");
 

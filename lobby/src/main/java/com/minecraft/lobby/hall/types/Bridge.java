@@ -35,6 +35,8 @@ import com.minecraft.core.server.Server;
 import com.minecraft.core.server.ServerCategory;
 import com.minecraft.core.server.ServerType;
 import com.minecraft.lobby.Lobby;
+import com.minecraft.lobby.duel.inventory.DuelsSettingsInventory;
+import com.minecraft.lobby.duel.inventory.enums.FactorySettings;
 import com.minecraft.lobby.hall.Hall;
 import com.minecraft.lobby.user.User;
 import com.mojang.authlib.properties.Property;
@@ -45,6 +47,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -76,6 +79,15 @@ public class Bridge extends Hall {
 
         }
     }).query();
+
+    InteractableItem shop = new InteractableItem(new ItemFactory().setType(Material.EMERALD).setName("§aShop do Bridge §7(Clique Direito)")
+            .getStack(), new InteractableItem.Interact() {
+        @Override
+        public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+            openCages(player);
+            return true;
+        }
+    });
 
     private final Location bestPlayers, loc1, loc2, loc3, stats;
 
@@ -109,6 +121,12 @@ public class Bridge extends Hall {
         this.stats = new Location(Bukkit.getWorld("world"), -2.5, 65.0, 4.5, 217, 0);
 
         this.cagesConfig.addAll(jedisCages());
+    }
+
+    @Override
+    public void join(User user) {
+        super.join(user);
+
     }
 
     protected Set<BridgeCageConfig> jedisCages() {
@@ -157,6 +175,9 @@ public class Bridge extends Hall {
     @Override
     public void handleNPCs(User user) {
         Player player = user.getPlayer();
+
+        player.getInventory().setItem(3, shop.getItemStack());
+
 
         boolean show = user.getAccount().getRank().getId() >= Rank.ADMINISTRATOR.getId();
 
@@ -295,6 +316,8 @@ public class Bridge extends Hall {
     protected void openCages(final Player player) {
         final Account account = Account.fetch(player.getUniqueId());
 
+        account.getDataStorage().loadColumns(true, Columns.BRIDGE_CAGE);
+
         final Selector.Builder builder = Selector.builder().withAllowedSlots(allowedSlots).withSize(54).withName("Cabines");
 
         final List<ItemStack> itemStacks = new ArrayList<>();
@@ -304,11 +327,41 @@ public class Bridge extends Hall {
 
             ItemFactory itemFactory = new ItemFactory(bridgeCageConfig.getIcon().getMaterial());
 
+            if(account.getData(Columns.BRIDGE_CAGE).getAsString().equalsIgnoreCase(bridgeCageConfig.getDisplayName())) {
+                itemFactory.addEnchantment(Enchantment.DURABILITY, 1);
+            }
+
             itemFactory.setDurability(bridgeCageConfig.getIcon().getData());
             itemFactory.setName((hasCage ? "§a" : "§c") + bridgeCageConfig.getDisplayName());
-            itemFactory.setDescription("\n" + "§7Raridade: §r" + bridgeCageConfig.getRarity().getDisplayName() + "\n" + "§7Exclusivo para " + bridgeCageConfig.getRank().getDefaultTag().getColor() + bridgeCageConfig.getRank().getName() + "\n\n" + (hasCage ? "§eClique para selecionar." : "§cVocê não possui essa cage."));
+            itemFactory.setDescription("\n" + "§7Raridade: §r" + bridgeCageConfig.getRarity().getDisplayName() + "\n" + "§7Exclusivo para " + bridgeCageConfig.getRank().getDefaultTag().getColor() + bridgeCageConfig.getRank().getName() + "\n\n" +                     (hasCage ? (account.getData(Columns.BRIDGE_CAGE).getAsString().equalsIgnoreCase(bridgeCageConfig.getDisplayName()) ? "§cClique para remover" : "§eClique para selecionar.") : "§cVocê não possui essa cage."));
+            itemFactory.addItemFlag(ItemFlag.HIDE_ENCHANTS);
 
-            itemStacks.add(itemFactory.getStack());
+            InteractableItem interactableItem = new InteractableItem(itemFactory.getStack(), new InteractableItem.Interact() {
+                @Override
+                public boolean onInteract(Player player, Entity entity, Block block, ItemStack item, InteractableItem.InteractAction action) {
+                    if (!hasCage) {
+                        player.sendMessage("§cVocê não possui essa cabine.");
+                        return true;
+                    }
+
+                    if (account.getData(Columns.BRIDGE_CAGE).getAsString().equalsIgnoreCase(bridgeCageConfig.getDisplayName())) {
+                        account.getDataStorage().getData(Columns.BRIDGE_CAGE).setData("Default");
+                        player.sendMessage("§cCabine removida.");
+                        async(() -> account.getDataStorage().saveTable(Tables.THE_BRIDGE));
+                        player.closeInventory();
+                        return true;
+                    }
+
+
+                    account.getDataStorage().getData(Columns.BRIDGE_CAGE).setData(bridgeCageConfig.getDisplayName());
+                    async(() -> account.getDataStorage().saveTable(Tables.THE_BRIDGE));
+                    player.sendMessage("§aVocê selecionou a cabine §f" + bridgeCageConfig.getDisplayName() + "§a.");
+                    player.closeInventory();
+                    return true;
+                }
+            });
+
+            itemStacks.add(interactableItem.getItemStack());
         });
 
         builder.withItems(itemStacks).build().open(player);

@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 import org.github.paperspigot.Title;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,9 +52,13 @@ public class CageTask {
             final Player player = user.getPlayer();
 
             player.getActivePotionEffects().clear();
-            player.teleport(this.blue.clone().add(0,1,0));
+            if(user.getCage().getDisplayName().equalsIgnoreCase("floreto")) {
+                player.teleport(this.blue.clone().add(0,2,0));
+            } else {
+                player.teleport(this.blue.clone().add(0,1,0));
+            }
             player.setHealth(20.0D);
-
+            player.setVelocity(new Vector(0,0,0));
             player.setItemOnCursor(null);
             player.getOpenInventory().getTopInventory().clear();
 
@@ -68,7 +73,12 @@ public class CageTask {
             final Player player = user.getPlayer();
 
             player.getActivePotionEffects().clear();
-            player.teleport(this.red.clone().add(0,1,0));
+            if(user.getCage().getDisplayName().equalsIgnoreCase("floreto")) {
+                player.teleport(this.red.clone().add(0,2,0));
+            } else {
+                player.teleport(this.red.clone().add(0,1,0));
+            }
+            player.setVelocity(new Vector(0,0,0));
             player.setHealth(20.0D);
 
             player.setItemOnCursor(null);

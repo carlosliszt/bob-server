@@ -34,7 +34,7 @@ public class TagList {
 
         for (Tag tag : Tag.getValues()) {
             if (restrictedTags.containsKey(tag)) {
-                if (account.getRank() == restrictedTags.get(tag)) {
+                if (account.getRanks().stream().anyMatch(rank -> rank.getRank() == restrictedTags.get(tag))) {
                     tags.add(tag);
                 }
             } else if (
