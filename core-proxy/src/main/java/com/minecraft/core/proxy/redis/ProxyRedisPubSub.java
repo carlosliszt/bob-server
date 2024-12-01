@@ -28,6 +28,8 @@ import com.minecraft.core.server.packet.ServerPayload;
 import com.minecraft.core.translation.Language;
 import com.minecraft.core.util.communication.AccountRankUpdateData;
 import com.minecraft.core.util.communication.NicknameUpdateData;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -35,6 +37,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import redis.clients.jedis.JedisPubSub;
 
+import java.awt.*;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -54,6 +57,14 @@ public class ProxyRedisPubSub extends JedisPubSub implements ProxyInterface {
                 proxyserverStorage.getServers().add(server = new Server(proxyserverStorage.getNameOf(serverPayload.getPort()), serverPayload.getPort(), serverPayload, serverPayload.getServerType(), serverPayload.getServerCategory()));
 
             server.setLastBreath(serverPayload);
+
+            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                    .setTitle("Servidor ligado!")
+                    .addField(new MessageEmbed.Field("Nome", server.getName(), false))
+                    .addField(new MessageEmbed.Field("Tipo", server.getServerType().name(), false))
+                    .addField(new MessageEmbed.Field("Categoria", server.getServerCategory().name(), false))
+                    .addField(new MessageEmbed.Field("Porta", String.valueOf(server.getPort()), false))
+                    .setColor(Color.GREEN));
 
             if (server.getServerCategory() == ServerCategory.UNKNOWN)
                 server.setServerCategory(serverPayload.getServerCategory());

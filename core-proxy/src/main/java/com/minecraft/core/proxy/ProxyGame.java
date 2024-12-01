@@ -37,6 +37,7 @@ import com.minecraft.core.translation.PropertiesStorageDataTranslation;
 import com.minecraft.core.translation.TranslationExecutor;
 import com.minecraft.core.util.updater.PluginUpdater;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -108,6 +109,12 @@ public class ProxyGame extends Plugin {
 
             discord = new Discord().start("MTMwNTE5NDYwMzU0ODI0NjA1Nw.G-BIU4.PBP_RcRXT1SbzMvD2iiye9Ep8ZDZtqPaEs5cnY");
 
+            discord.log(new EmbedBuilder()
+                    .setTitle("Proxy")
+                    .setDescription("O servidor foi iniciado com sucesso!")
+                    .setColor(0x00FF00)
+                    .setTimestamp(LocalDateTime.now()));
+
             proxyFrame = new ProxyFrame(this);
 
             countWatchScheduler = new CountWatchScheduler();
@@ -178,6 +185,12 @@ public class ProxyGame extends Plugin {
 
     @Override
     public void onDisable() {
+
+        discord.log(new EmbedBuilder()
+                .setTitle("Proxy")
+                .setDescription("O servidor foi desligado com sucesso!")
+                .setColor(0xFF0000)
+                .setTimestamp(LocalDateTime.now()));
 
         if (pluginUpdater.isUpdated())
             return;

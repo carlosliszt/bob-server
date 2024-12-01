@@ -20,6 +20,7 @@ import com.minecraft.core.database.enums.Tables;
 import com.minecraft.core.database.mojang.MojangAPI;
 import com.minecraft.core.database.redis.Redis;
 import com.minecraft.core.enums.*;
+import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.punish.Punish;
 import com.minecraft.core.punish.PunishCategory;
@@ -32,16 +33,20 @@ import com.minecraft.core.util.geodata.AddressData;
 import com.minecraft.core.util.geodata.DataResolver;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.awt.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -155,12 +160,28 @@ public class AccountCommand implements ProxyInterface {
                             account.removeRank(rank);
                             context.info("command.account.argument.rank.rank_remove", rank.getName(), account.getUsername());
 
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("RANK REMOVIDO")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Rank", rank.getName(), false)
+                                    .addField("Removido por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.RED));
+
                             AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, 0, 0, 0, "", AccountRankUpdateData.Action.REMOVE);
                             Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
                         } else {
                             account.removeRank(rank);
                             account.giveRank(rank, -1, author);
                             context.info("command.account.argument.rank.rank_replace", rank.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("RANK ADICIONADO")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Rank", rank.getName(), false)
+                                    .addField("Adicionado por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
 
                             if (rank == Rank.BLAZE_PLUS) {
                                 account.addInt(20, Columns.ULTRA_PLUS_MONTHS);
@@ -172,6 +193,14 @@ public class AccountCommand implements ProxyInterface {
                     } else {
                         account.giveRank(rank, -1, author);
                         context.info("command.account.argument.rank.rank_add", rank.getName(), account.getUsername());
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("RANK ADICIONADO")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Rank", rank.getName(), false)
+                                .addField("Adicionado por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
 
                         if (rank == Rank.BLAZE_PLUS) {
                             account.addInt(20, Columns.ULTRA_PLUS_MONTHS);
@@ -210,8 +239,15 @@ public class AccountCommand implements ProxyInterface {
                             if (rank == Rank.BLAZE_PLUS) {
                                 long months = StringTimeUtils.getMonthsFromTimeString(args[3]);
                                 account.addInt((int) months, Columns.ULTRA_PLUS_MONTHS);
-                                context.info("command.account.argument.rank.ultra_plus_updated", rank.getName(), months, account.getUsername());
                             }
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("RANK ADICIONADO")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Rank", rank.getName(), false)
+                                    .addField("Adicionado por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
 
                         }
                     } else {
@@ -221,8 +257,15 @@ public class AccountCommand implements ProxyInterface {
                         if (rank == Rank.BLAZE_PLUS) {
                             long months = StringTimeUtils.getMonthsFromTimeString(args[3]);
                             account.addInt((int) months, Columns.ULTRA_PLUS_MONTHS);
-                            context.info("command.account.argument.rank.ultra_plus_updated", rank.getName(), months, account.getUsername());
                         }
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("RANK ADICIONADO")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Rank", rank.getName(), false)
+                                .addField("Adicionado por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
 
                         AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, System.currentTimeMillis(), -1, expiration, author, AccountRankUpdateData.Action.ADD);
                         Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
@@ -271,14 +314,41 @@ public class AccountCommand implements ProxyInterface {
                         if (plusColorData.isPermanent()) {
                             account.removePlusColor(plusColor);
                             context.info("command.account.argument.pluscolor.pluscolor_remove", plusColor.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("COR DE PLUS REMOVIDA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Cor de plus", plusColor.getName(), false)
+                                    .addField("Removida por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.RED));
+
                         } else {
                             account.removePlusColor(plusColor);
                             account.givePlusColors(plusColor, -1, author);
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("COR DE PLUS ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Cor de plus", plusColor.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                             context.info("command.account.argument.pluscolor.pluscolor_replace", plusColor.getName(), account.getUsername());
                         }
                     } else {
                         account.givePlusColors(plusColor, -1, author);
                         context.info("command.account.argument.pluscolor.pluscolor_add", plusColor.getName(), account.getUsername());
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("COR DE PLUS ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Cor de plus", plusColor.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 } else {
 
@@ -303,10 +373,28 @@ public class AccountCommand implements ProxyInterface {
                             account.removePlusColor(plusColor);
                             account.givePlusColors(plusColor, expiration, author);
                             context.info("command.account.argument.pluscolor.pluscolor_add", plusColor.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("COR DE PLUS ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Cor de plus", plusColor.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         context.info("command.account.argument.pluscolor.pluscolor_add", plusColor.getName(), account.getUsername());
                         account.givePlusColors(plusColor, expiration, author);
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("COR DE PLUS ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Cor de plus", plusColor.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 }
 
@@ -366,14 +454,41 @@ public class AccountCommand implements ProxyInterface {
                         if (tagData.isPermanent()) {
                             account.removeTag(tag);
                             context.info("command.account.argument.tag.tag_remove", tag.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("TAG REMOVIDA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Tag", tag.getName(), false)
+                                    .addField("Removida por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.RED));
+
                         } else {
                             account.removeTag(tag);
                             account.giveTag(tag, -1, author);
                             context.info("command.account.argument.tag.tag_replace", tag.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("TAG ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Tag", tag.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         account.giveTag(tag, -1, author);
                         context.info("command.account.argument.tag.tag_add", tag.getName(), account.getUsername());
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("TAG ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Tag", tag.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 } else {
 
@@ -398,10 +513,28 @@ public class AccountCommand implements ProxyInterface {
                             account.removeTag(tag);
                             account.giveTag(tag, expiration, author);
                             context.info("command.account.argument.tag.tag_add", tag.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("TAG ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Tag", tag.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         context.info("command.account.argument.tag.tag_add", tag.getName(), account.getUsername());
                         account.giveTag(tag, expiration, author);
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("TAG ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Tag", tag.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 }
 
@@ -445,14 +578,41 @@ public class AccountCommand implements ProxyInterface {
                         if (medalData.isPermanent()) {
                             account.removeMedal(medal);
                             context.info("command.account.argument.medal.medal_remove", medal.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("MEDALHA REMOVIDA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Medalha", medal.getName(), false)
+                                    .addField("Removida por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.RED));
+
                         } else {
                             account.removeMedal(medal);
                             account.giveMedal(medal, -1, author);
                             context.info("command.account.argument.medal.medal_replace", medal.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("MEDALHA ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Medalha", medal.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         account.giveMedal(medal, -1, author);
                         context.info("command.account.argument.medal.medal_add", medal.getName(), account.getUsername());
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("MEDALHA ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Medalha", medal.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 } else {
 
@@ -477,10 +637,28 @@ public class AccountCommand implements ProxyInterface {
                             account.removeMedal(medal);
                             account.giveMedal(medal, expiration, author, medalData.getAddedAt(), System.currentTimeMillis());
                             context.info("command.account.argument.medal.medal_add", medal.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("MEDALHA ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("Medalha", medal.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         context.info("command.account.argument.medal.medal_add", medal.getName(), account.getUsername());
                         account.giveMedal(medal, expiration, author);
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("MEDALHA ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("Medalha", medal.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 }
 
@@ -579,14 +757,41 @@ public class AccountCommand implements ProxyInterface {
                         if (clanTagData.isPermanent()) {
                             account.removeClanTag(clantag);
                             context.info("command.account.argument.clantag.clantag_remove", clantag.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("CLANTAG REMOVIDA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("ClanTag", clantag.getName(), false)
+                                    .addField("Removida por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.RED));
+
                         } else {
                             account.removeClanTag(clantag);
                             account.giveClanTag(clantag, -1, author);
                             context.info("command.account.argument.clantag.clantag_replace", clantag.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("CLANTAG ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("ClanTag", clantag.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         account.giveClanTag(clantag, -1, author);
                         context.info("command.account.argument.clantag.clantag_add", clantag.getName(), account.getUsername());
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("CLANTAG ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("ClanTag", clantag.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 } else {
 
@@ -611,10 +816,28 @@ public class AccountCommand implements ProxyInterface {
                             account.removeClanTag(clantag);
                             account.giveClanTag(clantag, expiration, author, clanTagData.getAddedAt(), System.currentTimeMillis());
                             context.info("command.account.argument.clantag.clantag_add", clantag.getName(), account.getUsername());
+
+                            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                    .setTitle("CLANTAG ADICIONADA")
+                                    .addField("Usuário", account.getUsername(), false)
+                                    .addField("ClanTag", clantag.getName(), false)
+                                    .addField("Adicionada por", author, false)
+                                    .setTimestamp(LocalDateTime.now())
+                                    .setColor(Color.GREEN));
+
                         }
                     } else {
                         context.info("command.account.argument.clantag.clantag_add", clantag.getName(), account.getUsername());
                         account.giveClanTag(clantag, expiration, author);
+
+                        ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                                .setTitle("CLANTAG ADICIONADA")
+                                .addField("Usuário", account.getUsername(), false)
+                                .addField("ClanTag", clantag.getName(), false)
+                                .addField("Adicionada por", author, false)
+                                .setTimestamp(LocalDateTime.now())
+                                .setColor(Color.GREEN));
+
                     }
                 }
 
@@ -1037,6 +1260,14 @@ public class AccountCommand implements ProxyInterface {
             account.getDataStorage().saveTable(Tables.AUTH);
 
             context.sendMessage("§aVocê resetou a senha de " + account.getUsername() + ".");
+
+            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                    .setTitle("SENHA RESETADA")
+                    .addField("Usuário", account.getUsername(), false)
+                    .addField("Resetada por", context.isPlayer() ? context.getSender().getName() : "[SERVER]", false)
+                    .setTimestamp(LocalDateTime.now())
+                    .setColor(Color.GREEN));
+
         }),
 
         LOGS("logs", Rank.ADMINISTRATOR, (account, context) ->

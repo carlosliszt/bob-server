@@ -12,6 +12,7 @@ import com.minecraft.core.command.command.Context;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -29,6 +30,7 @@ public class SetmotdCommand implements ProxyInterface {
             configuration.set("motd", String.join(" ", motd).replace("&", "§"));
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(ProxyGame.getInstance().getDataFolder(), "config.yml"));
             context.info("command.setmotd.execution_successful");
+            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder().setTitle("MOTD atualizado!").setDescription("O MOTD foi atualizado para: " + String.join(" ", motd)));
         } catch (IOException e) {
             e.printStackTrace();
             context.info("command.setmotd.error");

@@ -5,11 +5,13 @@ import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
 import com.minecraft.core.util.geodata.AddressData;
 import com.minecraft.core.util.geodata.DataResolver;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 
@@ -96,6 +98,17 @@ public class DataServiceCommand implements ProxyInterface {
             AddressData addressData = DataResolver.getInstance().getData(address);
             addressData.completelyTrust();
             ctx.info("command.account.trust.success", address);
+
+            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                    .setTitle("Trust")
+                    .setDescription("Address: " + address)
+                    .addField("Organization", addressData.getOrganization(), false)
+                    .addField("City", addressData.getCity(), false)
+                    .addField("State", addressData.getState(), false)
+                    .addField("Country", addressData.getCountry(), false)
+                    .addField("Trusted", "Yes", false)
+                    .setColor(0x00FF00));
+
         }),
 
         UNTRUST("untrust", (ctx, address) -> {
@@ -104,10 +117,15 @@ public class DataServiceCommand implements ProxyInterface {
                 int exitValue = process.waitFor();
                 process.destroy();
                 System.out.println("Manually blacklisted " + address + " with code: " + exitValue);
+
             } catch (Exception var6) {
                 System.out.println("Fail to blacklist " + address);
             }
             ctx.info("command.account.untrust.success", address);
+            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                    .setTitle("Untrust")
+                    .setDescription("Address: " + address)
+                    .setColor(0xFF0000));
         }),
 
         ACCOUNTS("accounts", (ctx, address) -> {

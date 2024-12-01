@@ -6,6 +6,7 @@ import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.util.command.ProxyInterface;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 
@@ -33,6 +34,13 @@ public class SetplayerlimitCommand implements ProxyInterface {
             setMethod.invoke(proxyServer.getConfigurationAdapter(), "player_limit", maxPlayers);
 
             context.info("command.setplayerlimit.execution_successful", maxPlayers);
+
+            ProxyGame.getInstance().getDiscord().log(new EmbedBuilder()
+                    .setTitle("Limite de jogadores alterado")
+                    .setDescription("O limite de jogadores foi alterado para " + maxPlayers)
+                    .setColor(0x00FF00)
+                    );
+
         } catch (Exception e) {
             e.printStackTrace();
             context.info("command.setplayerlimit.error");

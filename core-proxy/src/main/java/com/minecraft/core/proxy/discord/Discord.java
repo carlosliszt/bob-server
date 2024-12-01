@@ -7,12 +7,15 @@
 package com.minecraft.core.proxy.discord;
 
 import com.minecraft.core.Constants;
+import com.minecraft.core.proxy.ProxyGame;
 import com.minecraft.core.proxy.discord.listener.DiscordListener;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 @Getter
@@ -31,6 +34,12 @@ public class Discord {
             e.printStackTrace();
         }
         return this;
+    }
+
+    public void log(EmbedBuilder embedBuilder) {
+        TextChannel txt = ProxyGame.getInstance().getDiscord().getJDA().getTextChannelById("1310230222506950676");
+        if (txt != null)
+            txt.sendMessageEmbeds(embedBuilder.build()).queue();
     }
 
     public void shutdown() {
