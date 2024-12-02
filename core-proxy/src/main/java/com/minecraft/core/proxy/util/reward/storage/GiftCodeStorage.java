@@ -1,11 +1,12 @@
 package com.minecraft.core.proxy.util.reward.storage;
 
 import com.minecraft.core.Constants;
-import com.minecraft.core.database.redis.Redis;
+import com.minecraft.core.database.mysql.MySQL;
+import com.minecraft.core.enums.Rank;
 import com.minecraft.core.proxy.util.reward.GiftCode;
-import redis.clients.jedis.Jedis;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.*;
 import java.util.*;
 
 public class GiftCodeStorage {
@@ -13,50 +14,97 @@ public class GiftCodeStorage {
     private final List<GiftCode> giftCodes = new ArrayList<>();
     private final Set<UUID> notExists = new HashSet<>();
 
+    //queries
+    private static final String GET_CODE_QUERY = "SELECT * FROM codes WHERE `key` = ?";
+    private static final String INSERT_CODE_QUERY = "INSERT INTO codes (`key`, `name`, `rank`, `duration`, `creator`, `creation`) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_CODE_QUERY = "DELETE FROM codes WHERE `key` = ?";
+
     public GiftCode get(String key) {
         return giftCodes.stream().filter(c -> c.getKey().equals(key)).findFirst().orElse(load(key));
     }
 
     public boolean delete(GiftCode giftCode) {
         giftCodes.remove(giftCode);
-        try (Jedis redis = Constants.getRedis().getResource(Redis.GIFTCODE_CACHE)) {
-            UUID keyUniqueid = UUID.nameUUIDFromBytes((giftCode.getKey()).getBytes(StandardCharsets.UTF_8));
-            redis.del("key-" + keyUniqueid);
-        } catch (Exception e) {
+
+        try (Connection connection = Constants.getMySQL().getConnection();
+             PreparedStatement statement = connection.prepareStatement(DELETE_CODE_QUERY)) {
+
+            statement.setString(1, giftCode.getKey());
+            int rowsAffected = statement.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     public boolean push(GiftCode giftCode) {
 
-        try (Jedis redis = Constants.getRedis().getResource(Redis.GIFTCODE_CACHE)) {
-            UUID keyUniqueid = UUID.nameUUIDFromBytes((giftCode.getKey()).getBytes(StandardCharsets.UTF_8));
-            redis.setex("key-" + keyUniqueid, 86400, Constants.GSON.toJson(giftCode));
-        } catch (Exception e) {
-            return false;
+        try (Connection connection = Constants.getMySQL().getConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_CODE_QUERY)) {
+
+            statement.setString(1, giftCode.getKey());
+            statement.setString(2, giftCode.getName());
+            statement.setString(3, giftCode.getRank().name());
+            statement.setString(4, giftCode.getDuration());
+            statement.setString(5, giftCode.getCreator().toString());
+            statement.setLong(6, giftCode.getCreation());
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                giftCodes.add(giftCode);
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        giftCodes.add(giftCode);
-        return true;
+        return false;
     }
 
     private GiftCode load(String key) {
 
         UUID uuid = UUID.nameUUIDFromBytes((key.toLowerCase()).getBytes(StandardCharsets.UTF_8));
 
-        if (notExists.contains(uuid))
+        if (notExists.contains(uuid)) {
             return null;
+        }
 
-        try (Jedis redis = Constants.getRedis().getResource(Redis.GIFTCODE_CACHE)) {
+        try (Connection connection = Constants.getMySQL().getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_CODE_QUERY)) {
 
-            String keyJson = redis.get("key-" + uuid);
+            statement.setString(1, key);
+            ResultSet resultSet = statement.executeQuery();
 
-            if (keyJson == null) { // 404
-                return null;
+            if (resultSet.next()) {
+                GiftCode giftCode = new GiftCode();
+                giftCode.setKey(resultSet.getString("key"));
+                giftCode.setName(resultSet.getString("name"));
+                giftCode.setRank(Rank.valueOf(resultSet.getString("rank")));
+                giftCode.setDuration(resultSet.getString("duration"));
+                giftCode.setCreator(UUID.fromString(resultSet.getString("creator")));
+                giftCode.setCreation(resultSet.getLong("creation"));
+
+                String redeemer = resultSet.getString("redeemer");
+                if (redeemer != null) {
+                    giftCode.setRedeemer(UUID.fromString(redeemer));
+                }
+
+                giftCode.setRedeem(resultSet.getLong("redeem"));
+
+                giftCodes.add(giftCode);
+                return giftCode;
             }
 
-            return Constants.GSON.fromJson(keyJson, GiftCode.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        notExists.add(uuid);
+        return null;
     }
 }

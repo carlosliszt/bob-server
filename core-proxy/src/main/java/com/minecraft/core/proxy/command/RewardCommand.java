@@ -121,6 +121,7 @@ public class RewardCommand implements ProxyInterface {
             giftCode.setDuration(duration);
             giftCode.setCreator(ctx.getUniqueId());
             giftCode.setCreation(System.currentTimeMillis());
+            giftCode.setRank(rank);
 
             if (!ProxyGame.getInstance().getGiftCodeStorage().push(giftCode)) {
                 ctx.info("unexpected_error");
@@ -129,7 +130,7 @@ public class RewardCommand implements ProxyInterface {
             ctx.sendMessage("§eCódigo presente §b" + key + "§e de §b'" + rank.getName() + "' §ecriado com sucesso.");
             TextComponent copy = new TextComponent("§b§lCLIQUE AQUI");
             copy.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent[]{new TextComponent("§eClique aqui!")}));
-            copy.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, giftCode.getKey()));
+            copy.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, giftCode.getKey()));
 
             TextComponent message = new TextComponent("§r§e para copiar o código!");
 

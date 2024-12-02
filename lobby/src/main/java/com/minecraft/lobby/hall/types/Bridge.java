@@ -97,7 +97,7 @@ public class Bridge extends Hall {
         super(lobby, "The Bridge Lobby", "bridgelobby", "THE BRIDGE NO BLAZEMC.COM.BR");
 
         setSpawn(new Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5, 0, 0));
-        getLobby().getAccountLoader().addColumns(Columns.BRIDGE_SOLO_WINS, Columns.BRIDGE_SOLO_WINSTREAK, Columns.BRIDGE_DOUBLES_WINS, Columns.BRIDGE_DOUBLES_WINSTREAK, Columns.BRIDGE_SOLO_KILLS, Columns.BRIDGE_SOLO_DEATHS, Columns.BRIDGE_DOUBLES_KILLS, Columns.BRIDGE_DOUBLES_DEATHS, Columns.BRIDGE_COINS);
+        getLobby().getAccountLoader().addColumns(Columns.BRIDGE_CAGE, Columns.BRIDGE_SOLO_WINS, Columns.BRIDGE_SOLO_WINSTREAK, Columns.BRIDGE_DOUBLES_WINS, Columns.BRIDGE_DOUBLES_WINSTREAK, Columns.BRIDGE_SOLO_KILLS, Columns.BRIDGE_SOLO_DEATHS, Columns.BRIDGE_DOUBLES_KILLS, Columns.BRIDGE_DOUBLES_DEATHS, Columns.BRIDGE_COINS);
 
         Constants.setServerType(ServerType.THE_BRIDGE_LOBBY);
         Constants.setLobbyType(ServerType.MAIN_LOBBY);
@@ -316,8 +316,6 @@ public class Bridge extends Hall {
     protected void openCages(final Player player) {
         final Account account = Account.fetch(player.getUniqueId());
 
-        account.getDataStorage().loadColumns(true, Columns.BRIDGE_CAGE);
-
         final Selector.Builder builder = Selector.builder().withAllowedSlots(allowedSlots).withSize(54).withName("Cabines");
 
         final List<ItemStack> itemStacks = new ArrayList<>();
@@ -347,14 +345,14 @@ public class Bridge extends Hall {
                     if (account.getData(Columns.BRIDGE_CAGE).getAsString().equalsIgnoreCase(bridgeCageConfig.getDisplayName())) {
                         account.getDataStorage().getData(Columns.BRIDGE_CAGE).setData("Default");
                         player.sendMessage("§cCabine removida.");
-                        async(() -> account.getDataStorage().saveTable(Tables.THE_BRIDGE));
+                        async(() -> account.getDataStorage().saveColumn(Columns.BRIDGE_CAGE));
                         player.closeInventory();
                         return true;
                     }
 
 
                     account.getDataStorage().getData(Columns.BRIDGE_CAGE).setData(bridgeCageConfig.getDisplayName());
-                    async(() -> account.getDataStorage().saveTable(Tables.THE_BRIDGE));
+                    async(() -> account.getDataStorage().saveColumn(Columns.BRIDGE_CAGE));
                     player.sendMessage("§aVocê selecionou a cabine §f" + bridgeCageConfig.getDisplayName() + "§a.");
                     player.closeInventory();
                     return true;

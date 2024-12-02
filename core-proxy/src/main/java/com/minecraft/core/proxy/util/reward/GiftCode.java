@@ -7,9 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import redis.clients.jedis.Jedis;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.UUID;
 
 /*
@@ -55,10 +58,42 @@ public class GiftCode {
     }*/
 
     public void update() {
-        try (Jedis redis = Constants.getRedis().getResource(Redis.GIFTCODE_CACHE)) {
-            UUID keyUniqueid = UUID.nameUUIDFromBytes((getKey()).getBytes(StandardCharsets.UTF_8));
-            redis.setex("key-" + keyUniqueid, 86400, Constants.GSON.toJson(this));
-        } catch (Exception e) {
+        String UPDATE_CODE_QUERY = "UPDATE codes SET `name` = ?, `rank` = ?, `duration` = ?, `creator` = ?, `creation` = ?, `redeemer` = ?, `redeem` = ? WHERE `key` = ?";
+
+        try (Connection connection = Constants.getMySQL().getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_CODE_QUERY)) {
+
+            statement.setString(1, getName());
+            statement.setString(2, getRank().name());
+            statement.setString(3, getDuration());
+            statement.setString(4, getCreator().toString());
+            statement.setLong(5, getCreation());
+
+            // Check if redeemer is set, otherwise set it to null
+            if (getRedeemer() != null) {
+                statement.setString(6, getRedeemer().toString());
+            } else {
+                statement.setNull(6, Types.VARCHAR);
+            }
+
+            // Set the redeem timestamp if it's greater than 0, otherwise set it to null
+            if (getRedeem() > 0) {
+                statement.setLong(7, getRedeem());
+            } else {
+                statement.setNull(7, Types.BIGINT);
+            }
+
+            statement.setString(8, getKey());
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Gift code updated successfully.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+
 }
