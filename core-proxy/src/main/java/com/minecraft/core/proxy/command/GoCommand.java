@@ -84,7 +84,8 @@ public class GoCommand implements Listener, ProxyInterface {
         }));
     }
 
-    @Command(name = "backtrack", rank = Rank.PARTNER_PLUS, platform = Platform.PLAYER, aliases = {"backt", "bct", "ffakillermax"})
+                                                //doring é um colega de sala meu, ele gosta de buceta, portanto coloquei ele no /bct :rofl:
+    @Command(name = "backtrack", rank = Rank.PARTNER_PLUS, platform = Platform.PLAYER, aliases = {"backt", "bct", "ffakillermax", "doring"})
     public void handleCommand(Context<ProxiedPlayer> context) {
 
         Staffer staffer = Staffer.fetch(context.getUniqueId());
