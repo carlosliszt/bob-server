@@ -45,7 +45,7 @@ public class ClanCommand implements ProxyInterface {
 
     private static final ClanService clanService = Constants.getClanService();
 
-    @Command(name = "clan", platform = Platform.PLAYER)
+    @Command(name = "clan", platform = Platform.PLAYER, async = true)
     public void handleCommand(Context<ProxiedPlayer> context) {
 
         try {

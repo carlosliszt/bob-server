@@ -37,7 +37,9 @@ import java.util.stream.Collectors;
 
 public class FriendCommand implements ProxyInterface {
 
-    @Command(name = "amigo", aliases = {"f", "friend", "amiga", "amigos", "amigas", "amigue", "amigues"}, platform = Platform.PLAYER)
+    @Command(name = "amigo",
+            async = true,
+            aliases = {"f", "friend", "amiga", "amigos", "amigas", "amigue", "amigues"}, platform = Platform.PLAYER)
     public void onFriendCommand(Context<ProxiedPlayer> context) {
         ProxiedPlayer player = context.getSender();
 
