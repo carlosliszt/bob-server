@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -175,14 +175,14 @@ public class NickCommand implements BukkitInterface {
         return new Property("textures", property.getValue(), property.getSignature());
     }
 
-    @Command(name = "nick", platform = Platform.PLAYER, rank = Rank.BLAZE_PLUS)
+    @Command(name = "nick", platform = Platform.PLAYER, rank = Rank.ULTRA_PLUS)
     public void handleCommand(Context<Player> context) {
         String[] args = context.getArgs();
 
         Player sender = context.getSender();
         Account account = context.getAccount();
 
-        boolean hasReachedLimited = account.getRank() == Rank.BLAZE_PLUS && account.getUnexpiredNicks().size() >= 3;
+        boolean hasReachedLimited = account.getRank() == Rank.ULTRA_PLUS && account.getUnexpiredNicks().size() >= 3;
 
         if (args.length == 0) {
             Book book = new Book("Nick", "hateinblue");
@@ -224,18 +224,18 @@ public class NickCommand implements BukkitInterface {
     @AllArgsConstructor
     enum Argument {
 
-        LAST("last", Rank.BLAZE_PLUS, (account, context) -> {
+        LAST("last", Rank.ULTRA_PLUS, (account, context) -> {
             accept("last", context, account.getData(Columns.LAST_NICK).getAsString(), true, false);
         }),
 
-        RANDOM("random", Rank.BLAZE_PLUS, (account, context) -> {
+        RANDOM("random", Rank.ULTRA_PLUS, (account, context) -> {
 
             if (account.getFlag(Flag.NICK)) {
                 context.info("flag.locked");
                 return;
             }
 
-            boolean hasReachedLimited = account.getRank() == Rank.BLAZE_PLUS && account.getUnexpiredNicks().size() >= 3;
+            boolean hasReachedLimited = account.getRank() == Rank.ULTRA_PLUS && account.getUnexpiredNicks().size() >= 3;
 
             if(hasReachedLimited) {
                 context.sendMessage("§cVocê já usou todos os seus disfarces hoje.");
@@ -249,7 +249,7 @@ public class NickCommand implements BukkitInterface {
             });
         }),
 
-        RESET("reset", Rank.BLAZE_PLUS, (account, context) -> {
+        RESET("reset", Rank.ULTRA_PLUS, (account, context) -> {
 
             if (account.getFlag(Flag.NICK)) {
                 context.info("flag.locked");

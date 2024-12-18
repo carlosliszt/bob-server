@@ -20,7 +20,7 @@ import java.util.List;
 
 public class PlusColorCommand implements BukkitInterface {
 
-    @Command(name = "pluscolor", rank = Rank.BLAZE_PLUS, async = true, usage = "{labe} <pluscolor>", platform = Platform.PLAYER)
+    @Command(name = "pluscolor", rank = Rank.ULTRA_PLUS, async = true, usage = "{labe} <pluscolor>", platform = Platform.PLAYER)
     public void handleCommand(Context<Player> context) {
 
         String[] args = context.getArgs();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -58,10 +58,10 @@ public class PunishmentListener implements Listener, ProxyInterface {
                     msg.append("§cID: #").append(punish.getCode()).append("\n\n");
 
                     if (!punish.isInexcusable()) {
-                        msg.append("§eCompre seu unban em: §bblazemc.com.br/unban\n");
+                        msg.append("§eCompre seu unban em: §bbobmc.com.br/unban\n");
                     }
 
-                    msg.append("§cBanido injustamente? Contate-nos via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
+                    msg.append("§cBanido injustamente? Contate-nos via: " + Constants.SERVER_WEBSITE + "/appeal").append("\n");
 
                 } else {
                     msg.append(punish.isPermanent() ? "§cYou are permanently banned." : "§cYou are temporarily banned.").append("\n");
@@ -75,10 +75,10 @@ public class PunishmentListener implements Listener, ProxyInterface {
 
                     msg.append("§cBan ID: #").append(punish.getCode()).append("\n\n");
                     if (!punish.isInexcusable()) {
-                        msg.append("§ePurchase your unban in: §bblazemc.com.br/unban\n");
+                        msg.append("§ePurchase your unban in: §bbobmc.com.br/unban\n");
                     }
 
-                    msg.append("§cUnfairly banned? Contact us via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
+                    msg.append("§cUnfairly banned? Contact us via: " + Constants.SERVER_WEBSITE + "/appeal").append("\n");
                 }
 
                 if (punish.getType() == PunishType.BAN) {

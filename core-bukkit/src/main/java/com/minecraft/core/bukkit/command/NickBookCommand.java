@@ -40,7 +40,7 @@ public class NickBookCommand {
             "neymar", "alessia", "drone","fest", "festinha","alan",  "aleeessia", "alexa", "faasty", "Neymar", "lucas", "naruto", "Naruto", "Sasuke", "Matheuszinho", "matheuszinho", "matheus", "bizarro", "ricardinho", "biajoaninha", "bob", "wal"};
 
 
-    @Command(name = "nickbook", rank = Rank.BLAZE_PLUS, platform = Platform.PLAYER)
+    @Command(name = "nickbook", rank = Rank.ULTRA_PLUS, platform = Platform.PLAYER)
     public void onNickBookCommand(Context<Player> ctx) {
         String[] args = ctx.getArgs();
         Account account = ctx.getAccount();

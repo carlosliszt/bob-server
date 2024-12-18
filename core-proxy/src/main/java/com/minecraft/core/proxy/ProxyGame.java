@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -272,7 +272,7 @@ public class ProxyGame extends Plugin {
 
     public void enableBroadcast() {
         broadcasts.add("§eAltere seu idioma principal usando §b/language");
-        broadcasts.add("§eAcompanhe novidades em nosso Twitter §6@BlazeMC_");
+        broadcasts.add("§eAcompanhe novidades em nosso Twitter §6@BobMC_");
         broadcasts.add("§eAcompanhe suas estatísticas usando §b/stats");
         broadcasts.add("§eVenha fazer parte de nossa comunidade! Acesse nosso discord: §b" + Constants.SERVER_DISCORD);
         broadcasts.add("§eAltere sua experiência de jogo usando §b/prefs");

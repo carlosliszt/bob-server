@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -14,7 +14,6 @@ import com.minecraft.core.account.friend.Friend;
 import com.minecraft.core.clan.Clan;
 import com.minecraft.core.clan.member.Member;
 import com.minecraft.core.database.enums.Columns;
-import com.minecraft.core.enums.Medal;
 import com.minecraft.core.enums.Rank;
 import com.minecraft.core.enums.Tag;
 import com.minecraft.core.proxy.ProxyGame;
@@ -312,7 +311,7 @@ public class AccountLoader implements Listener {
                 account.loadNicks();
                 String customName = account.getData(Columns.NICK).getAsString();
 
-                if (!customName.equals("...") && account.getRank().getId() >= Rank.BLAZE_PLUS.getId()) {
+                if (!customName.equals("...") && account.getRank().getId() >= Rank.ULTRA_PLUS.getId()) {
                     account.setDisplayName(customName);
                 } else account.getData(Columns.NICK).setData("...");
 
@@ -325,20 +324,20 @@ public class AccountLoader implements Listener {
                 account.getPlusColorList().loadPlusColor();
 
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 1) {
-                    if (!account.hasTag(Tag.BLAZE_PLUS_1)) {
-                        account.giveTag(Tag.BLAZE_PLUS_1, -1, "[SERVER]");
+                    if (!account.hasTag(Tag.ULTRA_PLUS_1)) {
+                        account.giveTag(Tag.ULTRA_PLUS_1, -1, "[SERVER]");
                     }
                 }
 
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 6) {
-                    if (!account.hasTag(Tag.BLAZE_PLUS_2)) {
-                        account.giveTag(Tag.BLAZE_PLUS_2, -1, "[SERVER]");
+                    if (!account.hasTag(Tag.ULTRA_PLUS_2)) {
+                        account.giveTag(Tag.ULTRA_PLUS_2, -1, "[SERVER]");
                     }
                 }
 
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= 12) {
-                    if (!account.hasTag(Tag.BLAZE_PLUS_3)) {
-                        account.giveTag(Tag.BLAZE_PLUS_3, -1, "[SERVER]");
+                    if (!account.hasTag(Tag.ULTRA_PLUS_3)) {
+                        account.giveTag(Tag.ULTRA_PLUS_3, -1, "[SERVER]");
                     }
                 }
 
@@ -519,10 +518,10 @@ public class AccountLoader implements Listener {
                 msg.append("§cID: #").append(punish.getCode()).append("\n\n");
 
                 if (!punish.isInexcusable()) {
-                    msg.append("§eCompre seu unban em: §bblazemc.com.br/unban\n");
+                    msg.append("§eCompre seu unban em: §bbobmc.com.br/unban\n");
                 }
 
-                msg.append("§cBanido injustamente? Contate-nos via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
+                msg.append("§cBanido injustamente? Contate-nos via: " + Constants.SERVER_WEBSITE + "/appeal").append("\n");
             } else {
                 msg.append(punish.isPermanent() ? "§cYou are permanently banned." : "§cYou are temporarily banned.").append("\n");
                 if (punish.getCategory() != PunishCategory.NONE)
@@ -535,10 +534,10 @@ public class AccountLoader implements Listener {
 
                 msg.append("§cBan ID: #").append(punish.getCode()).append("\n\n");
                 if (!punish.isInexcusable()) {
-                    msg.append("§ePurchase your unban in: §bblazemc.com.br/unban\n");
+                    msg.append("§ePurchase your unban in: §bbobmc.com.br/unban\n");
                 }
 
-                msg.append("§cUnfairly banned? Contact us via:" + Constants.SERVER_WEBSITE + "/appeal").append("\n");
+                msg.append("§cUnfairly banned? Contact us via: " + Constants.SERVER_WEBSITE + "/appeal").append("\n");
             }
             loginEvent.setCancelled(true);
             loginEvent.setCancelReason(TextComponent.fromLegacyText(msg.toString()));

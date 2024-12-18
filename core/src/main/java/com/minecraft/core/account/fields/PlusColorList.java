@@ -20,7 +20,7 @@ public class PlusColorList {
     public void loadPlusColor() {
         plusColor.clear();
         for (PlusColor color : PlusColor.getValues()) {
-            if (account.hasTag(Tag.BLAZE_PLUS_3) || account.hasPlusColor(color) || account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= color.getMonths() || color == PlusColor.GOLDEN) {
+            if (account.hasTag(Tag.ULTRA_PLUS_3) || account.hasPlusColor(color) || account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= color.getMonths() || color == PlusColor.GOLDEN) {
                 plusColor.add(color);
             }
         }

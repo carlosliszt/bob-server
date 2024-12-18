@@ -100,12 +100,12 @@ public class SignListener implements Listener {
 
         if (line.equalsIgnoreCase("soup")) {
             event.setLine(0, "§c-§6-§e-§a-§b-");
-            event.setLine(1, "§b§lBLAZE");
+            event.setLine(1, "§b§lBOB");
             event.setLine(2, "§0§lSOUP");
             event.setLine(3, "§c-§6-§e-§a-§b-");
         } else if (line.equalsIgnoreCase("recraft")) {
             event.setLine(0, "§c-§6-§e-§a-§b-");
-            event.setLine(1, "§b§lBLAZE");
+            event.setLine(1, "§b§lBOB");
             event.setLine(2, "§0§lRECRAFT");
             event.setLine(3, "§c-§6-§e-§a-§b-");
         }

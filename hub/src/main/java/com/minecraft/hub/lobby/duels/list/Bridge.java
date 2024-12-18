@@ -27,7 +27,7 @@ public class Bridge extends Lobby {
         Constants.setServerType(ServerType.THE_BRIDGE_LOBBY);
         Constants.setLobbyType(ServerType.DUELS_LOBBY);
 
-        setBossbar("§b§lTHE BRIDGE NO BLAZEMC.COM.BR");
+        setBossbar("§b§lTHE BRIDGE NO BOBMC.COM.BR");
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Floreto extends Cage {
         super(theBridge);
 
         setDisplayName("Floreto");
-        setRank(Rank.BLAZE_PLUS);
+        setRank(Rank.ULTRA_PLUS);
         setRarity(CageRarity.LEGENDARY);
         setPrice(10000);
 

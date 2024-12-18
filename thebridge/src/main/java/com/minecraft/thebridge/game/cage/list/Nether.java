@@ -13,7 +13,7 @@ public class Nether extends Cage {
         super(theBridge);
 
         setDisplayName("Nether");
-        setRank(Rank.BLAZE_PLUS);
+        setRank(Rank.ULTRA_PLUS);
         setRarity(CageRarity.LEGENDARY);
         setPrice(10000);
 

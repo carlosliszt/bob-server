@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -18,7 +18,7 @@ public enum Medal {
     NITRO("Nitro", "Medalha exclusiva para boosters do Discord", "Nitro", "✦", "§d", "h3z8d", Rank.ADMINISTRATOR, true),
     BETACUP("Betacup", "Medalha exclusiva para os ganhadores da Betacup", "Betacup", "⚡", "§1", "wbt07", Rank.ADMINISTRATOR, true),
     CHALLENGER("Challenger", "Medalha exclusiva para os ganhadores das temporadas", "Challenger", "❂", "§4", "4gr67", Rank.ADMINISTRATOR, true),
-    MASTER("Master", "Medalha exclusiva para Rank Elite", "Master", "✪", "§c", "mastr", Rank.BLAZE_PLUS, false),
+    MASTER("Master", "Medalha exclusiva para Rank Elite", "Master", "✪", "§c", "mastr", Rank.ULTRA_PLUS, false),
     COOPERATOR("Cooperator", "Medalha exclusiva para jogadores que contribuem no desenvolvimento.", "Cooperator", "⚠", "§e", "cootr", Rank.ADMINISTRATOR, true),
 
     SUBSCRIBER("Subscriber", "Medalha exclusiva para assinantes da Twitch", "Subscriber", "✵", "§5", "hn83i", Rank.ADMINISTRATOR, true),
@@ -33,7 +33,7 @@ public enum Medal {
 
     COPA("Copa", "Medalha exclusiva para os participantes da CopaHG", "Copa", "Ⓒ", "§e", "cup21", Rank.ADMINISTRATOR, true),
 
-    ELITE("Elite", "Medalha exclusiva para Rank Elite", "Elite", "✫", "§c", "zf137", Rank.BLAZE_PLUS, false),
+    ELITE("Elite", "Medalha exclusiva para Rank Elite", "Elite", "✫", "§c", "zf137", Rank.ULTRA_PLUS, false),
 
     PROMOTER("Promotor", "Medalha exclusiva para promotores de Eventos", "Promotor", "❆", "§6§l", "81187", Rank.ADMINISTRATOR, false),
 

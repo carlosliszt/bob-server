@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum Broadcast {
 
     LANG("§eAltere seu idioma principal usando §b/idioma", "§eChange your primary language using §b/language"),
-    TWITTER("§eAcompanhe novidades em nosso Twitter §b@BlazeMC_", "§eFollow news on our Twitter §b@BlazeMC_"),
+    TWITTER("§eAcompanhe novidades em nosso Twitter §b@BobMC_", "§eFollow news on our Twitter §b@BobMC_"),
     STATS("§eAcompanhe suas estatísticas usando §b/stats", "§eTrack your statistics using §b/stats"),
     DISCORD("§eVenha fazer parte de nossa comunidade! Acesse nosso discord: §b" + Constants.SERVER_DISCORD, "§eBe part of our community! Access our discord: §b" + Constants.SERVER_DISCORD),
     PREFERENCE("§eAltere sua experiência de jogo usando §b/preferencias", "§eChange your gaming experience using §b/preferences"),

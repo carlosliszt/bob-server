@@ -22,7 +22,7 @@ public class Hg extends Lobby {
         Constants.setServerType(ServerType.HG_LOBBY);
         Constants.setLobbyType(ServerType.MAIN_LOBBY);
 
-        setBossbar("§b§lHG NO BLAZEMC.COM.BR");
+        setBossbar("§b§lHG NO BOBMC.COM.BR");
     }
 
     @Override

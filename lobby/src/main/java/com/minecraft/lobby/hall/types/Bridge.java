@@ -94,7 +94,7 @@ public class Bridge extends Hall {
     private final Set<BridgeCageConfig> cagesConfig = new HashSet<>();
 
     public Bridge(Lobby lobby) {
-        super(lobby, "The Bridge Lobby", "bridgelobby", "THE BRIDGE NO BLAZEMC.COM.BR");
+        super(lobby, "The Bridge Lobby", "bridgelobby", "THE BRIDGE NO BOBMC.COM.BR");
 
         setSpawn(new Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5, 0, 0));
         getLobby().getAccountLoader().addColumns(Columns.BRIDGE_CAGE, Columns.BRIDGE_SOLO_WINS, Columns.BRIDGE_SOLO_WINSTREAK, Columns.BRIDGE_DOUBLES_WINS, Columns.BRIDGE_DOUBLES_WINSTREAK, Columns.BRIDGE_SOLO_KILLS, Columns.BRIDGE_SOLO_DEATHS, Columns.BRIDGE_DOUBLES_KILLS, Columns.BRIDGE_DOUBLES_DEATHS, Columns.BRIDGE_COINS);

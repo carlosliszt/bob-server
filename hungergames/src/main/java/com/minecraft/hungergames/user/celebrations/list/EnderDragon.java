@@ -21,7 +21,7 @@ public class EnderDragon extends Celebration {
         setDescription("Monte em um dragão capaz de destruir o mapa.");
         setIcon(Pattern.of(Material.EYE_OF_ENDER));
         setRarity(CelebrationRarity.LEGENDARY);
-        setRank(Rank.BLAZE_PLUS);
+        setRank(Rank.ULTRA_PLUS);
     }
 
     @Override

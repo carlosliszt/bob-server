@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -183,7 +183,7 @@ public class AccountCommand implements ProxyInterface {
                                     .setTimestamp(LocalDateTime.now())
                                     .setColor(Color.GREEN));
 
-                            if (rank == Rank.BLAZE_PLUS) {
+                            if (rank == Rank.ULTRA_PLUS) {
                                 account.addInt(20, Columns.ULTRA_PLUS_MONTHS);
                             }
 
@@ -202,7 +202,7 @@ public class AccountCommand implements ProxyInterface {
                                 .setTimestamp(LocalDateTime.now())
                                 .setColor(Color.GREEN));
 
-                        if (rank == Rank.BLAZE_PLUS) {
+                        if (rank == Rank.ULTRA_PLUS) {
                             account.addInt(20, Columns.ULTRA_PLUS_MONTHS);
                         }
 
@@ -236,7 +236,7 @@ public class AccountCommand implements ProxyInterface {
                             AccountRankUpdateData data = new AccountRankUpdateData(account.getUniqueId(), rank, rankData.getAddedAt(), System.currentTimeMillis(), expiration, author, AccountRankUpdateData.Action.REPLACE);
                             Constants.getRedis().publish(Redis.RANK_UPDATE_CHANNEL, Constants.GSON.toJson(data));
 
-                            if (rank == Rank.BLAZE_PLUS) {
+                            if (rank == Rank.ULTRA_PLUS) {
                                 long months = StringTimeUtils.getMonthsFromTimeString(args[3]);
                                 account.addInt((int) months, Columns.ULTRA_PLUS_MONTHS);
                             }
@@ -254,7 +254,7 @@ public class AccountCommand implements ProxyInterface {
                         context.info("command.account.argument.rank.rank_add", rank.getName(), account.getUsername());
                         account.giveRank(rank, expiration, author);
 
-                        if (rank == Rank.BLAZE_PLUS) {
+                        if (rank == Rank.ULTRA_PLUS) {
                             long months = StringTimeUtils.getMonthsFromTimeString(args[3]);
                             account.addInt((int) months, Columns.ULTRA_PLUS_MONTHS);
                         }

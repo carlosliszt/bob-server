@@ -13,7 +13,7 @@ public class Cake extends Cage {
         super(theBridge);
 
         setDisplayName("Bolo");
-        setRank(Rank.BLAZE_PLUS);
+        setRank(Rank.ULTRA_PLUS);
         setRarity(CageRarity.LEGENDARY);
         setPrice(10000);
 

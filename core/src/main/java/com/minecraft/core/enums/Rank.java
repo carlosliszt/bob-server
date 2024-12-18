@@ -1,5 +1,5 @@
 /*
- * Copyright (C) BlazeMC, All Rights Reserved
+ * Copyright (C) BobMC, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential.
  */
@@ -33,8 +33,8 @@ public enum Rank {
     YOUTUBER(8, "Youtuber", "YT", "48ggf", Tag.YOUTUBER),
     STREAMER(7, "Streamer", "Streamer", "g5lbl", Tag.STREAMER),
     BETA(6, "Beta", "Beta", "0bxjm", Tag.BETA),
-    BLAZE_PLUS(5, "Blaze+", "Blaze+", "hf67h", Tag.BLAZE_PLUS),
-    BLAZE(4, "Blaze", "Blaze", "y4oaa", Tag.BLAZE),
+    ULTRA_PLUS(5, "Ultra+", "Ultra+", "hf67h", Tag.ULTRA_PLUS),
+    ULTRA(4, "Ultra", "Ultra", "y4oaa", Tag.ULTRA),
     MVP(3, "MVP", "MVP", "y4o5a", Tag.MVP),
     PRO(2, "Pro", "Pro", "ye4o5", Tag.PRO),
     VIP(1, "VIP", "VIP", "mvvz3", Tag.VIP),
