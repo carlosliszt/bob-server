@@ -11,6 +11,9 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Iterator;
+import java.util.stream.Collectors;
+
 public class BlockCommand {
 
     @Command(name = "block", platform = Platform.PLAYER, aliases = {"bloquear"})
@@ -80,6 +83,25 @@ public class BlockCommand {
                 async(() -> {
                     account.getDataStorage().saveTable(Tables.OTHER);
                 });
+            }
+        },
+
+        LIST(0, "list", "lista") {
+            @Override
+            public void execute(Context<Player> context) {
+
+                Account account = context.getAccount();
+
+                if(account.getBlockedUsers().isEmpty()) {
+                    context.sendMessage("§cVocê não bloqueou nenhum jogador!");
+                    return;
+                }
+
+                String list = account.getBlockedUsers().stream().map(Blocked::getName)
+                        .collect(Collectors.joining(", "));
+
+                context.sendMessage("§aJogadores bloqueados (" + account.getBlockedUsers().size() + "): " + list);
+
             }
         },
 
