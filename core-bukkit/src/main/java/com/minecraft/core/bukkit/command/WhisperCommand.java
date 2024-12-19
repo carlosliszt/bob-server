@@ -18,6 +18,7 @@ import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.enums.Rank;
+import com.minecraft.core.enums.Tag;
 import com.minecraft.core.punish.Punish;
 import com.minecraft.core.punish.PunishCategory;
 import com.minecraft.core.punish.PunishType;
@@ -87,8 +88,8 @@ public class WhisperCommand implements BukkitInterface {
         accountSender.setProperty("whisper_linked_player", target);
         accountTarget.setProperty("whisper_linked_player", sender);
 
-        target.sendMessage("§8[§7" + sender.getName() + " §f» §7Você§8] §e" + msg);
-        sender.sendMessage("§8[§7Você §f» §7" + target.getName() + "§8] §e" + msg);
+        target.sendMessage("§8[§7" + accountSender.getProperty("account_tag").getAs(Tag.class).getFormattedColor() + sender.getName() + " §f» " + accountTarget.getProperty("account_tag").getAs(Tag.class).getFormattedColor()+  target.getName() + "§8] §e" + msg);
+        sender.sendMessage("§8[" + accountSender.getProperty("account_tag").getAs(Tag.class).getFormattedColor() + sender.getName() + " §f» §7" + accountTarget.getProperty("account_tag").getAs(Tag.class).getFormattedColor()+  target.getName() + "§8] §e" + msg);
     }
 
     @Command(name = "r", aliases = {"reply"}, usage = "{label} <msg>", platform = Platform.PLAYER)
