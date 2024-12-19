@@ -44,7 +44,7 @@ public class AccountLoader implements Listener, VariableStorage {
 
     public AccountLoader() {
         loadVariables();
-        this.columns = new ArrayList<>(Arrays.asList(Columns.PUNISHMENTS, Columns.FRIENDS, Columns.TITLE, Columns.SENT_FRIEND_REQUESTS, Columns.RECEIVED_FRIEND_REQUESTS, Columns.CLAN, Columns.RANKS, Columns.PERMISSIONS, Columns.PLUSCOLOR, Columns.PLUSCOLORS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.FIRST_LOGIN, Columns.PREMIUM, Columns.LAST_LOGIN, Columns.PREFERENCES, Columns.SKIN, Columns.FLAGS, Columns.TAGS, Columns.MEDALS, Columns.MEDAL, Columns.CLANTAGS, Columns.CLANTAG, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG));
+        this.columns = new ArrayList<>(Arrays.asList(Columns.PUNISHMENTS, Columns.FRIENDS, Columns.BLOCKEDS, Columns.TITLE, Columns.SENT_FRIEND_REQUESTS, Columns.RECEIVED_FRIEND_REQUESTS, Columns.CLAN, Columns.RANKS, Columns.PERMISSIONS, Columns.PLUSCOLOR, Columns.PLUSCOLORS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.FIRST_LOGIN, Columns.PREMIUM, Columns.LAST_LOGIN, Columns.PREFERENCES, Columns.SKIN, Columns.FLAGS, Columns.TAGS, Columns.MEDALS, Columns.MEDAL, Columns.CLANTAGS, Columns.CLANTAG, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG));
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -104,6 +104,7 @@ public class AccountLoader implements Listener, VariableStorage {
             account.loadSentFriendRequests();
             account.loadReceivedFriendRequests();
 
+            account.loadBlockedUsers();
 
             for (PlusColor plusColor : PlusColor.values()) {
                 if (account.getData(Columns.ULTRA_PLUS_MONTHS).getAsInt() >= plusColor.getMonths()) {

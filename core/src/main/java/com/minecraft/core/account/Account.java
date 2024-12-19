@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.minecraft.core.Constants;
+import com.minecraft.core.account.blocked.Blocked;
 import com.minecraft.core.account.datas.*;
 import com.minecraft.core.account.fields.*;
 import com.minecraft.core.account.friend.Friend;
@@ -71,6 +72,8 @@ public class Account {
     private final List<FriendRequest> sentRequests = new ArrayList<>();
     private final List<FriendRequest> receivedRequests = new ArrayList<>();
 
+    private final List<Blocked> blockedUsers = new ArrayList<>();
+
     @Getter
     @Setter
     private double alpha = 0.0D; //cosmetic
@@ -81,6 +84,28 @@ public class Account {
 
     public Account(UUID uniqueId, String username) {
         this.dataStorage = new DataStorage(this.uniqueId = uniqueId, this.username = username);
+    }
+
+    public void loadBlockedUsers() {
+        blockedUsers.clear();
+
+        JsonArray jsonArray = getData(Columns.BLOCKEDS).getAsJsonArray();
+
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            String blockedName = object.get("name").getAsString();
+            UUID uniqueId = UUID.fromString(object.get("uniqueId").getAsString());
+
+            blockedUsers.add(new Blocked(blockedName, uniqueId));
+
+        }
+
+        getData(Columns.BLOCKEDS).setData(jsonArray);
+        getData(Columns.BLOCKEDS).setChanged(true);
+
     }
 
     public void loadSentFriendRequests() {
@@ -214,6 +239,38 @@ public class Account {
         getData(Columns.FRIENDS).setData(jsonArray);
         getData(Columns.FRIENDS).setChanged(true);
 
+    }
+
+    public void block(Blocked blocked) {
+        JsonArray jsonArray = getData(Columns.BLOCKEDS).getAsJsonArray();
+
+        JsonObject object = new JsonObject();
+
+        object.addProperty("name", blocked.getName());
+        object.addProperty("uniqueId", blocked.getUniqueId().toString());
+
+        jsonArray.add(object);
+
+        getData(Columns.BLOCKEDS).setData(jsonArray);
+        loadBlockedUsers();
+
+    }
+
+    public void unblock(Blocked blocked) {
+        JsonArray jsonArray = getData(Columns.BLOCKEDS).getAsJsonArray();
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+
+        while (iterator.hasNext()) {
+            JsonObject object = iterator.next().getAsJsonObject();
+
+            if (object.get("uniqueId").getAsString().equalsIgnoreCase(blocked.getUniqueId().toString())) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        getData(Columns.BLOCKEDS).setData(jsonArray);
+        loadFriends();
     }
 
     public void addFriend(Friend friend) {
@@ -656,6 +713,19 @@ public class Account {
     public Friend getFriend(UUID uniqueId) {
         return friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
     }
+
+    public boolean isBlocked(UUID uniqueId) {
+        return blockedUsers.stream().anyMatch(blocked -> blocked.getUniqueId().equals(uniqueId));
+    }
+
+    public Blocked getBlocked(UUID uniqueId) {
+        return blockedUsers.stream().filter(blocked -> blocked.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
+    }
+
+    public Blocked getBlocked(String name) {
+        return blockedUsers.stream().filter(blocked -> blocked.getName().equals(name)).findFirst().orElse(null);
+    }
+
 
     public boolean hasTag(Tag tag) {
         return getTag(tag) != null;

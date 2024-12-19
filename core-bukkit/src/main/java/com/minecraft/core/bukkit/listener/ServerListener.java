@@ -307,7 +307,9 @@ public class ServerListener implements Listener, BukkitInterface, VariableStorag
 
             TextComponent textComponent1 = new TextComponent((tag == Tag.MEMBER ? tag.getMemberSetting(prefixType) : prefixType.getFormatter().format(tag).replace("#", account.getProperty("account_pluscolor").getAs(PlusColor.class).getColor() + "+")) + account.getDisplayName() + " §7»§r " + event.getMessage());
 
-            recipient.sendMessage(textComponent, textComponent1);
+            if(!account_recipient.isBlocked(account.getUniqueId()))
+                recipient.sendMessage(textComponent, textComponent1);
+
         });
     }
 

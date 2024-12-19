@@ -68,7 +68,7 @@ public class AccountLoader implements Listener {
             "Africa", "North Africa", "Pakistan", "Angola", "Bangladesh", "Iraq",
             "Italy", "Croatia", "Taiwan", "Poland", "Hungary");
 
-    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.FRIENDS, Columns.SENT_FRIEND_REQUESTS, Columns.RECEIVED_FRIEND_REQUESTS, Columns.ULTRA_PLUS_MONTHS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
+    private final List<Columns> defaultColumns = Arrays.asList(Columns.BANNED, Columns.FRIENDS, Columns.SENT_FRIEND_REQUESTS, Columns.RECEIVED_FRIEND_REQUESTS, Columns.ULTRA_PLUS_MONTHS, Columns.NICK_OBJECTS, Columns.LAST_NICK, Columns.LAST_LOGIN, Columns.CLAN, Columns.BLOCKEDS, Columns.SKIN, Columns.FIRST_LOGIN, Columns.RANKS, Columns.PERMISSIONS, Columns.PUNISHMENTS, Columns.PREMIUM, Columns.FLAGS, Columns.TAGS, Columns.CLANTAGS, Columns.CLANTAG, Columns.MEDALS, Columns.MEDAL, Columns.PLUSCOLORS, Columns.PLUSCOLOR, Columns.PREFIXTYPE, Columns.NICK, Columns.LANGUAGE, Columns.TAG);
 
     @EventHandler
     public void onConnectionInit(ClientConnectEvent event) {
@@ -217,6 +217,7 @@ public class AccountLoader implements Listener {
                 account.loadFriends();
                 account.loadReceivedFriendRequests();
                 account.loadSentFriendRequests();
+                account.loadBlockedUsers();
 
                 account.getData(Columns.USERNAME).setData(name);
 

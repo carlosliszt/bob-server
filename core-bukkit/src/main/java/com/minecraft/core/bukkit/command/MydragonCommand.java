@@ -91,14 +91,6 @@ public class MydragonCommand implements BukkitInterface, Listener {
         }.runTaskTimerAsynchronously(BukkitGame.getEngine(), 0, 1);
     }
 
-    @Command(name = "dragonmyself", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
-    public void handleOtherCommand(Context<Player> context) {
-        UndeadDisguise dis = new UndeadDisguise(UndeadDisguise.DisguiseType.ENDER_DRAGON, context.getSender());
-        dis.disguiseToAll();
-
-        context.sendMessage("§dWoosh!");
-    }
-
     @EventHandler
     public void stopDragonDamage(EntityExplodeEvent event) {
         Entity e = event.getEntity();
