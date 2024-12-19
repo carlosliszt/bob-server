@@ -4,17 +4,22 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.account.blocked.Blocked;
 import com.minecraft.core.bukkit.util.BukkitInterface;
 import com.minecraft.core.command.annotation.Command;
+import com.minecraft.core.command.annotation.Completer;
 import com.minecraft.core.command.command.Context;
 import com.minecraft.core.command.platform.Platform;
 import com.minecraft.core.database.enums.Tables;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class BlockCommand {
+public class BlockCommand implements BukkitInterface {
 
     @Command(name = "block", platform = Platform.PLAYER, aliases = {"bloquear"})
     public void blockCommand(Context<Player> ctx) {
@@ -26,7 +31,7 @@ public class BlockCommand {
             Argument argument = Argument.fetch(ctx.getArg(0));
 
             if (argument == null) {
-                ctx.getSender().performCommand("friend add " + ctx.getArg(0));
+                ctx.getSender().performCommand("block add " + ctx.getArg(0));
                 return;
             }
 
@@ -135,6 +140,35 @@ public class BlockCommand {
         }
 
         public abstract void execute(Context<Player> context);
+    }
+
+    @Completer(name = "block")
+    public List<String> handleComplete(Context<CommandSender> context) {
+        List<String> list = new ArrayList<>();
+
+        if (context.argsCount() == 1) {
+            String userInput = context.getArg(0).toLowerCase();
+            for (Argument argument : Argument.values()) {
+                for(String field : argument.getField()) {
+                    if (field.startsWith(userInput)) {
+                        list.add(field);
+                    }
+                }
+            }
+
+            for (String nickname : getOnlineNicknames(context)) {
+                if (nickname.toLowerCase().startsWith(userInput)) {
+                    list.add(nickname);
+                }
+            }
+
+            return list;
+        }
+
+        String userInput = context.getArg(context.argsCount() - 1).toLowerCase();
+        return getOnlineNicknames(context).stream()
+                .filter(nickname -> nickname.toLowerCase().startsWith(userInput))
+                .collect(Collectors.toList());
     }
 
 }
