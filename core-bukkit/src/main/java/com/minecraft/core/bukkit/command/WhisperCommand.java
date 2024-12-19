@@ -74,6 +74,11 @@ public class WhisperCommand implements BukkitInterface {
             return;
         }
 
+        if(accountTarget.isBlocked(accountSender.getUniqueId())) {
+            context.info("command.tell.cant_send_message");
+            return;
+        }
+
         final String msg = String.join(" ", message);
 
         if (accountSender.getRank().getId() < Rank.ADMINISTRATOR.getId())
