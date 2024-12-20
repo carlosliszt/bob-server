@@ -18,6 +18,7 @@ import com.minecraft.core.bukkit.util.leaderboard.libs.LeaderboardUpdate;
 import com.minecraft.core.bukkit.util.npc.NPC;
 import com.minecraft.core.bukkit.util.scoreboard.AnimatedString;
 import com.minecraft.core.bukkit.util.scoreboard.GameScoreboard;
+import com.minecraft.core.bukkit.util.staff.StaffPerformance;
 import com.minecraft.core.database.enums.Columns;
 import com.minecraft.core.enums.Tag;
 import com.minecraft.core.server.Server;
@@ -44,11 +45,9 @@ import java.util.List;
 
 public class Main extends Hall {
 
-    private final Leaderboard bansLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_BANS, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
-    private final Leaderboard mutesLeaderboard = new Leaderboard(Columns.STAFF_MONTHLY_MUTES, LeaderboardUpdate.HALF_HOUR, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).query();
     private final Leaderboard parkourLeaderboard = new Leaderboard(Columns.MAIN_LOBBY_PARKOUR_RECORD, LeaderboardUpdate.MINUTE, LeaderboardType.PLAYER, 20, Columns.USERNAME, Columns.RANKS).reverseQuery();
 
-    private final Location bansLocation, mutesLocation;
+    private final Location staffLocation;
     private final Location parkourStart, parkourEnd;
     private final Checkpoint[] parkourCheckpoints;
 
@@ -64,6 +63,11 @@ public class Main extends Hall {
         worldBorder.setCenter(getSpawn());
         worldBorder.setSize(1000);
 
+        getLobby().getAccountLoader().addColumns(Columns.MAIN_LOBBY_PARKOUR_RECORD,
+                Columns.STAFF_LIFETIME_BANS, Columns.STAFF_LIFETIME_MUTES,
+                Columns.STAFF_MONTHLY_BANS, Columns.STAFF_MONTHLY_MUTES,
+                Columns.STAFF_WEEKLY_BANS, Columns.STAFF_WEEKLY_MUTES);
+
         this.parkourCheckpoints = new Checkpoint[]{
                 new Checkpoint(1, new Location(Bukkit.getWorld("world"), 138, 95, 36, -120, 0)),
                 new Checkpoint(2, new Location(Bukkit.getWorld("world"), 156.5, 82.0, 59.5, 1, 0)),
@@ -73,8 +77,7 @@ public class Main extends Hall {
         this.parkourStart = new Location(Bukkit.getWorld("world"), 98.5, 88, 71.5, 180, 0);
         this.parkourEnd = new Location(Bukkit.getWorld("world"), 140.5, 86, 142.5, 90, 0);
 
-        this.bansLocation = new Location(Bukkit.getWorld("world"), 133, 85, 114);
-        this.mutesLocation = new Location(Bukkit.getWorld("world"), 133, 85, 109);
+        this.staffLocation = new Location(Bukkit.getWorld("world"), 133, 85, 114);
         this.parkour = new Parkour(lobby, parkourStart, parkourEnd, parkourCheckpoints);
     }
 
@@ -151,11 +154,16 @@ public class Main extends Hall {
 
 
             if (staffer) {
-                LeaderboardHologram leaderboardHologram6 = new LeaderboardHologram(bansLeaderboard, "§e§lTOP 20 §b§lBANS MENSAL §7(%s/%s)", player, bansLocation);
-                leaderboardHologram6.show();
+              Hologram staff = new Hologram(player, staffLocation, "§b§lSUAS PUNIÇÕES", "", "§eDesempenho: " + StaffPerformance.UNDEFINED.getText(), "",
+                      "§eMutes Totais: §a" + user.getAccount().getData(Columns.STAFF_LIFETIME_MUTES).getAsInt(),
+                      "§eMutes Mensais: §a" + user.getAccount().getData(Columns.STAFF_MONTHLY_MUTES).getAsInt(),
+                      "§eMutes Semanais: §a" + user.getAccount().getData(Columns.STAFF_WEEKLY_MUTES).getAsInt(), "", "",
+                      "§eBans Totais: §a" + user.getAccount().getData(Columns.STAFF_LIFETIME_BANS).getAsInt(),
+                      "§eBans Mensais: §a" + user.getAccount().getData(Columns.STAFF_MONTHLY_BANS).getAsInt(),
+                      "§eBans Semanais: §a" + user.getAccount().getData(Columns.STAFF_WEEKLY_BANS).getAsInt()
+                      );
 
-                LeaderboardHologram leaderboardHologram7 = new LeaderboardHologram(mutesLeaderboard, "§e§lTOP 20 §b§lMUTES MENSAL §7(%s/%s)", player, mutesLocation);
-                leaderboardHologram7.show();
+              staff.show();
             }
 
             LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 20 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), 104.5, 89, 27.5));
