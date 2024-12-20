@@ -32,6 +32,8 @@ import com.minecraft.core.enums.Tag;
 import com.minecraft.core.util.StringTimeUtils;
 import com.minecraft.core.util.communication.NicknameUpdateData;
 import com.minecraft.core.util.ranking.RankingFactory;
+import com.minecraft.core.util.skin.Skin;
+import com.minecraft.core.util.skin.util.CustomProperty;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.AllArgsConstructor;
@@ -286,7 +288,43 @@ public class NickCommand implements BukkitInterface {
                 account.getDataStorage().saveColumnsFromSameTable(Columns.NICK, Columns.TAG);
             });
 
-            context.info("command.nick.nickname_remove");
+            if (account.getSkinData().getSource() == SkinData.Source.ACCOUNT) {
+                return;
+            }
+
+            Executor.async(() -> {
+
+                Property property;
+
+                if (Constants.getCrackedUniqueId(account.getUsername()).equals(account.getUniqueId())) {
+                    CustomProperty customProperty = Skin.getRandomSkin().getCustomProperty();
+                    property = new Property(customProperty.getName(), customProperty.getValue(), customProperty.getSignature());
+                } else {
+                    property = Constants.getMojangAPI().getProperty(account.getUniqueId());
+                }
+
+                if (property == null) {
+                    context.info("object.not_found", "Skin");
+                    return;
+                }
+
+                SkinData skinData = account.getSkinData();
+
+                skinData.setName(account.getUsername());
+                skinData.setValue(property.getValue());
+                skinData.setSignature(property.getSignature());
+                skinData.setSource(SkinData.Source.ACCOUNT);
+                skinData.setUpdatedAt(System.currentTimeMillis());
+
+                account.getData(Columns.SKIN).setData(skinData.toJson());
+                account.getDataStorage().saveColumn(Columns.SKIN);
+
+                Executor.sync(() -> {
+                    PlayerDisguise.changeSkin(context.getSender(), property);
+                });
+                Constants.getRedis().publish(Redis.SKIN_CHANGE_CHANNEL, account.getUniqueId() + ":" + property.getValue() + ":" + property.getSignature());
+            });
+
         }),
 
         LIST("list", Rank.PARTNER_PLUS, (account, context) -> {

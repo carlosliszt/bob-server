@@ -27,18 +27,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import redis.clients.jedis.Jedis;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 public class NickBookCommand {
-
-    private static final String[] prefix = {"", "y", "_", "u", "i", "__", "e", "z", "x", "Iam", "chorapro"};
-    private static final String[] suffix = {"uwu", "", "owo", "__", "_", "2012", "BR", "bw", "34", "1337", "XD"};
-    private static final String[] middle = {"Mariaum", "mariaum", "maria1", "coelhoh", "coelho",
-            "neymar", "alessia", "drone","fest", "festinha","alan",  "aleeessia", "alexa", "faasty", "Neymar", "lucas", "naruto", "Naruto", "Sasuke", "Matheuszinho", "matheuszinho", "matheus", "bizarro", "ricardinho", "biajoaninha", "bob", "wal"};
-
 
     @Command(name = "nickbook", rank = Rank.ULTRA_PLUS, platform = Platform.PLAYER)
     public void onNickBookCommand(Context<Player> ctx) {
@@ -248,11 +249,47 @@ public class NickBookCommand {
         StringBuilder s = new StringBuilder();
         Random r = new Random();
 
-        String p = prefix[r.nextInt(prefix.length)];
-        String m = middle[r.nextInt(middle.length)];
-        String ss = suffix[r.nextInt(suffix.length)];
+        List<String> prefixes;
+        try (InputStream inputStream = NickBookCommand.class.getResourceAsStream("/nick_prefixes.txt")) {
+            if (inputStream == null) {
+                System.err.println("Prefix file not found: nick_prefixes.txt");
+                return null;
+            }
+            prefixes = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-        s.append(p).append(m).append(ss);
+        List<String> suffixes;
+        try (InputStream inputStream = NickBookCommand.class.getResourceAsStream("/nick_suffixes.txt")) {
+            if (inputStream == null) {
+                System.err.println("Suffix file not found: nick_suffixes.txt");
+                return null;
+            }
+            suffixes = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        List<String> middles;
+        try (InputStream inputStream = NickBookCommand.class.getResourceAsStream("/nick_middles.txt")) {
+            if (inputStream == null) {
+                System.err.println("Middle file not found: nick_middles.txt");
+                return null;
+            }
+            middles = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String p = prefixes.get(r.nextInt(prefixes.size()));
+        String m = middles.get(r.nextInt(middles.size()));
+        String sfx = suffixes.get(r.nextInt(suffixes.size()));
+
+        s.append(p).append(m).append(sfx);
 
         return s.substring(0, Math.min(s.length(), 16));
     }

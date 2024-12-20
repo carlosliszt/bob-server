@@ -234,7 +234,7 @@ public class PluginMessageListener implements Listener, ProxyInterface {
                     if (proxiedPlayer == null)
                         return;
 
-                    proxiedPlayer.sendMessage("§e[STAFF]§r §b§lBOB§e: §eJogador §6" + account.getUsername() + "§e foi banido.");
+                    proxiedPlayer.sendMessage(TextComponent.fromLegacy("§e[STAFF]§r §b§lBOB§e: §eJogador §6" + account.getUsername() + "§e foi banido."));
 
                 });
 
