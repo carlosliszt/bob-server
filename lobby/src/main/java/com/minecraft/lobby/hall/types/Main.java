@@ -154,7 +154,16 @@ public class Main extends Hall {
 
 
             if (staffer) {
-              Hologram staff = new Hologram(player, staffLocation, "§b§lSUAS PUNIÇÕES", "", "§eDesempenho: " + StaffPerformance.UNDEFINED.getText(), "",
+
+                //TODO: change that
+                StaffPerformance performance = StaffPerformance.calculatePerformance(
+                        user.getAccount().getData(Columns.STAFF_WEEKLY_BANS).getAsInt() +
+                        user.getAccount().getData(Columns.STAFF_WEEKLY_MUTES).getAsInt()
+                );
+
+                //experimental
+                Hologram staff = new Hologram(player, staffLocation, "§b§lSUAS PUNIÇÕES", "",
+                      "§eDesempenho: " + performance.getText(), "",
                       "§eMutes Totais: §a" + user.getAccount().getData(Columns.STAFF_LIFETIME_MUTES).getAsInt(),
                       "§eMutes Mensais: §a" + user.getAccount().getData(Columns.STAFF_MONTHLY_MUTES).getAsInt(),
                       "§eMutes Semanais: §a" + user.getAccount().getData(Columns.STAFF_WEEKLY_MUTES).getAsInt(), "", "",
@@ -163,7 +172,7 @@ public class Main extends Hall {
                       "§eBans Semanais: §a" + user.getAccount().getData(Columns.STAFF_WEEKLY_BANS).getAsInt()
                       );
 
-              staff.show();
+                staff.show();
             }
 
             LeaderboardHologram leaderboardHologram8 = new LeaderboardHologram(parkourLeaderboard, "§e§lTOP 20 §b§lPARKOUR §7(%s/%s)", player, new Location(Bukkit.getWorld("world"), 104.5, 89, 27.5));

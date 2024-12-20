@@ -15,4 +15,26 @@ public enum StaffPerformance {
 
     private String text;
 
+    /*
+     * @param punishments is the amount of BANS and MUTES applied
+     *
+     * hardcoded amounts for now (can and WILL be changed)
+     *
+     */
+    public static StaffPerformance calculatePerformance(int punishments) {
+
+        if(punishments < 20) {
+            return UNDEFINED;
+        } else if(punishments >= 20 && punishments < 50) {
+            return BAD;
+        } else if(punishments >= 50 && punishments < 200) {
+            return MID;
+        } else if(punishments >= 200 && punishments < 400) {
+            return GOOD;
+        } else {
+            return EXCELLENT;
+        }
+
+    }
+
 }
