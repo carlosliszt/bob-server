@@ -95,14 +95,13 @@ public class Prototype extends Hall {
         int count = Constants.getServerStorage().count();
 
         scores.add(" ");
-        scores.add("§eTio Gerson:");
-        scores.add(" §fWins: §b" + storage.getData(Columns.TIOGERSON_WINS).getAsInteger());
-        scores.add(" §fWinstreak: §b" + storage.getData(Columns.TIOGERSON_WINSTREAK).getAsInteger());
+        scores.add("§fMini-Games neste lobby estão");
+        scores.add("§fem desenvolvimento");
+        scores.add("§fconstante!");
         scores.add(" ");
-        scores.add("§eBatata Quente:");
-        scores.add(" §fWins: §b0");
-        scores.add(" §fWinstreak: §b0");
-        scores.add(" ");
+        scores.add("§fDenuncie bugs e deixe seu feedback");
+        scores.add("§fem: §b" + Constants.SERVER_DISCORD);
+        scores.add("");
         scores.add("§fPlayers: §a" + (count == -1 ? "..." : count));
         scores.add(" ");
         scores.add("§e" + Constants.SERVER_WEBSITE.replace("www.", ""));
