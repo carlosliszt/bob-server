@@ -9,9 +9,11 @@ import com.minecraft.arcade.tiogerson.util.enums.Items;
 import com.minecraft.arcade.tiogerson.util.enums.RoomStage;
 import com.minecraft.arcade.tiogerson.util.visibility.Visibility;
 import com.minecraft.core.account.Account;
+import com.minecraft.core.bukkit.accessory.list.title.TitleAccessory;
 import com.minecraft.core.bukkit.event.player.PlayerUpdateTablistEvent;
 import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.title.TitleHandler;
 import com.minecraft.core.enums.PrefixType;
 import com.minecraft.core.enums.Tag;
 import lombok.Getter;
@@ -165,6 +167,7 @@ public class Room implements BukkitInterface {
             c.getAccount().addInt(1, getMode().getGames());
             Visibility.refresh(c.getPlayer());
             new PlayerUpdateTablistEvent(c.getAccount(), c.getAccount().getProperty("account_tag").getAs(Tag.class), c.getAccount().getProperty("account_prefix_type").getAs(PrefixType.class)).fire();
+            TitleHandler.getInstance().setTitle(c.getPlayer(), TitleAccessory.TitleAnimation.NONE, "§4§lFUJA!");
         });
         enzo.getMembers().forEach(c -> {
             c.getPlayer().teleport(getMapConfiguration().getEnzoLocation());

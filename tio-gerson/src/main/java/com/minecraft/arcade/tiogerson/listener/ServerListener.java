@@ -16,6 +16,7 @@ import com.minecraft.core.account.Account;
 import com.minecraft.core.bukkit.event.server.ServerHeartbeatEvent;
 import com.minecraft.core.bukkit.server.route.PlayMode;
 import com.minecraft.core.bukkit.util.BukkitInterface;
+import com.minecraft.core.bukkit.util.title.TitleHandler;
 import com.minecraft.core.bukkit.util.vanish.Vanish;
 import com.minecraft.core.database.enums.Tables;
 import org.bukkit.Bukkit;
@@ -58,6 +59,7 @@ public class ServerListener implements Listener, BukkitInterface {
 
         team.getMembers().remove(user);
         room.getAlivePlayers().remove(user);
+        TitleHandler.getInstance().removeTitle(player);
 
         Account account = user.getAccount();
 
