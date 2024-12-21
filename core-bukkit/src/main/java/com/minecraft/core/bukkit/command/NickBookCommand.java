@@ -32,12 +32,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import static com.minecraft.core.bukkit.util.BukkitInterface.generateNick;
 
 public class NickBookCommand {
 
@@ -244,55 +244,6 @@ public class NickBookCommand {
         });
     }
 
-
-    public static String generateNick() {
-        StringBuilder s = new StringBuilder();
-        Random r = new Random();
-
-        List<String> prefixes;
-        try (InputStream inputStream = NickBookCommand.class.getResourceAsStream("/nick_prefixes.txt")) {
-            if (inputStream == null) {
-                System.err.println("Prefix file not found: nick_prefixes.txt");
-                return null;
-            }
-            prefixes = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        List<String> suffixes;
-        try (InputStream inputStream = NickBookCommand.class.getResourceAsStream("/nick_suffixes.txt")) {
-            if (inputStream == null) {
-                System.err.println("Suffix file not found: nick_suffixes.txt");
-                return null;
-            }
-            suffixes = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        List<String> middles;
-        try (InputStream inputStream = NickBookCommand.class.getResourceAsStream("/nick_middles.txt")) {
-            if (inputStream == null) {
-                System.err.println("Middle file not found: nick_middles.txt");
-                return null;
-            }
-            middles = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        String p = prefixes.get(r.nextInt(prefixes.size()));
-        String m = middles.get(r.nextInt(middles.size()));
-        String sfx = suffixes.get(r.nextInt(suffixes.size()));
-
-        s.append(p).append(m).append(sfx);
-
-        return s.substring(0, Math.min(s.length(), 16));
-    }
 
     private interface Executor {
         static void sync(Runnable runnable) {

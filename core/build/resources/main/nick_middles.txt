@@ -1,4 +1,3 @@
-Mariaum
 mariaum
 maria1
 coelhoh
@@ -15,9 +14,7 @@ faasty
 Neymar
 lucas
 naruto
-Naruto
-Sasuke
-Matheuszinho
+sasuke
 matheuszinho
 matheus
 bizarro

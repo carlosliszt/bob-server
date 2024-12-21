@@ -51,11 +51,6 @@ import java.util.stream.Collectors;
 
 public class NickCommand implements BukkitInterface {
 
-    private static final String[] prefix = {"", "y", "_", "u", "i", "__", "e", "z", "x", "Iam", "chorapro"};
-    private static final String[] suffix = {"uwu", "", "owo", "__", "_", "2012", "BR", "34", "bw", "1337", "XD"};
-    private static final String[] middle = {"Mariaum", "mariaum", "maria1", "coelhoh", "coelho",
-            "neymar", "alessia", "drone", "aleeessia", "alexa", "fest", "festinha", "alan", "faasty", "Neymar", "lucas", "naruto", "Naruto", "Sasuke", "Matheuszinho", "matheuszinho", "matheus", "bizarro", "ricardinho", "biajoaninha", "bob", "wal"};
-
     private static void accept(String subcommand, Context<Player> context, String nickname, boolean randomizeSkin, boolean checkMojang) {
         Player sender = context.getSender();
         Account account = context.getAccount();
@@ -245,7 +240,7 @@ public class NickCommand implements BukkitInterface {
             }
 
             Executor.async(() -> {
-                String nickname = generateNick();
+                String nickname = BukkitInterface.generateNick();
                 Executor.async(() -> accept("random", context, nickname, true, false));
 
             });
@@ -443,18 +438,5 @@ public class NickCommand implements BukkitInterface {
 
         void execute(Account account, Context<Player> context);
 
-    }
-
-    public static String generateNick() {
-        StringBuilder s = new StringBuilder();
-        Random r = new Random();
-
-        String p = prefix[r.nextInt(prefix.length)];
-        String m = middle[r.nextInt(middle.length)];
-        String ss = suffix[r.nextInt(suffix.length)];
-
-        s.append(p).append(m).append(ss);
-
-        return s.substring(0, Math.min(s.length(), 16));
     }
 }

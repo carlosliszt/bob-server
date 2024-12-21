@@ -26,11 +26,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -85,6 +83,61 @@ public interface BukkitInterface {
             return false;
         }
         return true;
+    }
+
+     static String generateNick() {
+        StringBuilder s = new StringBuilder();
+        Random r = new Random();
+
+        List<String> prefixes;
+        try (InputStream inputStream = BukkitInterface.class.getResourceAsStream("/nick_prefixes.txt")) {
+            if (inputStream == null) {
+                System.err.println("Prefix file not found: nick_prefixes.txt");
+                return null;
+            }
+            prefixes = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        List<String> suffixes;
+        try (InputStream inputStream = BukkitInterface.class.getResourceAsStream("/nick_suffixes.txt")) {
+            if (inputStream == null) {
+                System.err.println("Suffix file not found: nick_suffixes.txt");
+                return null;
+            }
+            suffixes = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        List<String> middles;
+        try (InputStream inputStream = BukkitInterface.class.getResourceAsStream("/nick_middles.txt")) {
+            if (inputStream == null) {
+                System.err.println("Middle file not found: nick_middles.txt");
+                return null;
+            }
+            middles = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8"))).lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String p = prefixes.get(r.nextInt(prefixes.size()));
+        String sfx = suffixes.get(r.nextInt(suffixes.size()));
+        String m = middles.get(r.nextInt(middles.size()));
+
+        s.append(p);
+        if(r.nextBoolean())
+            s.append(m.substring(0, 1).toUpperCase());
+        else
+            s.append(m.substring(0, 1).toLowerCase());
+        s.append(m.substring(1));
+        s.append(sfx);
+
+        return s.substring(0, Math.min(s.length(), 16));
     }
 
     List<String> booleanOptions = Arrays.asList("true", "false", "on", "off");
