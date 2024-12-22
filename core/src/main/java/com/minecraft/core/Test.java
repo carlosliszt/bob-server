@@ -1,14 +1,4 @@
-package com.minecraft.core.bukkit.command;
-
-import com.minecraft.core.bukkit.util.BukkitInterface;
-import com.minecraft.core.bukkit.util.BukkitSerialization;
-import com.minecraft.core.command.annotation.Command;
-import com.minecraft.core.command.command.Context;
-import com.minecraft.core.command.platform.Platform;
-import com.minecraft.core.enums.Rank;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.entity.Player;
+package com.minecraft.core;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -19,26 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class ExportInventoryCommand implements BukkitInterface {
+public class Test {
 
-    @Command(name = "exportinventory", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
-    public void handleCommand(Context<Player> context) {
-        context.sendMessage("§aCarregando...");
-        async(() -> {
-            try {
-                String url = post(BukkitSerialization.toBase64(context.getSender().getInventory()), true);
-
-                TextComponent textComponent = new TextComponent(TextComponent.fromLegacyText("§aInventário exportado."));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-
-                context.getSender().sendMessage(textComponent);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+    public static void main(String[] args) {
+        try {
+            System.out.println(post("test", false));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String post(String text, boolean raw) throws IOException {
+    public static String post(String text, boolean raw) throws IOException {
         byte[] postData = text.getBytes(StandardCharsets.UTF_8);
         int postDataLength = postData.length;
 
@@ -66,7 +47,7 @@ public class ExportInventoryCommand implements BukkitInterface {
         if (response.contains("\"key\"")) {
             response = response.substring(response.indexOf(":") + 2, response.length() - 2);
 
-            String postURL = raw ? "http://localhost/share/" : "http://localhost/";
+            String postURL = raw ? "http://localhost/raw/" : "http://localhost/";
             response = postURL + response;
         }
 

@@ -20,7 +20,7 @@ public class PasteCommand implements ProxyInterface {
     @Command(name = "paste", usage = "paste <id> <command> [format...]", platform = Platform.PLAYER, rank = Rank.ADMINISTRATOR)
     public void handleCommand(Context<ProxiedPlayer> context, String paste, String[] rawcommand) {
 
-        String URL = "http://localhost:7777/raw/";
+        String URL = "http://localhost/raw/";
 
         context.info("command.whitelist.import_processing");
 

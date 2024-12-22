@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
@@ -95,14 +96,13 @@ public class GetlogsCommand implements BukkitInterface {
         byte[] postData = text.getBytes(StandardCharsets.UTF_8);
         int postDataLength = postData.length;
 
-        String requestURL = "https://hastebin.com/documents";
+        String requestURL = "http://localhost/documents";
         URL url = new URL(requestURL);
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
         conn.setInstanceFollowRedirects(false);
         conn.setRequestMethod("POST");
         conn.setRequestProperty("User-Agent", "Hastebin Java Api");
-        conn.setRequestProperty("Authorization", "Bearer bfe80c5161ae6c9913449f826153a4569cfe012fe08cfc68ad41eb3f2781577b86bbe04985ca90c956edbf3d1b06e2930fb15f24397f4d3736282ef0df33a550");
         conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
         conn.setUseCaches(false);
 
@@ -120,7 +120,7 @@ public class GetlogsCommand implements BukkitInterface {
         if (response.contains("\"key\"")) {
             response = response.substring(response.indexOf(":") + 2, response.length() - 2);
 
-            String postURL = raw ? "https://hastebin.com/raw/" : "https://hastebin.com/";
+            String postURL = raw ? "http://localhost/raw/" : "http://localhost/";
             response = postURL + response;
         }
 

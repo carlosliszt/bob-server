@@ -199,7 +199,7 @@ public class WhitelistCommand implements BukkitInterface {
 
         IMPORT("import", 2, (context, whitelist) -> {
 
-            String URL = "http://localhost:7777/raw/";
+            String URL = "http://localhost/raw/";
             String ID = context.getArg(1);
 
             context.info("command.whitelist.import_processing");
