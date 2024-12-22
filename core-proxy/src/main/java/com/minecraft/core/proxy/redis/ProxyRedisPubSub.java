@@ -104,9 +104,6 @@ public class ProxyRedisPubSub extends JedisPubSub implements ProxyInterface {
                             break;
 
                         case VANISHED:
-                            holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
-                            async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
-                            break;
                         case SILENTVANISH:
                             holderAccount.getData(Columns.FRIEND_STATUS).setData(update.getStatus().name());
                             async(() -> holderAccount.getDataStorage().saveTable(Tables.ACCOUNT));
