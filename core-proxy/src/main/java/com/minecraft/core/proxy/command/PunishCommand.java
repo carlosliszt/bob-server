@@ -32,8 +32,13 @@ import com.minecraft.core.util.StringTimeUtils;
 import com.minecraft.core.util.geodata.DataResolver;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -206,7 +211,6 @@ public class PunishCommand implements ProxyInterface {
 
     @Command(name = "fastban", rank = Rank.SECONDARY_MOD, usage = "fb <shortcut>", aliases = {"fb"}, platform = Platform.PLAYER)
     public void fbCommand(Context<ProxiedPlayer> context) {
-
         ShortcutRepository shortcutRepository = ProxyGame.getInstance().getShortcutRepository();
         Staffer staffer = Staffer.fetch(context.getSender().getUniqueId());
 
@@ -218,8 +222,10 @@ public class PunishCommand implements ProxyInterface {
         if (context.argsCount() < 1) {
             context.info(MessageType.INCORRECT_USAGE.getMessageKey(), "/fb <shortcut>");
             for (Shortcut shortcut : shortcutRepository.getShortcuts()) {
-                if (shortcut.getPunishType() == PunishType.BAN)
-                    context.sendMessage("§c/fb " + shortcut.getShortcut() + " - " + shortcut.getName());
+                if (shortcut.getPunishType() == PunishType.BAN) {
+                    TextComponent text = getTextComponent(shortcut, staffer);
+                    context.getSender().sendMessage(text);
+                }
             }
             return;
         }
@@ -241,6 +247,16 @@ public class PunishCommand implements ProxyInterface {
 
         staffer.setCurrent(null);
 
+    }
+
+    private static @NotNull TextComponent getTextComponent(Shortcut shortcut, Staffer staffer) {
+        TextComponent text = new TextComponent("§c" + shortcut.getShortcut() + ": " + shortcut.getName());
+        text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new TextComponent[] {new TextComponent("§c" + shortcut.getFullCommand().replace("{0}", (staffer.getCurrent() == null ? "nenhum" : staffer.getCurrent())))}));
+        if(staffer.getCurrent() != null) {
+            text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fb " + shortcut.getShortcut()));
+        }
+        return text;
     }
 
     @Command(name = "cban", rank = Rank.PARTNER_PLUS, usage = "cban <target> <reason>", aliases = {"cheatban", "cbum"})
