@@ -28,6 +28,7 @@ import com.minecraft.core.proxy.scheduler.UpdateCheckScheduler;
 import com.minecraft.core.proxy.server.ProxyServerStorage;
 import com.minecraft.core.proxy.staff.ShortcutRepository;
 import com.minecraft.core.proxy.staff.StaffStorage;
+import com.minecraft.core.proxy.util.chat.WordCensor;
 import com.minecraft.core.proxy.util.command.ProxyFrame;
 import com.minecraft.core.proxy.util.language.ProxyTranslationExecutor;
 import com.minecraft.core.proxy.util.reward.storage.GiftCodeStorage;
@@ -71,6 +72,7 @@ public class ProxyGame extends Plugin {
     private GiftCodeStorage giftCodeStorage;
     private StaffStorage staffStorage;
     private ShortcutRepository shortcutRepository;
+    private WordCensor wordCensor;
     private long startTime;
 
     private final Queue<LogData> logQueue = new ConcurrentLinkedQueue<>();
@@ -92,6 +94,12 @@ public class ProxyGame extends Plugin {
         this.giftCodeStorage = new GiftCodeStorage();
         this.staffStorage = new StaffStorage();
         this.shortcutRepository = new ShortcutRepository();
+
+        this.wordCensor = new WordCensor("*")
+                .addCensure("porra", "poha", "easy", "ruim", "tnc", "vtnc", "gordo", "pobre", "fudido", "fodido", "filho da puta", "puta", "fdp", "desgraçado", "caralho",
+                        "arrombado", "macaco", "gorila", "carniça", "flame", "mush", "hylex", "doente", "vsfd", "vadia", "vagabundo", "vagabunda",
+                        "vsf", "fodase", "nerdola", "nerd", "retardado", "viado", "bixa", "corno", "chifrudo", "doente", "mongol", "nazismo", "ku klux klan", "kukluxklan");
+
 
         if (pluginUpdater.verify(ProxyServer.getInstance()::stop))
             return;
