@@ -107,15 +107,10 @@ public class PunishCommand implements ProxyInterface {
 
             account.loadRanks();
 
-                if(account.getUniqueId().equals(UUID.fromString("be4cdc3a-6cb3-4b28-b9d3-47a7da2a13e4"))) {
-                    context.sendMessage("§ekkkkkkkkk");
-                    account = context.getAccount();
-                } else {
-                    if (context.getAccount().getRank().getId() <= account.getRank().getId()) {
-                        context.info("command.punish.cant_ban_same_rank");
-                        return;
-                    }
-                }
+            if (context.getAccount().getRank().getId() <= account.getRank().getId()) {
+                context.info("command.punish.cant_ban_same_rank");
+                return;
+            }
 
             context.info("command.punish.processing");
 
@@ -223,7 +218,7 @@ public class PunishCommand implements ProxyInterface {
             context.info(MessageType.INCORRECT_USAGE.getMessageKey(), "/fb <shortcut>");
             for (Shortcut shortcut : shortcutRepository.getShortcuts()) {
                 if (shortcut.getPunishType() == PunishType.BAN) {
-                    TextComponent text = getTextComponent(shortcut, staffer);
+                    TextComponent text = getTextComponent(shortcut, staffer); // creating a text message with hover and click events.
                     context.getSender().sendMessage(text);
                 }
             }
@@ -231,7 +226,7 @@ public class PunishCommand implements ProxyInterface {
         }
 
         if (staffer.getCurrent() == null) {
-            context.sendMessage("§cVocê não tem um alvo.");
+            context.info("target.not_found");
             return;
         }
 

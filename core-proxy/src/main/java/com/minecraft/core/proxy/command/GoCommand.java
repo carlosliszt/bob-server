@@ -91,7 +91,7 @@ public class GoCommand implements Listener, ProxyInterface {
         Staffer staffer = Staffer.fetch(context.getUniqueId());
 
         if (staffer.getCurrent() == null || staffer.getLastGo() == null) {
-            context.sendMessage("§cVocê não tem alvo.");
+            context.info("target.not_found");
             return;
         }
 
@@ -159,7 +159,7 @@ public class GoCommand implements Listener, ProxyInterface {
                 staffer.setCurrent(staffer.getLastGo());
                 staffer.setLastGo(null);
             } else {
-                context.sendMessage("§cVocê não tem alvo.");
+                context.info("target.not_found");
                 return;
             }
         }
